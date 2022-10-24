@@ -226,8 +226,8 @@ class BookingCard implements ListItem {
   final DateTimeRange dateTimeRange;
   final String placeName;
   final String asset;
-
-  BookingCard(this.dateTimeRange, this.placeName, this.asset);
+  bool trailing  = true;
+  BookingCard(this.dateTimeRange, this.placeName, this.asset, {this.trailing = true});
 
   @override
   Widget buildCard(BuildContext context) {
@@ -250,7 +250,7 @@ class BookingCard implements ListItem {
                   DateFormat('hh:mm').format(dateTimeRange.end) +
                   ' ' +
                   DateFormat('dd:MM:yyyy').format(dateTimeRange.start)),
-              trailing: Icon(Icons.cancel, color: Colors.black),
+              trailing: trailing?Icon(Icons.cancel, color: Colors.black):null,
             )));
   }
 
