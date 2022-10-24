@@ -47,7 +47,6 @@ class _ApplicationState extends State<Application> {
       ),
     );
     return MaterialApp(
-        title: 'Flutter Demo',
         theme: appTheme,
         home: Scaffold(
             body: Padding(

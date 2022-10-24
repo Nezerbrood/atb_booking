@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -187,7 +186,7 @@ class _BookingListWidgetState extends State<BookingListWidget> {
     var atbLogo = const ATBLogo();
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        padding: const EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 0),
         child: Stack(children: <Widget>[
           atbLogo,
           ListView.builder(
@@ -226,8 +225,10 @@ class BookingCard implements ListItem {
   final DateTimeRange dateTimeRange;
   final String placeName;
   final String asset;
-  bool trailing  = true;
-  BookingCard(this.dateTimeRange, this.placeName, this.asset, {this.trailing = true});
+  bool trailing = true;
+
+  BookingCard(this.dateTimeRange, this.placeName, this.asset,
+      {this.trailing = true});
 
   @override
   Widget buildCard(BuildContext context) {
@@ -250,7 +251,8 @@ class BookingCard implements ListItem {
                   DateFormat('hh:mm').format(dateTimeRange.end) +
                   ' ' +
                   DateFormat('dd:MM:yyyy').format(dateTimeRange.start)),
-              trailing: trailing?Icon(Icons.cancel, color: Colors.black):null,
+              trailing:
+                  trailing ? Icon(Icons.cancel, color: Colors.black) : null,
             )));
   }
 
@@ -295,28 +297,16 @@ class ATBLogo extends StatefulWidget {
 
 class ATBLogoState extends State<ATBLogo> {
   bool logoshow = true;
-  void switchVisible(bool newvalue) {
-    if (logoshow == newvalue){
-      return;
-    }else{
-    setState(() {
-      logoshow = !logoshow;
-    });}
-  }
+
   @override
   Widget build(BuildContext context) {
-    return AnimatedPositioned(
-      left: logoshow ? 0.0 : 150.0,
-      duration: const Duration(seconds: 1),
-      curve: Curves.fastOutSlowIn,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 48.0, horizontal: 3),
-        child: Text("ATB-BOOKING",
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(color: Colors.red, fontSize: 36)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 33.0, horizontal: 3.5),
+      child: Text("ATB-BOOKING",
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(color: Colors.red, fontSize: 36)),
     );
   }
 }
