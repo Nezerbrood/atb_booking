@@ -297,7 +297,6 @@ class ATBLogo extends StatefulWidget {
 
 class ATBLogoState extends State<ATBLogo> {
   bool logoshow = true;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
