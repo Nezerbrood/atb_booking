@@ -1,7 +1,7 @@
-import 'package:atb_booking/person_profile.dart';
+import 'package:atb_booking/main_screens/person_profile.dart';
 import 'package:flutter/material.dart';
-import 'dataclasses/person.dart';
 
+import '../dataclasses/person.dart';
 class People extends StatefulWidget {
   const People({super.key});
 

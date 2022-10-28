@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+import '../dataclasses/person.dart';
 import 'booking_list_tab.dart';
-import 'dataclasses/person.dart';
 
 class PersonProfile extends StatelessWidget {
   final Person person;

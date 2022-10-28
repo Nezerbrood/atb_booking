@@ -1,9 +1,10 @@
+import 'package:atb_booking/additional_screens/existing_booking.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 
-import 'new_booking.dart';
+import '../additional_screens/new_booking.dart';
 
 extension StringExtension on String {
   String capitalize() {
@@ -194,11 +195,17 @@ class _BookingListWidgetState extends State<BookingListWidget> {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
-              return Column(
-                children: [
-                  item.buildListTitle(context),
-                  item.buildCard(context)
-                ],
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ExistingBooking()));
+                },
+                child: Column(
+                  children: [
+                    item.buildListTitle(context),
+                    item.buildCard(context)
+                  ],
+                ),
               );
             },
           ),
