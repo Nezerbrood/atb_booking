@@ -28,6 +28,7 @@ class _ApplicationState extends State<Application> {
   @override
   build(BuildContext context) {
     ThemeData appTheme = Theme.of(context).copyWith(
+      bottomAppBarColor: Colors.lightGreen,
       cardTheme: Theme.of(context).cardTheme.copyWith(
         color: const Color.fromARGB(255, 248, 240, 240),
       ),
@@ -35,6 +36,7 @@ class _ApplicationState extends State<Application> {
       backgroundColor: Colors.white,
       useMaterial3: true,
       colorScheme: const ColorScheme(
+
         primary: Color.fromARGB(255, 239, 89, 90),
         secondary: Color.fromARGB(255, 239, 89, 90),
         brightness: Brightness.light,
@@ -51,29 +53,37 @@ class _ApplicationState extends State<Application> {
     return MaterialApp(
         theme: appTheme,
         home: Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 00),
-              child: Center(
-                child: _widgetOptions.elementAt(selectedIndex),
+          resizeToAvoidBottomInset: false,
+            body: Container(
+              color: Colors.green,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 00),
+                child: Center(
+                  child: _widgetOptions.elementAt(selectedIndex),
+                ),
               ),
             ),
             bottomNavigationBar: NavigationBarTheme(
                 data: NavigationBarThemeData(
                   indicatorColor: appTheme.backgroundColor,
+                  surfaceTintColor: Colors.lightGreen,
                 ),
-                child: NavigationBar(
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (index)=>setState(() {
-                    selectedIndex = index;
-                  }),
-                  destinations: const [
-                    NavigationDestination(icon: Icon(Icons.cases_outlined),
-                      label: 'Бронирование',),
-                    NavigationDestination(icon: Icon(Icons.people_outline_rounded),
-                      label: 'Люди',),
-                    NavigationDestination(icon: Icon(Icons.person),
-                      label: 'Профиль')
-                  ],
+                child: Container(
+                  color: Theme.of(context).primaryColor,
+                  child: NavigationBar(
+                    selectedIndex: selectedIndex,
+                    onDestinationSelected: (index)=>setState(() {
+                      selectedIndex = index;
+                    }),
+                    destinations: const [
+                      NavigationDestination(icon: Icon(Icons.cases_outlined),
+                        label: 'Бронирование',),
+                      NavigationDestination(icon: Icon(Icons.people_outline_rounded),
+                        label: 'Люди',),
+                      NavigationDestination(icon: Icon(Icons.person),
+                        label: 'Профиль')
+                    ],
+                  ),
                 )
             )
         )

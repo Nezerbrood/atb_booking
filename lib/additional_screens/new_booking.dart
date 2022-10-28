@@ -179,8 +179,8 @@ class TimeCard extends StatelessWidget {
       color: getColor(),
       shape: RoundedRectangleBorder(
           side: const BorderSide(
-              width: 0.3, color: Color.fromARGB(255, 200, 194, 207)),
-          borderRadius: BorderRadius.circular(1.0)),
+              width: 0.1, color: Color.fromARGB(255, 200, 194, 207)),
+          borderRadius: BorderRadius.circular(0.0)),
       child: Center(
         child: SizedBox(
             width: 80,
