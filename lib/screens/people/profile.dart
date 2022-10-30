@@ -38,15 +38,15 @@ class _UserBubleButtons extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: Column(
-        children: [
-          const _UserBubleBtn(
-              title: "Пароль", subTitle: "Изменить установленный пароль"),
-          const SizedBox(
+        children: const [
+          _UserBubleBtn(
+              title: "Обратная связь", subTitle: "Пожаловаться или оставить отзыв"),
+          SizedBox(
             height: 18,
           ),
-          const _UserBubleBtn(
-              title: "Push-уведомления",
-              subTitle: "Управление пуш уведомлениями"),
+          _UserBubleBtn(
+              title: "Уведомления",
+              subTitle: "Управление уведомлениями"),
         ],
       ),
     );
