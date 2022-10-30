@@ -170,12 +170,6 @@ class PersonProfile extends StatelessWidget {
         children: [
           Card(
             margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-                side: BorderSide(
-                    width: 1, color: Color.fromARGB(255, 200, 194, 207)),
-                borderRadius: BorderRadius.circular(0.0)),
-            child: Container(
-              color: const Color.fromARGB(255, 255, 236, 236),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -187,7 +181,7 @@ class PersonProfile extends StatelessWidget {
                         children: [
                           Text(
                             person.name.replaceAll(RegExp(" "), "\n"),
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 20),
                           ),
                           const SizedBox(
                             height: 10,
@@ -205,13 +199,12 @@ class PersonProfile extends StatelessWidget {
                   ),
                   Image.network("https://i.pravatar.cc/200?img=1",
                       alignment: Alignment.center,
-                      width: 200,
-                      height: 200,
+                      width: 160,
+                      height: 160,
                       fit: BoxFit.fill),
                 ],
               ),
             ),
-          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),

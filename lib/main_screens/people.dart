@@ -49,26 +49,23 @@ class _PeopleState extends State<People> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: Theme.of(context).copyWith(
-        cardTheme: Theme
-            .of(context)
-            .cardTheme
-            .copyWith(
+        cardTheme: Theme.of(context).cardTheme.copyWith(
           color: const Color.fromARGB(255, 248, 240, 240),
         ),
-        primaryColor: const Color.fromARGB(255, 239, 89, 90),
+        primaryColor: const Color.fromARGB(255, 252, 79, 1),
         backgroundColor: Colors.white,
         useMaterial3: true,
         colorScheme: const ColorScheme(
-          primary: Color.fromARGB(255, 239, 89, 90),
-          secondary: Color.fromARGB(255, 239, 89, 90),
+          primary: Color.fromARGB(255, 252, 79, 1),
+          secondary: Color.fromARGB(255, 252, 79, 1),
           brightness: Brightness.light,
-          onPrimary: Color.fromARGB(255, 239, 89, 90),
-          onSecondary: Color.fromARGB(255, 239, 89, 90),
+          onPrimary: Color.fromARGB(255, 252, 79, 1),
+          onSecondary: Color.fromARGB(255, 252, 79, 1),
           background: Colors.white,
           error: Colors.red,
           onError: Colors.black,
           onBackground: Colors.black,
-          surface: Color.fromARGB(255, 232, 76, 83),
+          surface: Color.fromARGB(255, 252, 79, 1),
           onSurface: Colors.white,
         ),
       ),
@@ -87,14 +84,19 @@ class _PeopleState extends State<People> {
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: TabBarView(
               children: [
                 ListView.builder(
-                    itemCount: items.length,
+                    itemCount: items.length+1,
                     itemBuilder: (context, index) {
-                      final item = items[index];
-                      return PersonCard(item, item.id, item.name, item.jobTitle);
+                      if(index==0){
+                        return TeamCard();
+                      }else{
+                        final item = items[index-1];
+                        return PersonCard(item, item.id, item.name, item.jobTitle);
+                      }
+
                     }),
                 ListView.builder(
                     itemCount: items.length,
@@ -109,6 +111,54 @@ class _PeopleState extends State<People> {
       ),
     );
   }
+}
+
+class TeamCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: [
+          Image.asset("assets/team_card.png",alignment: Alignment.center,
+              fit: BoxFit.fill),
+          Container(
+            padding: EdgeInsets.all(10),
+            width: double.infinity,
+            child: Text(
+              "Team Cringers",
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge
+                  ?.copyWith(color: Colors.black),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(10),
+            width: double.infinity,
+            child: Text(
+              "Офис: г. Владивосток, ул Алеутская 24",
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge
+                  ?.copyWith(color: Colors.black45),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(10),
+            width: double.infinity,
+            child: Text(
+              "Мы делаем вид что работаем в банке, но на самом деле мы скрываемся от миграционной полиции, чтобы нас не отправили назад в Уганду",
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge
+                  ?.copyWith(color: Colors.black54),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
 }
 
 class PersonCard extends StatelessWidget {

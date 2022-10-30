@@ -32,21 +32,21 @@ class _ApplicationState extends State<Application> {
       cardTheme: Theme.of(context).cardTheme.copyWith(
         color: const Color.fromARGB(255, 248, 240, 240),
       ),
-      primaryColor: const Color.fromARGB(255, 239, 89, 90),
+      primaryColor: const Color.fromARGB(255, 252, 79, 1),
       backgroundColor: Colors.white,
       useMaterial3: true,
       colorScheme: const ColorScheme(
 
-        primary: Color.fromARGB(255, 239, 89, 90),
-        secondary: Color.fromARGB(255, 239, 89, 90),
+        primary: Color.fromARGB(255, 252, 79, 1),
+        secondary: Color.fromARGB(255, 252, 79, 1),
         brightness: Brightness.light,
-        onPrimary: Color.fromARGB(255, 239, 89, 90),
-        onSecondary: Color.fromARGB(255, 239, 89, 90),
+        onPrimary: Color.fromARGB(255, 252, 79, 1),
+        onSecondary: Color.fromARGB(255, 252, 79, 1),
         background: Colors.white,
         error: Colors.red,
         onError: Colors.black,
         onBackground: Colors.black,
-        surface: Color.fromARGB(255, 232, 76, 83),
+        surface: Color.fromARGB(255, 252, 79, 1),
         onSurface: Colors.white,
       ),
     );
