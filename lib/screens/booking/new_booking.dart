@@ -1,6 +1,5 @@
 import 'package:clickable_list_wheel_view/clickable_list_wheel_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 const List<String> list = <String>['1 Этаж', '2 Этаж', '3 Этаж', '4 Этаж'];
 
@@ -144,7 +143,7 @@ class _NewBookingState extends State<NewBooking> {
                                   ),
                                   textButtonTheme: TextButtonThemeData(
                                     style: TextButton.styleFrom(
-                                      primary: Colors.red, // button text color
+                                      foregroundColor: Colors.red, // button text color
                                     ),
                                   ),
                                 ),
