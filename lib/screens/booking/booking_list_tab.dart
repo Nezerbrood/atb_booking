@@ -1,10 +1,10 @@
-import 'package:atb_booking/additional_screens/existing_booking.dart';
+import 'package:atb_booking/screens/booking/existing_booking.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 
-import '../additional_screens/new_booking.dart';
+import 'new_booking.dart';
 
 extension StringExtension on String {
   String capitalize() {
@@ -184,12 +184,10 @@ class _BookingListWidgetState extends State<BookingListWidget> {
   @override
   Widget build(BuildContext context) {
     ScrollController _scrollController = ScrollController();
-    var atbLogo = const ATBLogo();
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 0),
         child: Stack(children: <Widget>[
-          atbLogo,
           ListView.builder(
             controller: _scrollController,
             itemCount: items.length,
@@ -224,7 +222,6 @@ class _BookingListWidgetState extends State<BookingListWidget> {
 
 abstract class ListItem {
   Widget buildListTitle(BuildContext context);
-
   Widget buildCard(BuildContext context);
 }
 
@@ -271,14 +268,11 @@ class BookingCard implements ListItem {
 
 class ListTitle implements ListItem {
   final String message;
-
   ListTitle(this.message);
-
   @override
   Widget buildCard(BuildContext context) {
     return const SizedBox.shrink();
   }
-
   @override
   Widget buildListTitle(BuildContext context) {
     return Padding(
@@ -289,30 +283,6 @@ class ListTitle implements ListItem {
             message,
             style: Theme.of(context).textTheme.headlineMedium,
           )),
-    );
-  }
-}
-
-class ATBLogo extends StatefulWidget {
-  const ATBLogo({super.key});
-
-  @override
-  State<StatefulWidget> createState() {
-    return ATBLogoState();
-  }
-}
-
-class ATBLogoState extends State<ATBLogo> {
-  bool logoshow = true;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 33.0, horizontal: 3.5),
-      child: Text("ATB-BOOKING",
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
-              ?.copyWith(color: Colors.red, fontSize: 36)),
     );
   }
 }

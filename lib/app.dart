@@ -1,10 +1,10 @@
 
+import 'package:atb_booking/screens/booking/booking_list_tab.dart';
+import 'package:atb_booking/screens/people/people_view.dart';
+import 'package:atb_booking/screens/people/person_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'dataclasses/person.dart';
-import 'main_screens/booking_list_tab.dart';
-import 'main_screens/people.dart';
-import 'main_screens/person_profile.dart';
 
 class Application extends StatefulWidget {
   const Application({Key? key}) : super(key: key);
