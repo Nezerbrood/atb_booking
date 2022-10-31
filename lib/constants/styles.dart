@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 var materialAppTheme = ThemeData(
+  elevatedButtonTheme: ElevatedButtonThemeData(),
+  buttonTheme: ButtonThemeData(
+    buttonColor: Color.fromARGB(255, 252, 79, 1)
+  ),
   cardTheme: CardTheme(
       color: Colors.white,
+
   ),
   primaryColor: const Color.fromARGB(255, 252, 79, 1),
   backgroundColor: Colors.white,

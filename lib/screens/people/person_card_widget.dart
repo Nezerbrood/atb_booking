@@ -25,13 +25,13 @@ class PersonCard extends StatelessWidget {
             },
             child: Card(
                 semanticContainer: true,
-                elevation: 5,
+                elevation: 1,
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 shape: RoundedRectangleBorder(
                     side: BorderSide(
                         width: 1, color: Color.fromARGB(255, 200, 194, 207)),
                     borderRadius: BorderRadius.circular(12.0)),
-                color: Colors.white,
+                //color: Colors.white,
                 child: Row(
                   children: <Widget>[
                     Image.network("https://i.pravatar.cc/200?img=$id",

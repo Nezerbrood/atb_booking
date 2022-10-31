@@ -1,6 +1,7 @@
-import 'package:clickable_list_wheel_view/clickable_list_wheel_widget.dart';
+import 'package:atb_booking/constants/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 const List<String> list = <String>['1 Этаж', '2 Этаж', '3 Этаж', '4 Этаж'];
 
@@ -33,7 +34,8 @@ class _NewBookingState extends State<NewBooking> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30.0, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -43,7 +45,7 @@ class _NewBookingState extends State<NewBooking> {
                             decoration: BoxDecoration(
                               color: Color.fromARGB(255, 248, 240, 240),
                               borderRadius:
-                                  BorderRadius.circular(10).copyWith(),
+                              BorderRadius.circular(10).copyWith(),
                             ),
                             child: TextField(
                                 obscureText: true,
@@ -56,17 +58,18 @@ class _NewBookingState extends State<NewBooking> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30.0, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: Container(
                             decoration: BoxDecoration(
                               color: Color.fromARGB(255, 248, 240, 240),
                               borderRadius:
-                                  BorderRadius.circular(10).copyWith(),
+                              BorderRadius.circular(10).copyWith(),
                             ),
                             child: TextField(
                                 obscureText: true,
@@ -76,22 +79,15 @@ class _NewBookingState extends State<NewBooking> {
                                 ))),
                       ),
                       SizedBox(width: 10),
-                      Expanded(
-                        flex: 1,
-                          child: const DropdownButtonExample()),
+                      Expanded(flex: 1, child: const DropdownButtonLevel()),
                     ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(children: [
-                    Flexible(
-                        child: Image(image: AssetImage("assets/map.png"))),
+                    Flexible(child: Image(image: AssetImage("assets/map.png"))),
                   ]),
-                ),
-                SizedBox(
-                  width: 0,
-                  height: 20,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(30.0),
@@ -105,15 +101,38 @@ class _NewBookingState extends State<NewBooking> {
                               borderRadius:
                               BorderRadius.circular(10).copyWith(),
                             ),
-                            child: TestPickerWidget()),
+                            child: DatePickerWidget()),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 0,
-                  height: 20,
-                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: ElevatedButton(
+                    child: Container(
+                        width: 240,
+                        height: 60,
+                        child: Center(
+                            child: Text(
+                              "Выбрать время",
+                              style: materialAppTheme.textTheme.displayLarge
+                                  ?.copyWith(color: Colors.white, fontSize: 20),
+                            ))),
+                    onPressed: () =>
+                    {
+                      showModalBottomSheet<void>(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(10),
+                            )),
+                        context: context,
+                        builder: (BuildContext context) {
+                          return MyBottomSheet();
+                        },
+                      )
+                    },
+                  ),
+                )
               ],
             ),
           ),
@@ -121,21 +140,96 @@ class _NewBookingState extends State<NewBooking> {
   }
 }
 
-class DropdownButtonExample extends StatefulWidget {
-  const DropdownButtonExample({super.key});
-
+class MyBottomSheet extends StatefulWidget {
   @override
-  State<DropdownButtonExample> createState() => _DropdownButtonExampleState();
+  State<StatefulWidget> createState() {
+    return MyBottomSheetState();
+  }
 }
 
-class _DropdownButtonExampleState extends State<DropdownButtonExample> {
+class MyBottomSheetState extends State<MyBottomSheet> {
+  SfRangeValues _values =
+  SfRangeValues(DateTime(2022, 10, 31, 15), DateTime(2022, 10, 31, 20));
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Image.asset("assets/workplace.png",
+                  alignment: Alignment.center,
+                  height: 200,
+                  width: 200,
+                  fit: BoxFit.fill),
+              Expanded(flex: 1, child: Center(child: Text("Описание места")))
+            ],
+          ),
+          Container(
+            width: 600,
+            child: Center(
+              child: SfRangeSlider(
+                  values: _values,
+                  // min: 0.0,
+                  // max: 100.0,
+                  min: DateTime(2022, 10, 31, 15),
+                  max: DateTime(2022, 10, 31, 20),
+                  //stepSize: 0.000000000000000000000000000000000002,
+                  showLabels: true,
+                  //interval: 20,
+                  interval: 1,
+                  dateIntervalType: DateIntervalType.hours,
+                  showTicks: true,
+                  //numberFormat: NumberFormat('\$'),
+                  dateFormat: DateFormat.Hm(),
+                  enableTooltip: true,
+                  onChanged: (dynamic newValues) {
+                    setState(() {
+                      _values = newValues;
+                    });
+                  }),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+            child: ElevatedButton(
+              child: Container(
+                  width: 240,
+                  height: 60,
+                  child: Center(
+                      child: Text(
+                        "Забронировать",
+                        style: materialAppTheme.textTheme.displayLarge
+                            ?.copyWith(color: Colors.white, fontSize: 20),
+                      ))),
+              onPressed: () =>
+              {
+                Navigator.of(context).pop()
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DropdownButtonLevel extends StatefulWidget {
+  const DropdownButtonLevel({super.key});
+
+  @override
+  State<DropdownButtonLevel> createState() => _DropdownButtonLevelState();
+}
+
+class _DropdownButtonLevelState extends State<DropdownButtonLevel> {
   String dropdownValue = list.first;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Color.fromARGB(255, 232, 76, 83),
+          color: materialAppTheme.primaryColor,
           borderRadius: BorderRadius.circular(10)),
       child: SizedBox(
         width: 120,
@@ -144,11 +238,12 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
           child: DropdownButton<String>(
             iconDisabledColor: Colors.white,
             iconEnabledColor: Colors.white,
-            dropdownColor: Colors.red,
+            dropdownColor: materialAppTheme.primaryColor,
             icon: const Icon(Icons.arrow_downward),
             value: dropdownValue,
             elevation: 16,
-            style: Theme.of(context)
+            style: Theme
+                .of(context)
                 .textTheme
                 .bodyLarge!
                 .copyWith(color: Colors.white),
@@ -162,7 +257,8 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
                 value: value,
                 child: Center(
                     child: Text(value,
-                        style: Theme.of(context)
+                        style: Theme
+                            .of(context)
                             .textTheme
                             .bodyLarge
                             ?.copyWith(color: Colors.white))),
@@ -175,55 +271,58 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
   }
 }
 
-class TestPickerWidget extends StatefulWidget {
-  const TestPickerWidget({super.key});
+class DatePickerWidget extends StatefulWidget {
+  const DatePickerWidget({super.key});
 
   @override
-  _TestPickerWidgetState createState() => _TestPickerWidgetState();
+  _DatePickerWidgetState createState() => _DatePickerWidgetState();
 }
 
-class _TestPickerWidgetState extends State<TestPickerWidget> {
+class _DatePickerWidgetState extends State<DatePickerWidget> {
   late DateTime _selectedDate;
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Выберите дату',
-        ),
-        focusNode: AlwaysDisabledFocusNode(),
-        controller: _textEditingController,
-        onTap: () async {
-    DateTime? newDate = await showDatePicker(
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Theme.of(context).primaryColor,
-              // header background color
-              onPrimary: Colors.white,
-              // header text color
-              onSurface:
-                  Theme.of(context).primaryColor, // body text color
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red, // button text color
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Выберите дату',
+      ),
+      focusNode: AlwaysDisabledFocusNode(),
+      controller: _textEditingController,
+      onTap: () async {
+        DateTime? newDate = await showDatePicker(
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(
+                  primary: Theme
+                      .of(context)
+                      .primaryColor,
+                  // header background color
+                  onPrimary: Colors.white,
+                  // header text color
+                  onSurface: Theme
+                      .of(context)
+                      .primaryColor, // body text color
+                ),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.red, // button text color
+                  ),
+                ),
               ),
-            ),
-          ),
-          child: child!,
+              child: child!,
+            );
+          },
+          context: context,
+          initialDate: DateTime(1222),
+          firstDate: DateTime(1200),
+          lastDate: DateTime(2100),
         );
       },
-      context: context,
-      initialDate: DateTime(1222),
-      firstDate: DateTime(1200),
-      lastDate: DateTime(2100),
     );
-        },
-      );
   }
 
   _selectDate(BuildContext context) async {

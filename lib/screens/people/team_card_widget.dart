@@ -11,11 +11,11 @@ class TeamCard extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Column(
         children: [
-          Image.asset(
-              "assets/team_card.png",
-              alignment: Alignment.center,
-              height: 200,
-              fit: BoxFit.fill),
+          // Image.asset(
+          //     "assets/team_card.png",
+          //     alignment: Alignment.center,
+          //     height: 200,
+          //     fit: BoxFit.fill),
           Container(
             padding: EdgeInsets.all(10),
             width: double.infinity,
@@ -24,20 +24,20 @@ class TeamCard extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .labelLarge
-                  ?.copyWith(color: Colors.black),
+                  ?.copyWith(color: Colors.black, fontSize: 30),
             ),
           ),
-          Container(
-            padding: EdgeInsets.all(10),
-            width: double.infinity,
-            child: Text(
-              "Офис: г. Владивосток, ул Алеутская 24",
-              style: Theme.of(context)
-                  .textTheme
-                  .labelLarge
-                  ?.copyWith(color: Colors.black45),
-            ),
-          ),
+          // Container(
+          //   padding: EdgeInsets.all(10),
+          //   width: double.infinity,
+          //   child: Text(
+          //     "Офис: г. Владивосток, ул Алеутская 24",
+          //     style: Theme.of(context)
+          //         .textTheme
+          //         .labelLarge
+          //         ?.copyWith(color: Colors.black45),
+          //   ),
+          // ),
           Container(
             padding: EdgeInsets.all(10),
             width: double.infinity,
@@ -46,7 +46,7 @@ class TeamCard extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .labelLarge
-                  ?.copyWith(color: Colors.black54),
+                  ?.copyWith(color: Colors.black54, fontSize: 18),
             ),
           )
         ],

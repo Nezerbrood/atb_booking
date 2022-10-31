@@ -33,6 +33,7 @@ dependencies:
   intl: 0.17.0
   flutter:
     sdk: flutter
+  syncfusion_flutter_sliders: ^19.1.66-beta
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -57,6 +58,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - assets/workplace.png
     - assets/workplacelogo.png
     - assets/map.png
     - assets/team_card.png

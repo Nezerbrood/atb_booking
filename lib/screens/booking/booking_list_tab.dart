@@ -1,3 +1,4 @@
+import 'package:atb_booking/constants/styles.dart';
 import 'package:atb_booking/screens/booking/existing_booking.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -185,8 +186,11 @@ class _BookingListWidgetState extends State<BookingListWidget> {
   Widget build(BuildContext context) {
     ScrollController _scrollController = ScrollController();
     return Scaffold(
+      appBar: AppBar(
+        title: Center(child: Text("ATB BOOKING",style: materialAppTheme.textTheme.displayLarge?.copyWith(fontSize: 34,fontWeight: FontWeight.w500, color: materialAppTheme.colorScheme.onSurface),)),
+      ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 0),
+        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
         child: Stack(children: <Widget>[
           ListView.builder(
             controller: _scrollController,
@@ -195,8 +199,8 @@ class _BookingListWidgetState extends State<BookingListWidget> {
               final item = items[index];
               return GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ExistingBooking()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ExistingBooking()));
                 },
                 child: Column(
                   children: [
@@ -222,6 +226,7 @@ class _BookingListWidgetState extends State<BookingListWidget> {
 
 abstract class ListItem {
   Widget buildListTitle(BuildContext context);
+
   Widget buildCard(BuildContext context);
 }
 
@@ -238,7 +243,7 @@ class BookingCard implements ListItem {
   Widget buildCard(BuildContext context) {
     return Center(
         child: Card(
-            elevation: 5,
+            elevation: 1,
             shape: RoundedRectangleBorder(
                 side: const BorderSide(
                     width: 1, color: Color.fromARGB(255, 200, 194, 207)),
@@ -255,8 +260,7 @@ class BookingCard implements ListItem {
                   DateFormat('hh:mm').format(dateTimeRange.end) +
                   ' ' +
                   DateFormat('dd:MM:yyyy').format(dateTimeRange.start)),
-              trailing:
-                  trailing ? Icon(Icons.cancel, color: Colors.black) : null,
+              //trailing: trailing ? Icon(Icons.cancel, color: Colors.black) : null,
             )));
   }
 
@@ -268,11 +272,14 @@ class BookingCard implements ListItem {
 
 class ListTitle implements ListItem {
   final String message;
+
   ListTitle(this.message);
+
   @override
   Widget buildCard(BuildContext context) {
     return const SizedBox.shrink();
   }
+
   @override
   Widget buildListTitle(BuildContext context) {
     return Padding(
