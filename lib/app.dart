@@ -2,6 +2,7 @@
 import 'package:atb_booking/screens/booking/booking_list_tab.dart';
 import 'package:atb_booking/screens/people/people_view.dart';
 import 'package:atb_booking/screens/people/person_profile_screen.dart';
+import 'package:atb_booking/screens/people/profile.dart';
 import 'package:flutter/material.dart';
 
 import 'constants/styles.dart';
@@ -18,7 +19,7 @@ class _ApplicationState extends State<Application> {
   static final List<Widget> _widgetOptions = <Widget>[
     const BookingListWidget(),
     const People(),
-    PersonProfile(Person(1,"Алексеев Александр Александров","Заместитель деректора по воспитательной работе с джунами"))
+    const Profile(),
   ];
 
   @override
