@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../constants/styles.dart';
 
 const List<String> list = <String>['1 Этаж', '2 Этаж', '3 Этаж', '4 Этаж'];
+
 class NewBookingScreen extends StatefulWidget {
   const NewBookingScreen({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _NewBookingScreenState();
@@ -148,11 +151,85 @@ class MyBottomSheet extends StatefulWidget {
 }
 
 class MyBottomSheetState extends State<MyBottomSheet> {
-  SfRangeValues _values =
-      SfRangeValues(DateTime(2022, 10, 31, 15), DateTime(2022, 10, 31, 20));
+  int activeSliderIndex = 0;
+  SfRangeValues _values1 =
+      SfRangeValues(DateTime(2022, 10, 31, 8), DateTime(2022, 10, 31, 14));
+  SfRangeValues _values2 =
+      SfRangeValues(DateTime(2022, 10, 31, 14, 30), DateTime(2022, 10, 31, 15));
+  SfRangeValues _values3 =
+      SfRangeValues(DateTime(2022, 10, 31, 16), DateTime(2022, 10, 31, 22));
 
   @override
   Widget build(BuildContext context) {
+    lambda1(dynamic newValues) {
+      setState(() {
+        _values1 = newValues;
+      });
+    }
+
+    lambda2(dynamic newValues) {
+      setState(() {
+        _values2 = newValues;
+      });
+    }
+
+    lambda3(dynamic newValues) {
+      setState(() {
+        _values3 = newValues;
+      });
+    }
+
+    SfRangeSlider slider1 = SfRangeSlider(
+      values: _values1,
+      // min: 0.0,
+      // max: 100.0,
+      min: DateTime(2022, 10, 31, 8),
+      max: DateTime(2022, 10, 31, 14),
+      showLabels: true,
+      //interval: 20,
+      interval: 3,
+      stepDuration: const SliderStepDuration(minutes: 30),
+      dateIntervalType: DateIntervalType.hours,
+      showTicks: true,
+      //numberFormat: NumberFormat('\$'),
+      dateFormat: DateFormat.Hm(),
+      enableTooltip: true,
+      onChanged: activeSliderIndex == 0 ? lambda1 : null,
+    );
+    SfRangeSlider slider2 = SfRangeSlider(
+      values: _values2,
+      // min: 0.0,
+      // max: 100.0,
+      min: DateTime(2022, 10, 31, 14, 30),
+      max: DateTime(2022, 10, 31, 15),
+      stepDuration: const SliderStepDuration(minutes: 30),
+      showLabels: true,
+      //interval: 20,
+      interval: 30,
+      dateIntervalType: DateIntervalType.minutes,
+      showTicks: true,
+      //numberFormat: NumberFormat('\$'),
+      dateFormat: DateFormat.Hm(),
+      enableTooltip: true,
+      onChanged: activeSliderIndex == 1 ? lambda2 : null,
+    );
+    SfRangeSlider slider3 = SfRangeSlider(
+      values: _values3,
+      // min: 0.0,
+      // max: 100.0,
+      min: DateTime(2022, 10, 31, 16),
+      max: DateTime(2022, 10, 31, 22),
+      stepDuration: const SliderStepDuration(minutes: 30),
+      showLabels: true,
+      //interval: 20,
+      interval: 3,
+      dateIntervalType: DateIntervalType.hours,
+      showTicks: true,
+      //numberFormat: NumberFormat('\$'),
+      dateFormat: DateFormat.Hm(),
+      enableTooltip: true,
+      onChanged: activeSliderIndex == 3 ? lambda3 : null,
+    );
     return Column(
       children: [
         Row(
@@ -166,26 +243,99 @@ class MyBottomSheetState extends State<MyBottomSheet> {
                 flex: 1, child: Center(child: Text("Описание места")))
           ],
         ),
-        SizedBox(
-          width: 600,
-          child: Center(
-            child: SfRangeSlider(
-                values: _values,
-                // min: 0.0,
-                // max: 100.0,
-                min: DateTime(2022, 10, 31, 15),
-                max: DateTime(2022, 10, 31, 20),
-                showLabels: true,
-                interval: 1,
-                dateIntervalType: DateIntervalType.hours,
-                showTicks: true,
-                dateFormat: DateFormat.Hm(),
-                enableTooltip: true,
-                onChanged: (dynamic newValues) {
-                  setState(() {
-                    _values = newValues;
-                  });
-                }),
+        Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: SizedBox(
+            width: 600,
+            child: SfRangeSliderTheme(
+              data: SfRangeSliderThemeData(
+                activeLabelStyle: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 14,
+                    fontStyle: FontStyle.normal),
+                inactiveLabelStyle: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 14,
+                    fontStyle: FontStyle.normal),
+                tooltipTextStyle: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontStyle: FontStyle.normal),
+                overlappingTooltipStrokeColor: Colors.white,
+                tooltipBackgroundColor: appThemeData.primaryColor,
+                disabledActiveTrackColor: Colors.black38,
+                disabledInactiveTrackColor: Colors.black38,
+                disabledActiveTickColor: Colors.black38,
+                disabledInactiveTickColor: Colors.black38,
+                disabledActiveMinorTickColor: Colors.black38,
+                disabledInactiveMinorTickColor: Colors.black38,
+                disabledActiveDividerColor: Colors.red,
+                disabledInactiveDividerColor: Colors.black38,
+                disabledThumbColor: Colors.black38,
+                activeTrackColor: appThemeData.primaryColor,
+                inactiveTrackColor: Colors.black38,
+                activeTickColor: appThemeData.primaryColor,
+                inactiveTickColor: Colors.black38,
+                activeMinorTickColor: appThemeData.primaryColor,
+                inactiveMinorTickColor: Colors.black38,
+                activeDividerColor: appThemeData.primaryColor,
+                inactiveDividerColor: Colors.black38,
+                thumbColor: appThemeData.primaryColor,
+              ),
+              child: SizedBox(
+                width: 700,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 7,
+                      child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            print("on tap slider 1");
+                            if (activeSliderIndex == 0) {
+                              return;
+                            }
+                            setState(() {
+                              activeSliderIndex = 0;
+                            });
+                          },
+                          child:  slider1),
+                    ),
+                    Flexible(
+                      flex: 4,
+                      child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            print("on tap slider 2");
+                            if (activeSliderIndex == 1) {
+                              return;
+                            }
+                            setState(() {
+                              activeSliderIndex = 1;
+                            });
+                          },
+                          child: slider2),
+                    ),
+                    Flexible(
+                      flex: 7,
+                      child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            print("on tap slider 3");
+                            if (activeSliderIndex == 3) {
+                              return;
+                            }
+                            setState(() {
+                              activeSliderIndex = 3;
+                            });
+                          },
+                          child:  slider3),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
         Padding(
@@ -264,6 +414,7 @@ class _DropdownButtonLevelState extends State<DropdownButtonLevel> {
 
 class _DatePickerWidget extends StatefulWidget {
   const _DatePickerWidget();
+
   @override
   _DatePickerWidgetState createState() => _DatePickerWidgetState();
 }
