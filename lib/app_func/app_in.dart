@@ -1,3 +1,4 @@
+import 'package:atb_booking/constants/styles.dart';
 import 'package:flutter/material.dart';
 import '../user_interface/home.dart';
 
@@ -14,12 +15,9 @@ class Application extends StatelessWidget {
     return MaterialApp(
       //Заголовок и тема
       title: 'ATB Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: appThemeData,
       //Наше наполнение приложения - основаня страница с навигацией.
-      home: Home(),
+      home: const Home(),
     );
   }
 }

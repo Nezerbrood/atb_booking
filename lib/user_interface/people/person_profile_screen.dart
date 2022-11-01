@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'package:atb_booking/constants/styles.dart';
 import 'package:atb_booking/util/string_extension.dart';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../data/dataclasses/booking.dart';
@@ -126,22 +126,26 @@ class PersonProfileScreen extends StatelessWidget {
           !todayItemIsAdd) {
         items.add(ListTitle("Сегодня"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",trailing: false));
+            bookingList[i].placeName, "assets/workplacelogo.png",
+            trailing: false));
         todayItemIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
               DateTime.now().day + 1 &&
           !tomorrowIsAdd) {
         items.add(ListTitle("Завтра"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",trailing: false));
+            bookingList[i].placeName, "assets/workplacelogo.png",
+            trailing: false));
         tomorrowIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
           DateTime.now().day + 1) {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",trailing: false));
+            bookingList[i].placeName, "assets/workplacelogo.png",
+            trailing: false));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",trailing: false));
+            bookingList[i].placeName, "assets/workplacelogo.png",
+            trailing: false));
       }
       if (bookingList[i].dateTimeRange.start.day != DateTime.now().day &&
           tomorrowEnd == false) {
@@ -152,16 +156,21 @@ class PersonProfileScreen extends StatelessWidget {
             .capitalize()));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",trailing: false));
+            bookingList[i].placeName, "assets/workplacelogo.png",
+            trailing: false));
       }
     }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Профиль сотрудника"),
-        actions:  const [
-          Center(child: Padding(
+        actions: const [
+          Center(
+              child: Padding(
             padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.more_vert_sharp,size: 30,),
+            child: Icon(
+              Icons.more_vert_sharp,
+              size: 30,
+            ),
           ))
         ],
       ),
@@ -170,41 +179,49 @@ class PersonProfileScreen extends StatelessWidget {
         children: [
           Card(
             margin: EdgeInsets.zero,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Center(
-                          child: Column(
-                        children: [
-                          Text(
-                            person.name.replaceAll(RegExp(" "), "\n"),
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 20),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            person.jobTitle,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: Colors.black54),
-                          )
-                        ],
-                      )),
-                    ),
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+                side: const BorderSide(width: 0.2, color: Colors.black38),
+                borderRadius: BorderRadius.circular(0.0)),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Center(
+                        child: Column(
+                      children: [
+                        Text(
+                          person.name.replaceAll(RegExp(" "), "\n"),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(fontSize: 20),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          person.jobTitle,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(color: Colors.black54),
+                        )
+                      ],
+                    )),
                   ),
-                  Image.network("https://i.pravatar.cc/200?img=1",
-                      alignment: Alignment.center,
-                      width: 160,
-                      height: 160,
-                      fit: BoxFit.fill),
-                ],
-              ),
+                ),
+                Image.network("https://i.pravatar.cc/200?img=1",
+                    alignment: Alignment.center,
+                    width: 160,
+                    height: 160,
+                    fit: BoxFit.fill),
+              ],
             ),
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),

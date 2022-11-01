@@ -1,3 +1,4 @@
+import 'package:atb_booking/constants/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,7 +13,6 @@ class BookingCard implements BookingListItem {
   final String placeName;
   final String asset;
   bool trailing = true;
-
   BookingCard(this.dateTimeRange, this.placeName, this.asset,
       {this.trailing = true});
 
@@ -23,7 +23,7 @@ class BookingCard implements BookingListItem {
             elevation: 1,
             shape: RoundedRectangleBorder(
                 side: const BorderSide(
-                    width: 1, color: Color.fromARGB(255, 200, 194, 207)),
+                    width: 0.3, color: Color.fromARGB(255, 200, 194, 207)),
                 borderRadius: BorderRadius.circular(12.0)),
             color: Colors.white,
             child: ListTile(

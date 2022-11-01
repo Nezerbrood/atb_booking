@@ -122,11 +122,15 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                         ))),
                     onPressed: () => {
                       showModalBottomSheet<void>(
+                        isScrollControlled:true,
                         shape: const RoundedRectangleBorder(
+
                             borderRadius: BorderRadius.vertical(
                           top: Radius.circular(10),
                         )),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
                         context: context,
+
                         builder: (BuildContext context) {
                           return const MyBottomSheet();
                         },
@@ -231,7 +235,12 @@ class MyBottomSheetState extends State<MyBottomSheet> {
       onChanged: activeSliderIndex == 3 ? lambda3 : null,
     );
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisSize: MainAxisSize.min,
       children: [
+        AppBar(
+          title: Text("Переговорная комната",style: appThemeData.textTheme.labelMedium?.copyWith(fontSize: 18,color: appThemeData.colorScheme.onSurface),),
+        ),
         Row(
           children: [
             Image.asset("assets/workplace.png",
@@ -240,7 +249,13 @@ class MyBottomSheetState extends State<MyBottomSheet> {
                 width: 200,
                 fit: BoxFit.fill),
             const Expanded(
-                flex: 1, child: Center(child: Text("Описание места")))
+                flex: 1, child: SizedBox(
+              height: 200,
+                width: 200,
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Center(child: Text("Давно выяснено, что при оценке дизайна и композиции читаемый текст мешает сосредоточиться. Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение шаблона, а также реальное распределение букв и пробелов в абзацах, которое не получается при простой дубликации")),
+                )))
           ],
         ),
         Padding(
@@ -338,8 +353,33 @@ class MyBottomSheetState extends State<MyBottomSheet> {
             ),
           ),
         ),
+        Padding(padding: EdgeInsets.all(10),child:
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: appThemeData.colorScheme.secondary,
+                    borderRadius: BorderRadius.circular(5),),
+                child: Column(children: [
+                  Text("Начало",style: appThemeData.textTheme.displayLarge,),
+                  Text("14:30",style: appThemeData.textTheme.displayLarge?.copyWith(fontSize: 34),),
+                ],),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: appThemeData.colorScheme.secondary,
+                    borderRadius: BorderRadius.circular(5),),
+                child: Column(children: [
+                  Text("Конец",style: appThemeData.textTheme.displayLarge,),
+                  Text("19:30",style: appThemeData.textTheme.displayLarge?.copyWith(fontSize: 34),),
+                ],),
+              )
+            ],
+          ),),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+          padding: const EdgeInsets.fromLTRB(30, 00, 30, 40),
           child: ElevatedButton(
             child: SizedBox(
                 width: 240,
@@ -353,6 +393,7 @@ class MyBottomSheetState extends State<MyBottomSheet> {
             onPressed: () => {Navigator.of(context).pop()},
           ),
         ),
+
       ],
     );
   }

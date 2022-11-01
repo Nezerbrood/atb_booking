@@ -198,9 +198,12 @@ class BookingDetailsScreen extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
-                          child: TextButton(onPressed: () {  }, child: Text("Отменить",style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 22,color: Theme.of(context).primaryColor),),
-
+                          child: ElevatedButton(
+                            onPressed: () {
+                            },
+                            child: Text('Отменить'),
                           )
+
                         ),
 
                       ],
