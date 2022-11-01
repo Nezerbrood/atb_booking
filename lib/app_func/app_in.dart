@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:atb_flutter_demo/user_interface/forms/HomePage.dart';
+import '../user_interface/home.dart';
 
 //Запускаем наше приложение
 //Базовая конструкция для приложения.
