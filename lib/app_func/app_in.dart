@@ -1,3 +1,4 @@
+import 'package:atb_booking/user_interface/auth/auth_screen.dart';
 import 'package:flutter/material.dart';
 import '../user_interface/home.dart';
 
@@ -18,8 +19,12 @@ class Application extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      routes: {
+        '/auth': (context) => const Auth(),
+        '/home':(context) => const Home(),
+      },
       //Наше наполнение приложения - основаня страница с навигацией.
-      home: Home(),
+      initialRoute: '/auth',
     );
   }
 }

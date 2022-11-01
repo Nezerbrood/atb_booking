@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../app_func/app_in.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,11 +22,9 @@ class ProfileScreen extends StatelessWidget {
           _UppNavRow(),
           SizedBox(height: 25),
           _UserTitle(),
-          SizedBox(height: 35),
+          SizedBox(height: 55),
           _UserInfo(),
-          SizedBox(
-            height: 35,
-          ),
+          SizedBox(height: 45),
           _UserBubleButtons(),
         ],
       ),
@@ -40,13 +44,8 @@ class _UserBubleButtons extends StatelessWidget {
       child: Column(
         children: const [
           _UserBubleBtn(
-              title: "Обратная связь", subTitle: "Пожаловаться или оставить отзыв"),
-          SizedBox(
-            height: 18,
-          ),
-          _UserBubleBtn(
-              title: "Уведомления",
-              subTitle: "Управление уведомлениями"),
+              title: "Обратная связь",
+              subTitle: "Пожаловаться или оставить отзыв"),
         ],
       ),
     );
@@ -213,21 +212,27 @@ class _UserAvatar extends StatelessWidget {
   }
 }
 
-class _UppNavRow extends StatelessWidget {
-  const _UppNavRow({
-    Key? key,
-  }) : super(key: key);
+class _UppNavRow extends StatefulWidget {
+  const _UppNavRow({super.key});
+
+  @override
+  State<_UppNavRow> createState() => __UppNavRowState();
+}
+
+class __UppNavRowState extends State<_UppNavRow> {
+  void _exitToAuth() {
+    Navigator.of(context, rootNavigator: true).pushNamed("/auth");
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
-        Icon(
-          Icons.drive_file_rename_outline,
-          size: 32,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        GestureDetector(
+          child: const Icon(Icons.exit_to_app, size: 28),
+          onTap: _exitToAuth,
         ),
-        Icon(Icons.exit_to_app, size: 28),
       ],
     );
   }
