@@ -1,4 +1,6 @@
+
 import 'package:atb_booking/constants/styles.dart';
+import 'package:atb_booking/user_interface/auth/auth_screen.dart';
 import 'package:flutter/material.dart';
 import '../user_interface/home.dart';
 
@@ -16,8 +18,12 @@ class Application extends StatelessWidget {
       //Заголовок и тема
       title: 'ATB Flutter Demo',
       theme: appThemeData,
+      routes: {
+        '/auth': (context) => const Auth(),
+        '/home':(context) => const Home(),
+      },
       //Наше наполнение приложения - основаня страница с навигацией.
-      home: const Home(),
+      initialRoute: '/auth',
     );
   }
 }
