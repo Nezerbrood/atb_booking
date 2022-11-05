@@ -24,16 +24,17 @@ class BookingDetailsScreen extends StatelessWidget {
                 child: Card(
                   shape: RoundedRectangleBorder(
                       side: const BorderSide(
-                          width: 0.3, color: Color.fromARGB(255, 229, 229, 229)),
+                          width: 0.3,
+                          color: Color.fromARGB(255, 229, 229, 229)),
                       borderRadius: BorderRadius.circular(16.0)),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 5),
                           child: Column(
                             children: [
                               SizedBox(
@@ -44,9 +45,9 @@ class BookingDetailsScreen extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                        color: Colors.black54,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w300)),
+                                            color: Colors.black54,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w300)),
                               ),
                               Container(
                                 height: 0.3,
@@ -59,14 +60,14 @@ class BookingDetailsScreen extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                        color: Colors.black, fontSize: 23)),
-
+                                            color: Colors.black, fontSize: 23)),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 5),
                           child: Column(
                             children: [
                               SizedBox(
@@ -98,7 +99,8 @@ class BookingDetailsScreen extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 5),
                           child: Column(
                             children: [
                               SizedBox(
@@ -109,9 +111,9 @@ class BookingDetailsScreen extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                        color: Colors.black54,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w300)),
+                                            color: Colors.black54,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w300)),
                               ),
                               Container(
                                 height: 0.3,
@@ -119,19 +121,20 @@ class BookingDetailsScreen extends StatelessWidget {
                               ),
                               SizedBox(
                                 width: double.infinity,
-                                child: Text("Г. Владивосток, ул. Светланская 56",
+                                child: Text(
+                                    "Г. Владивосток, ул. Светланская 56",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                        color: Colors.black, fontSize: 24)),
-
+                                            color: Colors.black, fontSize: 24)),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 5),
                           child: Column(
                             children: [
                               SizedBox(
@@ -142,9 +145,9 @@ class BookingDetailsScreen extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                        color: Colors.black54,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w300)),
+                                            color: Colors.black54,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w300)),
                               ),
                               Container(
                                 height: 0.3,
@@ -157,14 +160,14 @@ class BookingDetailsScreen extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                        color: Colors.black, fontSize: 24)),
-
+                                            color: Colors.black, fontSize: 24)),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 5),
                           child: Column(
                             children: [
                               SizedBox(
@@ -175,9 +178,9 @@ class BookingDetailsScreen extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                        color: Colors.black54,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w300)),
+                                            color: Colors.black54,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w300)),
                               ),
                               Container(
                                 height: 0.3,
@@ -190,22 +193,18 @@ class BookingDetailsScreen extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                        color: Colors.black, fontSize: 24)),
-
+                                            color: Colors.black, fontSize: 24)),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
-                          child: ElevatedButton(
-                            onPressed: () {
-                            },
-                            child: Text('Отменить'),
-                          )
-
-                        ),
-
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30.0, vertical: 5),
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: const Text('Отменить'),
+                            )),
                       ],
                     ),
                   ),

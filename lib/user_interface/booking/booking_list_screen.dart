@@ -1,3 +1,4 @@
+import 'package:atb_booking/data/dataclasses/workspace.dart';
 import 'package:atb_booking/util/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,16 @@ import '../../data/dataclasses/booking.dart';
 import 'booking_card_widget.dart';
 import 'booking_details_screen.dart';
 import 'new_booking_screen.dart';
+
+Workspace workspace = Workspace(
+  id: 1,
+  isActive: true,
+  levelId: 1,
+  name: "Рабочий стол 1",
+  numberOfWorkspaces: 1,
+  typeId: 1,
+  positionOnPlan: {"x": 1, "y": 2},
+);
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -21,101 +32,24 @@ class BookingScreen extends StatefulWidget {
 class _BookingScreenState extends State<BookingScreen> {
   var bookingList = <Booking>[
     Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №1",
-        DateTimeRange(
-            start: DateTime.now(), end: DateTime.utc(2229, 7, 20, 20, 18, 04))),
+      id: 1,
+      cityAddress: "Владивосток",
+      officeAddress: "Ул пушкина, дом колотушкина",
+      dateTimeRange: DateTimeRange(
+          start: DateTime.now(), end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
+      workspace: workspace,
+      level: 1,
+    ),
     Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №2",
-        DateTimeRange(
-            start: DateTime.now(), end: DateTime.utc(2229, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №3",
-        DateTimeRange(
-            start: DateTime.now(), end: DateTime.utc(2229, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №4",
-        DateTimeRange(
-            start: DateTime.utc(2022, 10, 25, 10, 18, 04),
-            end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №5",
-        DateTimeRange(
-            start: DateTime.utc(1969, 7, 20, 20, 18, 04),
-            end: DateTime.utc(1969, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №4",
-        DateTimeRange(
-            start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-            end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №4",
-        DateTimeRange(
-            start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-            end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №4",
-        DateTimeRange(
-            start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-            end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №4",
-        DateTimeRange(
-            start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-            end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №4",
-        DateTimeRange(
-            start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-            end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-    Booking(
-        233,
-        1,
-        1,
-        PLACETYPE.workPlace,
-        "Рабочий стол №4",
-        DateTimeRange(
-            start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-            end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
+      id: 1,
+      cityAddress: "Владивосток",
+      officeAddress: "Ул пушкина, дом колотушкина",
+      dateTimeRange: DateTimeRange(
+          start: DateTime.now().add(Duration(days: 1)),
+          end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
+      workspace: workspace,
+      level: 1,
+    )
   ];
   List<BookingListItem> items = [];
 
@@ -129,22 +63,22 @@ class _BookingScreenState extends State<BookingScreen> {
           !todayItemIsAdd) {
         items.add(ListTitle("Сегодня"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png"));
         todayItemIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
               DateTime.now().day + 1 &&
           !tomorrowIsAdd) {
         items.add(ListTitle("Завтра"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png"));
         tomorrowIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
           DateTime.now().day + 1) {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png"));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png"));
       }
       if (bookingList[i].dateTimeRange.start.day != DateTime.now().day &&
           tomorrowEnd == false) {
@@ -155,7 +89,7 @@ class _BookingScreenState extends State<BookingScreen> {
             .capitalize()));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png"));
       }
     }
     super.initState();
@@ -178,31 +112,33 @@ class _BookingScreenState extends State<BookingScreen> {
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
         child: Stack(children: <Widget>[
-          ListView.builder(
-            controller: scrollController,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => BookingDetailsScreen()));
-                },
-                child: Column(
-                  children: [
-                    item.buildListTitle(context),
-                    item.buildCard(context)
-                  ],
-                ),
-              );
-            },
+          Scrollbar(
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => BookingDetailsScreen()));
+                  },
+                  child: Column(
+                    children: [
+                      item.buildListTitle(context),
+                      item.buildCard(context)
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ]),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const NewBookingScreen()));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const NewBookingScreen()));
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),

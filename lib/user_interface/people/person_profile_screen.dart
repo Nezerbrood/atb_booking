@@ -1,12 +1,24 @@
 import 'dart:io';
-import 'package:atb_booking/constants/styles.dart';
 import 'package:atb_booking/util/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../data/dataclasses/workspace.dart';
 import '../../data/dataclasses/booking.dart';
 import '../../data/dataclasses/person.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../booking/booking_card_widget.dart';
+
+
+
+Workspace workspace = Workspace(
+  id: 1,
+  isActive: true,
+  levelId: 1,
+  name: "Рабочий стол 1",
+  numberOfWorkspaces: 1, typeId: 1,
+  positionOnPlan: {"x":1,"y":2},
+);
+
 
 class PersonProfileScreen extends StatelessWidget {
   final Person person;
@@ -20,104 +32,23 @@ class PersonProfileScreen extends StatelessWidget {
     bool tomorrowEnd = false;
     var bookingList = <Booking>[
       Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №1",
-          DateTimeRange(
-              start: DateTime.now(),
-              end: DateTime.utc(2229, 7, 20, 20, 18, 04))),
+        id: 1,
+        cityAddress: "Владивосток",
+        officeAddress: "Ул пушкина, дом колотушкина",
+        dateTimeRange: DateTimeRange(
+            start: DateTime.now(), end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
+        workspace: workspace,
+        level: 1,
+      ),
       Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №2",
-          DateTimeRange(
-              start: DateTime.now(),
-              end: DateTime.utc(2229, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №3",
-          DateTimeRange(
-              start: DateTime.now(),
-              end: DateTime.utc(2229, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №4",
-          DateTimeRange(
-              start: DateTime.utc(2022, 10, 25, 10, 18, 04),
-              end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №5",
-          DateTimeRange(
-              start: DateTime.utc(1969, 7, 20, 20, 18, 04),
-              end: DateTime.utc(1969, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №4",
-          DateTimeRange(
-              start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-              end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №4",
-          DateTimeRange(
-              start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-              end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №4",
-          DateTimeRange(
-              start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-              end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №4",
-          DateTimeRange(
-              start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-              end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №4",
-          DateTimeRange(
-              start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-              end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
-      Booking(
-          233,
-          1,
-          1,
-          PLACETYPE.workPlace,
-          "Рабочий стол №4",
-          DateTimeRange(
-              start: DateTime.utc(2022, 10, 24, 10, 18, 04),
-              end: DateTime.utc(2023, 7, 20, 20, 18, 04))),
+        id: 1,
+        cityAddress: "Владивосток",
+        officeAddress: "Ул пушкина, дом колотушкина",
+        dateTimeRange: DateTimeRange(
+            start: DateTime.now().add(Duration(days: 1)), end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
+        workspace: workspace,
+        level: 1,
+      )
     ];
     List<BookingListItem> items = [];
 
@@ -126,7 +57,7 @@ class PersonProfileScreen extends StatelessWidget {
           !todayItemIsAdd) {
         items.add(ListTitle("Сегодня"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",
+            bookingList[i].workspace.name, "assets/workplacelogo.png",
             trailing: false));
         todayItemIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
@@ -134,17 +65,17 @@ class PersonProfileScreen extends StatelessWidget {
           !tomorrowIsAdd) {
         items.add(ListTitle("Завтра"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",
+            bookingList[i].workspace.name, "assets/workplacelogo.png",
             trailing: false));
         tomorrowIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
           DateTime.now().day + 1) {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",
+            bookingList[i].workspace.name, "assets/workplacelogo.png",
             trailing: false));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",
+            bookingList[i].workspace.name, "assets/workplacelogo.png",
             trailing: false));
       }
       if (bookingList[i].dateTimeRange.start.day != DateTime.now().day &&
@@ -156,7 +87,7 @@ class PersonProfileScreen extends StatelessWidget {
             .capitalize()));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].placeName, "assets/workplacelogo.png",
+            bookingList[i].workspace.name, "assets/workplacelogo.png",
             trailing: false));
       }
     }

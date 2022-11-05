@@ -1,3 +1,4 @@
+import 'package:atb_booking/data/dataclasses/workspace.dart';
 import 'package:flutter/material.dart';
 
 enum PLACETYPE {
@@ -6,13 +7,11 @@ enum PLACETYPE {
 }
 
 class Booking {
-  int officeId;
+  int id;
+  String cityAddress;
+  String officeAddress;
   int level;
-  int placeId;
-  PLACETYPE placeType;
-  String placeName;
+  Workspace workspace;
   DateTimeRange dateTimeRange;
-
-  Booking(this.officeId, this.level, this.placeId, this.placeType,
-      this.placeName, this.dateTimeRange);
+  Booking({required this.id,required this.cityAddress, required this.officeAddress, required this.workspace, required this.dateTimeRange, required this.level});
 }

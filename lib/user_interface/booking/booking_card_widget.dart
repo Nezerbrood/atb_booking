@@ -1,4 +1,4 @@
-import 'package:atb_booking/constants/styles.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -13,6 +13,7 @@ class BookingCard implements BookingListItem {
   final String placeName;
   final String asset;
   bool trailing = true;
+
   BookingCard(this.dateTimeRange, this.placeName, this.asset,
       {this.trailing = true});
 
@@ -29,12 +30,12 @@ class BookingCard implements BookingListItem {
             child: ListTile(
               leading: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image(image: AssetImage(asset),
+                child: Image(
+                  image: AssetImage(asset),
                 ),
               ),
               title: Text(placeName),
-              subtitle: Text(
-                  DateFormat('hh:mm').format(dateTimeRange.start) +
+              subtitle: Text(DateFormat('hh:mm').format(dateTimeRange.start) +
                   " - " +
                   DateFormat('hh:mm').format(dateTimeRange.end) +
                   ' ' +
