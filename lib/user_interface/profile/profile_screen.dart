@@ -1,5 +1,22 @@
+import 'package:atb_booking/user_interface/profile/feedback_screen.dart';
 import 'package:flutter/material.dart';
-import '../../app_func/app_in.dart';
+import '../../data/dataclasses/profilePerson.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+Future<profilePerson> fetchPerson() async {
+  final response = await http.get(Uri.parse("https://dummyjson.com/users"));
+  if (response.statusCode == 200) {
+    List<dynamic> dataJson = json.decode(response.body)["users"];
+    List<profilePerson> persons = dataJson
+        .map((obj) => profilePerson(obj["firstName"], obj["lastName"],
+            obj["maidenName"], obj["email"], obj["phone"]))
+        .toList();
+    return persons[0];
+  } else {
+    throw Exception('Failed to load JSON');
+  }
+}
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -9,6 +26,13 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  void _bubleTransition() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (context) => const FeedbackScreen()),
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,22 +42,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: const [
-          _UppNavRow(),
-          SizedBox(height: 25),
-          _UserTitle(),
-          SizedBox(height: 55),
-          _UserInfo(),
-          SizedBox(height: 45),
-          _UserBubleButtons(),
+        children: [
+          const _UppNavRow(),
+          const SizedBox(height: 25),
+          const _UserTitle(),
+          const SizedBox(height: 55),
+          const _UserInfo(),
+          const SizedBox(height: 65),
+          GestureDetector(
+              onTap: _bubleTransition, child: const _UserBubleButton()),
         ],
       ),
     );
   }
 }
 
-class _UserBubleButtons extends StatelessWidget {
-  const _UserBubleButtons({
+class _UserBubleButton extends StatelessWidget {
+  const _UserBubleButton({
     Key? key,
   }) : super(key: key);
 
@@ -121,25 +146,15 @@ class _UserInfo extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 25),
       width: double.infinity,
       child: Column(children: [
-        _RowForInfo("E-MAIL", "bdr7800@yandex.ru", _titleStyle, _dataStyle),
-        const SizedBox(
-          height: 15,
-        ),
-        _RowForInfo("ДАТА РОЖДЕНИЯ", "12.11.2001", _titleStyle, _dataStyle),
-        const SizedBox(
-          height: 15,
-        ),
-        _RowForInfo("ПОЛ", "Мужской", _titleStyle, _dataStyle),
-        const SizedBox(
-          height: 15,
-        ),
-        _RowForInfo("ТЕЛЕФОН", "+7 (908) 453-11-23", _titleStyle, _dataStyle),
+        _RowForInfo("E-MAIL", "email", _titleStyle, _dataStyle),
+        const SizedBox(height: 15),
+        _RowForInfo("ТЕЛЕФОН", "number", _titleStyle, _dataStyle),
       ]),
     );
   }
 
-  Row _RowForInfo(
-      String title, String data, TextStyle titleStyle, TextStyle dataStyle) {
+  Row _RowForInfo(String title, String dataType, TextStyle titleStyle,
+      TextStyle dataStyle) {
     return Row(
       children: [
         Column(
@@ -149,9 +164,21 @@ class _UserInfo extends StatelessWidget {
               title,
               style: titleStyle,
             ),
-            Text(
-              data,
-              style: dataStyle,
+            FutureBuilder(
+              future: fetchPerson(),
+              builder: ((context, snapshot) {
+                if (snapshot.data == null) {
+                  return const CircularProgressIndicator();
+                } else {
+                  if (dataType == "email") {
+                    return Text(snapshot.data!.email, style: dataStyle);
+                  } else if (dataType == 'number') {
+                    return Text(snapshot.data!.number, style: dataStyle);
+                  }else{
+                    return Text("not defined", style: dataStyle);
+                  }
+                }
+              }),
             )
           ],
         )
@@ -184,9 +211,18 @@ class _UserName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      "Бровко Данила Романович",
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+    return FutureBuilder(
+      future: fetchPerson(),
+      builder: ((context, snapshot) {
+        if (snapshot.data == null) {
+          return const CircularProgressIndicator();
+        } else {
+          return Text(
+            "${snapshot.data!.lastName} ${snapshot.data!.firstName} ${snapshot.data!.maidenName}",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          );
+        }
+      }),
     );
   }
 }
@@ -213,7 +249,7 @@ class _UserAvatar extends StatelessWidget {
 }
 
 class _UppNavRow extends StatefulWidget {
-  const _UppNavRow({super.key});
+  const _UppNavRow();
 
   @override
   State<_UppNavRow> createState() => __UppNavRowState();
@@ -230,8 +266,8 @@ class __UppNavRowState extends State<_UppNavRow> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         GestureDetector(
-          child: const Icon(Icons.exit_to_app, size: 28),
           onTap: _exitToAuth,
+          child: const Icon(Icons.exit_to_app, size: 28),
         ),
       ],
     );
