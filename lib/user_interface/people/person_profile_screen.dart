@@ -57,8 +57,7 @@ class PersonProfileScreen extends StatelessWidget {
           !todayItemIsAdd) {
         items.add(ListTitle("Сегодня"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png",
-            trailing: false));
+            bookingList[i].workspace.name, "assets/workplacelogo.png","assets/workplace.png"));
         todayItemIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
               DateTime.now().day + 1 &&
@@ -66,17 +65,17 @@ class PersonProfileScreen extends StatelessWidget {
         items.add(ListTitle("Завтра"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
             bookingList[i].workspace.name, "assets/workplacelogo.png",
-            trailing: false));
+            "assets/workplace.png"));
         tomorrowIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
           DateTime.now().day + 1) {
         items.add(BookingCard(bookingList[i].dateTimeRange,
             bookingList[i].workspace.name, "assets/workplacelogo.png",
-            trailing: false));
+            'assets/workplace.png'));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
             bookingList[i].workspace.name, "assets/workplacelogo.png",
-            trailing: false));
+            "assets/workplace.png"));
       }
       if (bookingList[i].dateTimeRange.start.day != DateTime.now().day &&
           tomorrowEnd == false) {
@@ -88,7 +87,7 @@ class PersonProfileScreen extends StatelessWidget {
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
             bookingList[i].workspace.name, "assets/workplacelogo.png",
-            trailing: false));
+            "assets/workplace.png"));
       }
     }
     return Scaffold(

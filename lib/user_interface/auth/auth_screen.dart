@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constants/styles.dart';
+
 class Auth extends StatefulWidget {
   const Auth({
     super.key,
@@ -71,20 +73,35 @@ class __FormWidgetState extends State<_FormWidget> {
     final errorText = _errorText;
     return Column(
       children: [
-        TextField(
-          controller: _loginTextController,
-          decoration: const InputDecoration(
-            border: UnderlineInputBorder(),
-            labelText: 'Логин',
+        Container(
+          decoration: BoxDecoration(
+    color: appThemeData.colorScheme.tertiary,
+      borderRadius:
+      BorderRadius.circular(10).copyWith(),
+    ),
+          child: TextField(
+            controller: _loginTextController,
+            obscureText: false,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Логин',
+            ),
           ),
         ),
         const SizedBox(height: 40),
-        TextField(
-          obscureText: true,
-          controller: _passwordTextController,
-          decoration: const InputDecoration(
-            border: UnderlineInputBorder(),
-            labelText: 'Пароль',
+        Container(
+          decoration: BoxDecoration(
+            color: appThemeData.colorScheme.tertiary,
+            borderRadius:
+            BorderRadius.circular(10).copyWith(),
+          ),
+          child: TextField(
+            obscureText: true,
+            controller: _passwordTextController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Пароль',
+            ),
           ),
         ),
         if (errorText != null) ...[
@@ -105,7 +122,7 @@ class __FormWidgetState extends State<_FormWidget> {
                   _isChecked = newbool;
                 });
               }),
-              activeColor: Colors.orangeAccent,
+              //activeColor: ,
             ),
             const Text(
               "Запомнить логин и пароль?",
@@ -116,8 +133,6 @@ class __FormWidgetState extends State<_FormWidget> {
         const SizedBox(height: 100),
         ElevatedButton(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-                const Color.fromARGB(255, 255, 145, 0)),
             minimumSize: MaterialStateProperty.all(const Size(330, 50)),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20))),

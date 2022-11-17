@@ -1,17 +1,19 @@
 import 'package:atb_booking/data/dataclasses/office.dart';
+import 'package:atb_booking/user_interface/widgets/elevated_button.dart';
+import 'package:atb_booking/user_interface/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../constants/styles.dart';
 import '../../data/dataclasses/city.dart';
 import '../../data/dataclasses/workspace.dart';
-import 'booking_bottom_sheet.dart';
+import 'new_booking_bottom_sheet.dart';
 
 const List<String> list = <String>['1 Этаж', '2 Этаж', '3 Этаж', '4 Этаж'];
 Workspace workspace = Workspace(
   id: 1,
   isActive: true,
   levelId: 1,
-  name: "Рабочий стол 1",
+  name: "Переговорная комната #1",
   numberOfWorkspaces: 1,
   typeId: 1,
   positionOnPlan: {"x": 1, "y": 2},
@@ -49,21 +51,10 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                       horizontal: 30.0, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: const [
                       Expanded(
                         flex: 1,
-                        child: Container(
-                            decoration: BoxDecoration(
-                              color: appThemeData.colorScheme.secondary,
-                              borderRadius:
-                                  BorderRadius.circular(10).copyWith(),
-                            ),
-                            child: const TextField(
-                                obscureText: false,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Выберите город...',
-                                ))),
+                        child: AtbTextField(text: "Выберите город...",)
                       ),
                     ],
                   ),
@@ -76,18 +67,7 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: Container(
-                            decoration: BoxDecoration(
-                              color: appThemeData.colorScheme.secondary,
-                              borderRadius:
-                                  BorderRadius.circular(10).copyWith(),
-                            ),
-                            child: const TextField(
-                                obscureText: false,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Выберите офис...',
-                                ))),
+                        child: AtbTextField(text: "Выберите офис...",)
                       ),
                       const SizedBox(width: 10),
                       const Expanded(flex: 1, child: DropdownButtonLevel()),
@@ -103,13 +83,10 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Container(
-                      decoration: BoxDecoration(
-                        color: appThemeData.colorScheme.secondary,
-                        borderRadius: BorderRadius.circular(10).copyWith(),
-                      ),
                       child: Text(
                         workspace.name,
-                        style: appThemeData.textTheme.headlineMedium,
+                        textAlign: TextAlign.center,
+                        style: appThemeData.textTheme.headlineSmall,
                       )),
                 ),
                 Padding(
@@ -120,7 +97,7 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                       Expanded(
                         child: Container(
                             decoration: BoxDecoration(
-                              color: appThemeData.colorScheme.secondary,
+                              color: appThemeData.colorScheme.tertiary,
                               borderRadius:
                                   BorderRadius.circular(10).copyWith(),
                             ),
@@ -130,33 +107,23 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: ElevatedButton(
-                    child: SizedBox(
-                        width: 240,
-                        height: 60,
-                        child: Center(
-                            child: Text(
-                          "Выбрать время",
-                          style: appThemeData.textTheme.displayLarge
-                              ?.copyWith(color: Colors.white, fontSize: 20),
-                        ))),
-                    onPressed: () => {
-                      showModalBottomSheet<void>(
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(10),
-                        )),
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const BookingBottomSheet();
-                        },
-                      )
-                    },
-                  ),
-                )
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: AtbElevatedButton(
+                        onPressed: () => {
+                              showModalBottomSheet<void>(
+                                builder: (BuildContext context) {
+                                  return const BookingBottomSheet();
+                                },
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(10),
+                                )),
+                                context: context,
+                              ),
+                            },
+                        text: "Выбрать время")
+                    )
               ],
             ),
           ),
@@ -226,14 +193,19 @@ class _DatePickerWidget extends StatefulWidget {
 }
 
 class _DatePickerWidgetState extends State<_DatePickerWidget> {
-  late DateTime _selectedDate;
-  static const String _defaultText = "Выберите дату";
+  static DateTime? _selectedDate;
+  static String _defaultText = "Выберите дату";
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    if (_selectedDate != null) {
+      _defaultText = "Выберите дату";
+      _textEditingController.text =
+          (DateFormat('dd.MM.yyyy').format(_selectedDate!)).toString();
+    }
     return TextField(
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         border: OutlineInputBorder(),
         labelText: _defaultText,
       ),
@@ -268,6 +240,9 @@ class _DatePickerWidgetState extends State<_DatePickerWidget> {
         if (newDate != null) {
           _textEditingController.text =
               (DateFormat('dd.MM.yyyy').format(newDate)).toString();
+          setState(() {
+            //_defaultText = "";
+          });
         }
       },
     );

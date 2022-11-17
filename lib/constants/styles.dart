@@ -3,19 +3,28 @@ import 'package:flutter/material.dart';
 var appThemeData = ThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: Color.fromARGB(255, 252, 79, 1),
+      backgroundColor: Color.fromARGB(255, 252, 100, 1),
 
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         textStyle: MaterialStatePropertyAll(TextStyle(
           fontSize: 21,
-          color: Color.fromARGB(255, 0, 0, 255),
+          color: Color.fromARGB(255, 252, 100, 1),
         )),
       ),
     ),
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        // If the button is pressed, return size 40, otherwise 20
+        if (states.contains(MaterialState.pressed)) {
+          return Color.fromARGB(255, 252, 100, 1);
+        }
+        return Color.fromARGB(255, 252, 100, 1);
+      }),
+    ),
     buttonTheme: const ButtonThemeData(
-      buttonColor: Color.fromARGB(255, 252, 79, 1), //  <-- dark color
+      buttonColor: Color.fromARGB(255, 252, 100, 1), //  <-- dark color
       textTheme:
           ButtonTextTheme.accent, //  <-- this auto selects the right color
     ),
@@ -23,7 +32,7 @@ var appThemeData = ThemeData(
       shadowColor: Colors.black,
       color: Colors.white,
     ),
-    primaryColor: const Color.fromARGB(255, 252, 79, 1),
+    primaryColor: const Color.fromARGB(255, 252, 100, 1),
     backgroundColor: Colors.white,
     useMaterial3: true,
     textTheme: const TextTheme(
@@ -43,7 +52,7 @@ var appThemeData = ThemeData(
       headlineSmall:
           TextStyle(fontSize: 24, color: Color.fromARGB(255, 116, 116, 117)),
 
-      titleLarge: TextStyle(fontSize: 22),
+      titleLarge: TextStyle(fontSize: 25),
       titleMedium: TextStyle(fontSize: 17),
       titleSmall:
           TextStyle(fontSize: 15, color: Color.fromARGB(255, 116, 116, 117)),
@@ -74,16 +83,19 @@ var appThemeData = ThemeData(
       // Text("Lorem Ипсум",style: appThemeData.textTheme.bodySmall,),
     ),
     colorScheme: const ColorScheme(
+
       shadow: Colors.black26,
-      primary: Color.fromARGB(255, 248, 240, 240),
-      secondary: Color.fromARGB(255, 248, 240, 240),
+      primary: Color.fromARGB(255, 252, 100, 1),
+      secondary: Color.fromARGB(255, 252, 100, 1),
       brightness: Brightness.light,
       onPrimary: Colors.white,
-      onSecondary: Color.fromARGB(255, 252, 79, 1),
+      onSecondary: Color.fromARGB(255, 252, 100, 1),
       background: Colors.white,
       error: Colors.red,
       onError: Colors.black,
       onBackground: Colors.black,
-      surface: Color.fromARGB(255, 252, 79, 1),
-      onSurface: Colors.white,)
+      surface: Color.fromARGB(255, 252, 100, 1),
+      onSurface: Colors.white,
+      tertiary: Color.fromARGB(255, 239, 235, 233)
+    )
     );

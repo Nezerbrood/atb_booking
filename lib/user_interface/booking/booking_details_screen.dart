@@ -1,3 +1,4 @@
+import 'package:atb_booking/user_interface/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
@@ -201,9 +202,11 @@ class BookingDetailsScreen extends StatelessWidget {
                         Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30.0, vertical: 5),
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: const Text('Отменить'),
+                            child: AtbElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              text: "Отменить",
                             )),
                       ],
                     ),

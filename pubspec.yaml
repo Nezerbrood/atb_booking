@@ -29,7 +29,6 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  http: ^0.13.3
   list_wheel_scroll_view_x: ^0.0.2
   intl: 0.17.0
   flutter:
@@ -37,6 +36,8 @@ dependencies:
   syncfusion_flutter_core: ^19.1.66
   syncfusion_flutter_sliders: ^19.1.66-beta
   hidable: ^1.0.3
+  url_launcher:
+  http:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

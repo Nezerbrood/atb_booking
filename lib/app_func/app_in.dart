@@ -23,7 +23,7 @@ class Application extends StatelessWidget {
         '/home':(context) => const Home(),
       },
       //Наше наполнение приложения - основаня страница с навигацией.
-      initialRoute: '/auth',
+      initialRoute: '/home',
     );
   }
 }

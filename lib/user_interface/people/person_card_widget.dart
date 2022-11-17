@@ -1,4 +1,3 @@
-
 import 'package:atb_booking/constants/styles.dart';
 import 'package:flutter/material.dart';
 
@@ -30,25 +29,32 @@ class PersonCard extends StatelessWidget {
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 shape: RoundedRectangleBorder(
                     side: BorderSide(
-                        width: 1, color: appThemeData.colorScheme.secondary),
+                        width: 1, color: appThemeData.colorScheme.tertiary),
                     borderRadius: BorderRadius.circular(12.0)),
                 //color: Colors.white,
                 child: Row(
                   children: <Widget>[
-                    Image.network("https://i.pravatar.cc/200?img=$id",
-                        alignment: Alignment.center,
-                        width: 85,
-                        height: 85,
-                        fit: BoxFit.fill),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ClipOval(
+                        child: Image.network(
+                          "https://i.pravatar.cc/200?img=$id",
+                          alignment: Alignment.center,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                     Expanded(
                         child: ListTile(
-                          title: Text(name),
-                          subtitle: Text(jobTitle),
-                          trailing:
+                      title: Text(name),
+                      subtitle: Text(jobTitle),
+                      trailing:
                           const Icon(Icons.more_vert, color: Colors.black),
-                          dense: true,
-                          minLeadingWidth: 100,
-                        ))
+                      dense: true,
+                      minLeadingWidth: 100,
+                    ))
                   ],
                 ))));
   }

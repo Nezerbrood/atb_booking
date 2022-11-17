@@ -49,6 +49,16 @@ class _BookingScreenState extends State<BookingScreen> {
           end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
       workspace: workspace,
       level: 1,
+    ),
+    Booking(
+      id: 1,
+      cityAddress: "Владивосток",
+      officeAddress: "Ул пушкина, дом колотушкина",
+      dateTimeRange: DateTimeRange(
+          start: DateTime.now().add(Duration(days: 31)),
+          end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
+      workspace: workspace,
+      level: 1,
     )
   ];
   List<BookingListItem> items = [];
@@ -63,22 +73,22 @@ class _BookingScreenState extends State<BookingScreen> {
           !todayItemIsAdd) {
         items.add(ListTitle("Сегодня"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png","assets/workplace.png"));
         todayItemIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
               DateTime.now().day + 1 &&
           !tomorrowIsAdd) {
         items.add(ListTitle("Завтра"));
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png","assets/workplace.png"));
         tomorrowIsAdd = true;
       } else if (bookingList[i].dateTimeRange.start.day ==
           DateTime.now().day + 1) {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png","assets/workplace.png"));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png","assets/workplace.png"));
       }
       if (bookingList[i].dateTimeRange.start.day != DateTime.now().day &&
           tomorrowEnd == false) {
@@ -89,7 +99,7 @@ class _BookingScreenState extends State<BookingScreen> {
             .capitalize()));
       } else {
         items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png"));
+            bookingList[i].workspace.name, "assets/workplacelogo.png","assets/workplace.png"));
       }
     }
     super.initState();
@@ -102,7 +112,7 @@ class _BookingScreenState extends State<BookingScreen> {
       appBar: AppBar(
         title: Center(
             child: Text(
-          "ATB BOOKING",
+          "Мои брони",
           style: appThemeData.textTheme.displayLarge?.copyWith(
               fontSize: 34,
               fontWeight: FontWeight.w500,

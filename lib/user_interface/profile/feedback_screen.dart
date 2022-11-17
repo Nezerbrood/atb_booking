@@ -1,3 +1,4 @@
+import 'package:atb_booking/user_interface/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackScreen extends StatefulWidget {
@@ -33,20 +34,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             const SizedBox(height: 90),
             const _MessageField(),
             const SizedBox(height: 45),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                    const Color.fromARGB(255, 255, 145, 0)),
-                minimumSize: MaterialStateProperty.all(const Size(330, 50)),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20))),
-              ),
-              onPressed: _pressButton,
-              child: const Text(
-                'Отправить',
-                style: TextStyle(fontSize: 25, color: Colors.white),
-              ),
-            ),
+            AtbElevatedButton(onPressed: _pressButton, text: "Отправить")
           ],
         ),
       ),

@@ -1,3 +1,7 @@
+
+import 'package:atb_booking/user_interface/widgets/elevated_button.dart';
+import 'package:atb_booking/user_interface/widgets/text_field.dart';
+import 'package:atb_booking/user_interface/widgets/users_selectable_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -32,6 +36,26 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
   void initState() {
     currentRange = rangeValues[activeSliderIndex];
     super.initState();
+  }
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(horizontal: 0,vertical: 0),
+          insetPadding: EdgeInsets.symmetric(horizontal:15,vertical: 40),
+          title: AtbTextField(text: "Кого ищем?"),
+          content: Container(
+               width: double.maxFinite,
+              child: AtbSelectableUserList()),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: <Widget>[
+            AtbElevatedButton(onPressed: (){Navigator.of(context).pop();}, text: "Добавить")
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -111,6 +135,16 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
             style: appThemeData.textTheme.labelMedium?.copyWith(
                 fontSize: 18, color: appThemeData.colorScheme.onSurface),
           ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: GestureDetector(
+                  onTap: () {
+                    _dialogBuilder(context);
+                  },
+                  child: Icon(Icons.person_add_sharp)),
+            )
+          ],
         ),
         Row(
           children: [
@@ -201,32 +235,32 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: appThemeData.colorScheme.secondary,
+                  color: appThemeData.colorScheme.tertiary,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Column(
                   children: [
-                    Text("Начало", style: appThemeData.textTheme.headlineSmall),
+                    Text("Начало", style: appThemeData.textTheme.titleLarge),
                     Text(
                       DateFormat("HH:mm").format(currentRange.start),
-                      style: appThemeData.textTheme.headlineLarge,
+                      style: appThemeData.textTheme.titleLarge,
                     ),
                   ],
                 ),
               ),
               Container(
                 decoration: BoxDecoration(
-                    color: appThemeData.colorScheme.secondary,
+                    color: appThemeData.colorScheme.tertiary,
                     borderRadius: BorderRadius.circular(5)),
                 child: Column(
                   children: [
                     Text(
                       "Конец",
-                      style: appThemeData.textTheme.headlineSmall,
+                      style: appThemeData.textTheme.titleLarge,
                     ),
                     Text(
                       DateFormat("HH:mm").format(currentRange.end),
-                      style: appThemeData.textTheme.headlineLarge,
+                      style: appThemeData.textTheme.titleLarge,
                     ),
                   ],
                 ),
@@ -235,20 +269,10 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(30, 00, 30, 40),
-          child: ElevatedButton(
-            child: SizedBox(
-                width: 240,
-                height: 60,
-                child: Center(
-                    child: Text(
-                  "Забронировать",
-                  style: appThemeData.textTheme.displayLarge
-                      ?.copyWith(color: Colors.white, fontSize: 20),
-                ))),
-            onPressed: () => {Navigator.of(context).pop()},
-          ),
-        ),
+            padding: const EdgeInsets.fromLTRB(30, 00, 30, 40),
+            child: AtbElevatedButton(
+                onPressed: () => {Navigator.of(context).pop()},
+                text: 'Забронировать')),
       ],
     );
   }
