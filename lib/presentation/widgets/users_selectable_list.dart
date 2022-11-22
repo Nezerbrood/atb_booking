@@ -1,18 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import '../../data/dataclasses/person.dart';
-import 'person_card_widget.dart';
-import 'team_card_widget.dart';
 
-class MyTeamPage extends StatefulWidget {
-  const MyTeamPage({super.key});
+import '../../data/models/person.dart';
+import 'small_person_card.dart';
 
-  @override
-  State<StatefulWidget> createState() {
-    return TeamViewState();
-  }
-}
-
-class TeamViewState extends State<MyTeamPage> {
+class AtbSelectableUserList extends StatelessWidget{
   List<Person> items = [
     Person(
       1,
@@ -45,21 +36,17 @@ class TeamViewState extends State<MyTeamPage> {
       "Менеджер по подбору персонала",
     ),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.all(0.0),
       child: ListView.builder(
-          itemCount: items.length + 1,
+          itemCount: items.length,
           itemBuilder: (context, index) {
-            if (index == 0) {
-              return const TeamCard();
-            } else {
-              final item = items[index - 1];
-              return PersonCard(item, item.id, item.name, item.jobTitle);
-            }
+            final item = items[index];
+            return AtbSmallPersonCard(person: item, id: item.id, name:item.name,jobTitle: item.jobTitle, isSelect: false,);
           }),
     );
   }
+
 }

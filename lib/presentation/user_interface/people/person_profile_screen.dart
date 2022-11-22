@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:atb_booking/util/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../data/dataclasses/workspace.dart';
-import '../../data/dataclasses/booking.dart';
-import '../../data/dataclasses/person.dart';
+import '../../../data/models/workspace.dart';
+import '../../../data/models/booking.dart';
+import '../../../data/models/person.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../booking/booking_card_widget.dart';
 

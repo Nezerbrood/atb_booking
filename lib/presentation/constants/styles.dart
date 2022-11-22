@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 var appThemeData = ThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Color.fromARGB(255, 252, 100, 1),
 
     ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
+    elevatedButtonTheme: const ElevatedButtonThemeData(
       style: ButtonStyle(
         textStyle: MaterialStatePropertyAll(TextStyle(
           fontSize: 21,
@@ -18,9 +18,9 @@ var appThemeData = ThemeData(
       fillColor: MaterialStateProperty.resolveWith((states) {
         // If the button is pressed, return size 40, otherwise 20
         if (states.contains(MaterialState.pressed)) {
-          return Color.fromARGB(255, 252, 100, 1);
+          return const Color.fromARGB(255, 252, 100, 1);
         }
-        return Color.fromARGB(255, 252, 100, 1);
+        return const Color.fromARGB(255, 252, 100, 1);
       }),
     ),
     buttonTheme: const ButtonThemeData(

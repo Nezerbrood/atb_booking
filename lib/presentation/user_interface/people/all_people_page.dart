@@ -1,9 +1,17 @@
-import 'package:atb_booking/user_interface/widgets/small_person_card.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import '../../../data/models/person.dart';
+import 'person_card_widget.dart';
 
-import '../../data/dataclasses/person.dart';
+class AllPeoplePage extends StatefulWidget {
+  const AllPeoplePage({super.key});
 
-class AtbSelectableUserList extends StatelessWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return AllPeoplePageState();
+  }
+}
+
+class AllPeoplePageState extends State<AllPeoplePage> {
   List<Person> items = [
     Person(
       1,
@@ -36,17 +44,23 @@ class AtbSelectableUserList extends StatelessWidget{
       "Менеджер по подбору персонала",
     ),
   ];
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return AtbSmallPersonCard(person: item, id: item.id, name:item.name,jobTitle: item.jobTitle, isSelect: false,);
-          }),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return PersonCard(item, item.id, item.name, item.jobTitle);
+            }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.search, color: Colors.white),
+      ),
     );
   }
-
 }

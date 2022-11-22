@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'app_func/app_in.dart';
+
+import 'presentation/user_interface/app_in.dart';
 
 //Стандартная точка входа нашего приложения
 //Вызываем функцию запуска

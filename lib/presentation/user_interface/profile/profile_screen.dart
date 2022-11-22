@@ -1,6 +1,6 @@
-import 'package:atb_booking/user_interface/profile/feedback_screen.dart';
+import 'package:atb_booking/presentation/user_interface/profile/feedback_screen.dart';
 import 'package:flutter/material.dart';
-import '../../data/dataclasses/profilePerson.dart';
+import '../../../data/models/profilePerson.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

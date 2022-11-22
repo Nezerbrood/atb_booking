@@ -1,13 +1,13 @@
 
-import 'package:atb_booking/user_interface/widgets/elevated_button.dart';
-import 'package:atb_booking/user_interface/widgets/text_field.dart';
-import 'package:atb_booking/user_interface/widgets/users_selectable_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../constants/styles.dart';
+import '../../widgets/elevated_button.dart';
+import '../../widgets/text_field.dart';
+import '../../widgets/users_selectable_list.dart';
 
 class BookingBottomSheet extends StatefulWidget {
   const BookingBottomSheet({super.key});
@@ -43,9 +43,9 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding: EdgeInsets.symmetric(horizontal: 0,vertical: 0),
-          insetPadding: EdgeInsets.symmetric(horizontal:15,vertical: 40),
-          title: AtbTextField(text: "Кого ищем?"),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 0,vertical: 0),
+          insetPadding: const EdgeInsets.symmetric(horizontal:15,vertical: 40),
+          title: const AtbTextField(text: "Кого ищем?"),
           content: Container(
                width: double.maxFinite,
               child: AtbSelectableUserList()),
@@ -137,12 +137,12 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
           ),
           actions: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: GestureDetector(
                   onTap: () {
                     _dialogBuilder(context);
                   },
-                  child: Icon(Icons.person_add_sharp)),
+                  child: const Icon(Icons.person_add_sharp)),
             )
           ],
         ),

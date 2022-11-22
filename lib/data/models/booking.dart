@@ -1,5 +1,6 @@
-import 'package:atb_booking/data/dataclasses/workspace.dart';
 import 'package:flutter/material.dart';
+
+import 'workspace.dart';
 
 enum PLACETYPE {
   meetingRoom,

@@ -82,7 +82,7 @@ class __FormWidgetState extends State<_FormWidget> {
           child: TextField(
             controller: _loginTextController,
             obscureText: false,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Логин',
             ),
@@ -98,7 +98,7 @@ class __FormWidgetState extends State<_FormWidget> {
           child: TextField(
             obscureText: true,
             controller: _passwordTextController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Пароль',
             ),

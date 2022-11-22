@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
-import '../../data/dataclasses/person.dart';
+import 'package:flutter/cupertino.dart';
+import '../../../data/models/person.dart';
 import 'person_card_widget.dart';
+import 'team_card_widget.dart';
 
-class AllPeoplePage extends StatefulWidget {
-  const AllPeoplePage({super.key});
+class MyTeamPage extends StatefulWidget {
+  const MyTeamPage({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return AllPeoplePageState();
+    return TeamViewState();
   }
 }
 
-class AllPeoplePageState extends State<AllPeoplePage> {
+class TeamViewState extends State<MyTeamPage> {
   List<Person> items = [
     Person(
       1,
@@ -47,20 +48,18 @@ class AllPeoplePageState extends State<AllPeoplePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: ListView.builder(
+          itemCount: items.length + 1,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return const TeamCard();
+            } else {
+              final item = items[index - 1];
               return PersonCard(item, item.id, item.name, item.jobTitle);
-            }),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.search, color: Colors.white),
-      ),
+            }
+          }),
     );
   }
 }

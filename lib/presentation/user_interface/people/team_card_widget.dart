@@ -39,7 +39,7 @@ class TeamCard extends StatelessWidget {
           //   ),
           // ),
           Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             width: double.infinity,
             child: Text(
               "Мы делаем вид что работаем в банке, но на самом деле мы скрываемся от миграционной полиции, чтобы нас не отправили назад в Уганду",

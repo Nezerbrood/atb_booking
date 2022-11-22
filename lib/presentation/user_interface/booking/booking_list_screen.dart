@@ -1,11 +1,11 @@
-import 'package:atb_booking/data/dataclasses/workspace.dart';
+import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/util/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import '../../constants/styles.dart';
-import '../../data/dataclasses/booking.dart';
+import '../../../data/models/booking.dart';
 import 'booking_card_widget.dart';
 import 'booking_details_screen.dart';
 import 'new_booking_screen.dart';
@@ -45,7 +45,7 @@ class _BookingScreenState extends State<BookingScreen> {
       cityAddress: "Владивосток",
       officeAddress: "Ул пушкина, дом колотушкина",
       dateTimeRange: DateTimeRange(
-          start: DateTime.now().add(Duration(days: 1)),
+          start: DateTime.now().add(const Duration(days: 1)),
           end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
       workspace: workspace,
       level: 1,
@@ -55,7 +55,7 @@ class _BookingScreenState extends State<BookingScreen> {
       cityAddress: "Владивосток",
       officeAddress: "Ул пушкина, дом колотушкина",
       dateTimeRange: DateTimeRange(
-          start: DateTime.now().add(Duration(days: 31)),
+          start: DateTime.now().add(const Duration(days: 31)),
           end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
       workspace: workspace,
       level: 1,
@@ -131,7 +131,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 return GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => BookingDetailsScreen()));
+                        builder: (context) => const BookingDetailsScreen()));
                   },
                   child: Column(
                     children: [

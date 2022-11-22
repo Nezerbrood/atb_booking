@@ -1,7 +1,7 @@
-import 'package:atb_booking/constants/styles.dart';
+import '../constants/styles.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/dataclasses/person.dart';
+import '../../data/models/person.dart';
 
 class AtbSmallPersonCard extends StatefulWidget {
   final Person person;

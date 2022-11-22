@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../constants/styles.dart';
+
+import '../constants/styles.dart';
 
 class AtbElevatedButton extends StatelessWidget{
   final VoidCallback onPressed;

@@ -1,8 +1,8 @@
 
-import 'package:atb_booking/constants/styles.dart';
-import 'package:atb_booking/user_interface/auth/auth_screen.dart';
+import 'package:atb_booking/presentation/constants/styles.dart';
+import 'package:atb_booking/presentation/user_interface/auth/auth_screen.dart';
 import 'package:flutter/material.dart';
-import '../user_interface/home.dart';
+import 'home/home.dart';
 
 //Запускаем наше приложение
 //Базовая конструкция для приложения.

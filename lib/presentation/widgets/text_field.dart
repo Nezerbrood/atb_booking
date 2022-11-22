@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants/styles.dart';
+import '../constants/styles.dart';
 
 class AtbTextField extends StatelessWidget{
   final String text;
@@ -18,7 +18,7 @@ class AtbTextField extends StatelessWidget{
         child: TextField(
             obscureText: false,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               labelText: text,
             )));
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../constants/styles.dart';
-import 'booking/booking_list_screen.dart';
-import 'people/people_screen.dart';
-import 'profile/profile_screen.dart';
+import '../../constants/styles.dart';
+import '../booking/booking_list_screen.dart';
+import '../people/people_screen.dart';
+import '../profile/profile_screen.dart';
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
   @override

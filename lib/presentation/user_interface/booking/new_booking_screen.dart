@@ -1,11 +1,12 @@
-import 'package:atb_booking/data/dataclasses/office.dart';
-import 'package:atb_booking/user_interface/widgets/elevated_button.dart';
-import 'package:atb_booking/user_interface/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../../data/models/city.dart';
+import '../../../data/models/office.dart';
+import '../../../data/models/workspace.dart';
 import '../../constants/styles.dart';
-import '../../data/dataclasses/city.dart';
-import '../../data/dataclasses/workspace.dart';
+import '../../widgets/elevated_button.dart';
+import '../../widgets/text_field.dart';
 import 'new_booking_bottom_sheet.dart';
 
 const List<String> list = <String>['1 Этаж', '2 Этаж', '3 Этаж', '4 Этаж'];
@@ -22,7 +23,7 @@ Office office = Office(
     id: 1,
     address: "Ул пушкина дом колотушкина",
     cityId: 1,
-    maxDuration: Duration(days: 30));
+    maxDuration: const Duration(days: 30));
 City city = City(id: 1, name: "Владивосток");
 
 class NewBookingScreen extends StatefulWidget {
@@ -64,13 +65,13 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                       horizontal: 30.0, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: const [
                       Expanded(
                         flex: 2,
                         child: AtbTextField(text: "Выберите офис...",)
                       ),
-                      const SizedBox(width: 10),
-                      const Expanded(flex: 1, child: DropdownButtonLevel()),
+                      SizedBox(width: 10),
+                      Expanded(flex: 1, child: DropdownButtonLevel()),
                     ],
                   ),
                 ),
@@ -206,7 +207,7 @@ class _DatePickerWidgetState extends State<_DatePickerWidget> {
     }
     return TextField(
       decoration: InputDecoration(
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         labelText: _defaultText,
       ),
       focusNode: AlwaysDisabledFocusNode(),

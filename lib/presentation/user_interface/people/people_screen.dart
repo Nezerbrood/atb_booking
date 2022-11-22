@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constants/styles.dart';
-import '../../data/dataclasses/person.dart';
+import '../../../data/models/person.dart';
 import 'all_people_page.dart';
 import 'my_team_page.dart';
 
@@ -55,7 +55,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
         length: 2,
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(50.0), // here the desired height
+            preferredSize: const Size.fromHeight(50.0), // here the desired height
             child: AppBar(
               bottom: const TabBar(
                 tabs: [
