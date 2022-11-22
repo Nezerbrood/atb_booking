@@ -1,6 +1,7 @@
-import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../constants/styles.dart';
 
 abstract class BookingListItem {
   Widget buildListTitle(BuildContext context);
@@ -35,7 +36,7 @@ class BookingCard implements BookingListItem {
                   child: ListTile(
                     title: Text(
                       placeName,
-                      style: appThemeData.textTheme.titleLarge,
+                      style: appThemeData.textTheme.titleMedium,
                     ),
                     subtitle: Text(
                       'c ' +
@@ -43,8 +44,7 @@ class BookingCard implements BookingListItem {
                           " до " +
                           DateFormat('hh:mm').format(dateTimeRange.end) +
                           '\n' +
-                          DateFormat.yMMMMd("ru_RU")
-                              .format(dateTimeRange.start),
+                          DateFormat.yMMMMd("ru_RU").format(dateTimeRange.start),
                       style: appThemeData.textTheme.titleMedium,
                     ),
                     //trailing: trailing ? Icon(Icons.cancel, color: Colors.black) : null,
@@ -78,7 +78,7 @@ class ListTitle implements BookingListItem {
   @override
   Widget buildListTitle(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+      padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
       child: Align(
           alignment: Alignment.bottomRight,
           child: Text(

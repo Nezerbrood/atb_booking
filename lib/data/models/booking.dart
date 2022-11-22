@@ -8,11 +8,26 @@ enum PLACETYPE {
 }
 
 class Booking {
-  int id;
-  String cityAddress;
-  String officeAddress;
-  int level;
-  Workspace workspace;
-  DateTimeRange dateTimeRange;
-  Booking({required this.id,required this.cityAddress, required this.officeAddress, required this.workspace, required this.dateTimeRange, required this.level});
+  final int id;
+  final String cityAddress;
+  final String officeAddress;
+  final int level;
+  final Workspace workspace;
+  final DateTimeRange dateTimeRange;
+
+  Booking(
+      {required this.id,
+      required this.cityAddress,
+      required this.officeAddress,
+      required this.workspace,
+      required this.dateTimeRange,
+      required this.level});
+
+  Booking.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        cityAddress = json['cityAddress'],
+        officeAddress = json['officeAddress'],
+        level = json['level'],
+        workspace = json['workspace'],
+        dateTimeRange = json['dateTimeRange'];
 }

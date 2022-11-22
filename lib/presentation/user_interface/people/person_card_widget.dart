@@ -1,7 +1,6 @@
-import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:flutter/material.dart';
-
 import '../../../data/models/person.dart';
+import '../../constants/styles.dart';
 import 'person_profile_screen.dart';
 
 class PersonCard extends StatelessWidget {

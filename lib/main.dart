@@ -6,7 +6,6 @@ import 'presentation/user_interface/app_in.dart';
 //Вызываем функцию запуска
 //Точка входа описана в отдельном файле в app_func.
 
-void main() {
-  //Парсинг JSON
+void main() async {
   runApp(const Application());
 }

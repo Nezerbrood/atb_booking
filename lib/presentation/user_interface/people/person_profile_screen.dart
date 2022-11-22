@@ -1,24 +1,11 @@
-import 'dart:io';
-import 'package:atb_booking/util/string_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import '../../../data/models/workspace.dart';
 import '../../../data/models/booking.dart';
 import '../../../data/models/person.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import '../../../data/models/workspace.dart';
 import '../booking/booking_card_widget.dart';
 
-
-
-Workspace workspace = Workspace(
-  id: 1,
-  isActive: true,
-  levelId: 1,
-  name: "Рабочий стол 1",
-  numberOfWorkspaces: 1, typeId: 1,
-  positionOnPlan: {"x":1,"y":2},
-);
-
+Workspace workspace =
+    Workspace(1, 1, 'description', true, 20, 20, 1, 1, [], 40, 40);
 
 class PersonProfileScreen extends StatelessWidget {
   final Person person;
@@ -45,51 +32,14 @@ class PersonProfileScreen extends StatelessWidget {
         cityAddress: "Владивосток",
         officeAddress: "Ул пушкина, дом колотушкина",
         dateTimeRange: DateTimeRange(
-            start: DateTime.now().add(Duration(days: 1)), end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
+            start: DateTime.now().add(Duration(days: 1)),
+            end: DateTime.utc(2229, 7, 20, 20, 18, 04)),
         workspace: workspace,
         level: 1,
       )
     ];
     List<BookingListItem> items = [];
 
-    for (var i = 0; i < bookingList.length; i++) {
-      if (bookingList[i].dateTimeRange.start.day == DateTime.now().day &&
-          !todayItemIsAdd) {
-        items.add(ListTitle("Сегодня"));
-        items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png","assets/workplace.png"));
-        todayItemIsAdd = true;
-      } else if (bookingList[i].dateTimeRange.start.day ==
-              DateTime.now().day + 1 &&
-          !tomorrowIsAdd) {
-        items.add(ListTitle("Завтра"));
-        items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png",
-            "assets/workplace.png"));
-        tomorrowIsAdd = true;
-      } else if (bookingList[i].dateTimeRange.start.day ==
-          DateTime.now().day + 1) {
-        items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png",
-            'assets/workplace.png'));
-      } else {
-        items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png",
-            "assets/workplace.png"));
-      }
-      if (bookingList[i].dateTimeRange.start.day != DateTime.now().day &&
-          tomorrowEnd == false) {
-        tomorrowEnd = true;
-        initializeDateFormatting();
-        items.add(ListTitle(DateFormat.MMMM(Platform.localeName)
-            .format(bookingList[i].dateTimeRange.start)
-            .capitalize()));
-      } else {
-        items.add(BookingCard(bookingList[i].dateTimeRange,
-            bookingList[i].workspace.name, "assets/workplacelogo.png",
-            "assets/workplace.png"));
-      }
-    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Профиль сотрудника"),

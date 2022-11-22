@@ -1,3 +1,4 @@
+import 'package:atb_booking/user_interface/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/elevated_button.dart';
@@ -35,7 +36,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             const SizedBox(height: 90),
             const _MessageField(),
             const SizedBox(height: 45),
-            AtbElevatedButton(onPressed: _pressButton, text: "Отправить")
+            //AtbElevatedButton(onPressed: _pressButton, text: "Отправить")
           ],
         ),
       ),

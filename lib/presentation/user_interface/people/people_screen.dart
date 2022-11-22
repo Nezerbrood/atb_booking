@@ -57,10 +57,21 @@ class _PeopleScreenState extends State<PeopleScreen> {
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(50.0), // here the desired height
             child: AppBar(
-              bottom: const TabBar(
+              bottom: TabBar(
+                indicatorColor: appThemeData.primaryColor,
                 tabs: [
-                  Tab(text: "Моя команда"),
-                  Tab(text: "Все сотрудники"),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text("Моя команда",
+                      style: appThemeData.textTheme.titleMedium!.copyWith(color: appThemeData.colorScheme.onSurface),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text("Все сотрудники",
+                      style: appThemeData.textTheme.titleMedium!.copyWith(color: appThemeData.colorScheme.onSurface),
+                    ),
+                  ),
                 ],
               ),
             ),

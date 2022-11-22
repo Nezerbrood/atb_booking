@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 var appThemeData = ThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: Color.fromARGB(255, 252, 100, 1),
 
     ),
-    elevatedButtonTheme: const ElevatedButtonThemeData(
+    elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         textStyle: MaterialStatePropertyAll(TextStyle(
           fontSize: 21,
@@ -18,9 +18,9 @@ var appThemeData = ThemeData(
       fillColor: MaterialStateProperty.resolveWith((states) {
         // If the button is pressed, return size 40, otherwise 20
         if (states.contains(MaterialState.pressed)) {
-          return const Color.fromARGB(255, 252, 100, 1);
+          return Color.fromARGB(255, 252, 100, 1);
         }
-        return const Color.fromARGB(255, 252, 100, 1);
+        return Color.fromARGB(255, 252, 100, 1);
       }),
     ),
     buttonTheme: const ButtonThemeData(
@@ -33,7 +33,7 @@ var appThemeData = ThemeData(
       color: Colors.white,
     ),
     primaryColor: const Color.fromARGB(255, 252, 100, 1),
-    backgroundColor: Colors.white,
+    backgroundColor: Color.fromARGB(255, 238, 238, 238),
     useMaterial3: true,
     textTheme: const TextTheme(
       /// В приложении должны использоваться только стили определенные ниже
@@ -85,8 +85,8 @@ var appThemeData = ThemeData(
     colorScheme: const ColorScheme(
 
       shadow: Colors.black26,
-      primary: Color.fromARGB(255, 252, 100, 1),
-      secondary: Color.fromARGB(255, 252, 100, 1),
+      primary: Color.fromARGB(255, 0, 0, 0),
+      secondary: Color.fromARGB(255, 255, 255, 255),
       brightness: Brightness.light,
       onPrimary: Colors.white,
       onSecondary: Color.fromARGB(255, 252, 100, 1),
@@ -94,8 +94,8 @@ var appThemeData = ThemeData(
       error: Colors.red,
       onError: Colors.black,
       onBackground: Colors.black,
-      surface: Color.fromARGB(255, 252, 100, 1),
-      onSurface: Colors.white,
-      tertiary: Color.fromARGB(255, 239, 235, 233)
+      surface: Color.fromARGB(255, 243, 243, 243),
+      onSurface: Color.fromARGB(255, 252, 100, 1),
+      tertiary: Color.fromARGB(255, 255, 255, 255)
     )
     );

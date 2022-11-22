@@ -1,9 +1,8 @@
+import 'package:atb_booking/user_interface/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../widgets/elevated_button.dart';
-
 class BookingDetailsScreen extends StatelessWidget {
-  const BookingDetailsScreen({super.key});
+  BookingDetailsScreen({super.key}){}
 
   @override
   Widget build(BuildContext context) {

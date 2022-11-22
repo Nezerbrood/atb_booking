@@ -4,11 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-import '../../constants/styles.dart';
-import '../../widgets/elevated_button.dart';
-import '../../widgets/text_field.dart';
-import '../../widgets/users_selectable_list.dart';
-
+import '../../presentation/constants/styles.dart';
+import '../../presentation/widgets/elevated_button.dart';
+import '../../presentation/widgets/text_field.dart';
+import '../../presentation/widgets/users_selectable_list.dart';
 class BookingBottomSheet extends StatefulWidget {
   const BookingBottomSheet({super.key});
 
@@ -213,12 +212,15 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                 thickness: 10,
                 thumbVisibility: true,
                 child: ListView.builder(
-                  primary: true,
+                  primary: false,
                   //physics: NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   //shrinkWrap: true,
                   //physics: const NeverScrollableScrollPhysics(),
                   itemCount: rangeValues.length,
+                  controller: ScrollController(
+                    initialScrollOffset: 100
+                  ),
                   itemBuilder: (context, index) {
                     return getSlider(index);
                   },
@@ -277,3 +279,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     );
   }
 }
+//
+// class myController extends ScrollController{
+// overro
+// }
