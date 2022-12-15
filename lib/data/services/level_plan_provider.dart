@@ -1,23 +1,25 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
+import 'package:atb_booking/data/services/network/network_controller.dart';
+import 'package:http/http.dart' as http;
 import '../models/level_plan.dart';
 
 class LevelPlanProvider{
   Future<LevelPlan> getPlanByLevelId(int id) async {
-    final response = await http.get( Uri.parse('http://45.67.58.123:8080/api/cities'));
+    var baseUrl = NetworkController().getUrl();
+    Map<String, String> headers = {};
+    var token = await NetworkController().getAccessToken();
+    headers["Authorization"] = 'Bearer $token';
+    var uri = Uri.http(baseUrl, '/api/offices/levelWithWorkplaces/$id');
+    final response = await http.get( uri,headers: headers);
     if(response.statusCode == 200){
       return LevelPlan.fromJson(json.decode(response.body));
+    } else if (response.statusCode == 401) {
+      /// Обновление access токена
+      await NetworkController().updateAccessToken();
+      return getPlanByLevelId(id);
     }else{
-      throw Exception('Error fetching users');
-    }
-  }
-  Future<LevelPlan> getLevelsByOfficeId(int id) async {
-    final response = await http.get( Uri.parse('http://45.67.58.123:8080/api/cities'));
-    if(response.statusCode == 200){
-      return LevelPlan.fromJson(json.decode(response.body));
-    }else{
-      throw Exception('Error fetching users');
+      throw Exception('Error fetching level');
     }
   }
 }

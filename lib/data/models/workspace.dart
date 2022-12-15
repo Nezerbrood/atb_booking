@@ -1,3 +1,9 @@
+import 'package:atb_booking/data/models/workspace_type.dart';
+import 'package:atb_booking/data/services/image_provider.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+
 class Workspace {
   final int id;
   final int numberOfWorkspaces;
@@ -7,7 +13,7 @@ class Workspace {
   final double positionY;
   final double sizeX;
   final double sizeY;
-  final int typeId;
+  final WorkspaceType type;
   final int level;
   final List<Photo> photos;
 
@@ -16,13 +22,16 @@ class Workspace {
         numberOfWorkspaces = json['numberOfWorkspaces'],
         description = json['description'],
         isActive = json['isActive'],
-        positionX = json['positionX'],
-        positionY = json['positionY'],
-        sizeX = json['sizeX'],
-        sizeY = json['sizeY'],
-        typeId = json['typeId'],
+        positionX = (json['positionX'] as int).toDouble(),
+        positionY = (json['positionY'] as int).toDouble(),
+        sizeX = (json['sizeX'] as int).toDouble(),
+        sizeY = (json['sizeY'] as int).toDouble(),
+        type = WorkspaceType.fromJson(json['type']),
         level = json['level'],
-        photos = (json['photos'] as List<dynamic>).map((json) => Photo.fromJson(json)).toList();
+        photos = //getRandomPhotoList();
+        (json['photos'] as List<dynamic>)
+            .map((json) => Photo.fromJson(json))
+            .toList();
 
   Workspace(
       this.id,
@@ -31,11 +40,25 @@ class Workspace {
       this.isActive,
       this.positionX,
       this.positionY,
-      this.typeId,
       this.level,
       this.photos,
       this.sizeX,
-      this.sizeY);
+      this.sizeY,
+      this.type);
+
+  static getRandomPhotoList(
+      ) {
+    List<Photo> listPhoto = [];
+    for(int i=0 ;i<1;i++){
+      listPhoto.add(Photo(id: i, photo: CachedNetworkImage(
+        fit: BoxFit.cover,
+        imageUrl: 'https://iili.io/HKq6S3P.webp',
+        placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      )));
+    }
+    return listPhoto;
+  }
 }
 
 class WorkspaceOnPlan {
@@ -55,22 +78,30 @@ class WorkspaceOnPlan {
       required this.sizeX,
       required this.sizeY,
       required this.typeId});
-  WorkspaceOnPlan.fromJson(Map<String,dynamic> json)
-      : id = json['id'],
-  isActive = json['isActive'],
-  positionX = json['positionX'],
-  positionY = json['positionY'],
-  sizeX = json['sizeX'],
-  sizeY = json['sizeY'],
-  typeId = json['typeId'];
 
+  WorkspaceOnPlan.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        isActive = json['isActive'],
+        positionX = (json['positionX'] as int).toDouble(),
+        positionY = (json['positionY'] as int).toDouble(),
+        sizeX = (json['sizeX'] as int).toDouble(),
+        sizeY = (json['sizeY'] as int).toDouble(),
+        typeId = json['typeId'];
 }
 
 class Photo {
   final int id;
-  final String photo;
-  Photo.fromJson(Map<String,dynamic> json):
-      id = json['id'],
-  photo = json['photo'];
+  final CachedNetworkImage photo;
+  Photo.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        photo = CachedNetworkImage(
+          fit: BoxFit.cover,
+          imageUrl: AppImageProvider.getImageUrlFromImageId(json['imageId']),
+          httpHeaders: NetworkController().getAuthHeader(),
+          placeholder: (context, url) => const Center(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+
+        );
+
   Photo({required this.id, required this.photo});
 }

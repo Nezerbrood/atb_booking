@@ -1,15 +1,15 @@
-class profilePerson {
+class ProfilePerson {
   String firstName;
   String lastName;
   String maidenName;
   String email;
   String number;
 
-  profilePerson(
+  ProfilePerson(
       this.firstName, this.lastName, this.maidenName, this.email, this.number);
 
-  factory profilePerson.fromJson(Map<String, dynamic> json) {
-    return profilePerson(
+  factory ProfilePerson.fromJson(Map<String, dynamic> json) {
+    return ProfilePerson(
         json['firstName'] as String,
         json["lastName"] as String,
         json["maidenName"] as String,

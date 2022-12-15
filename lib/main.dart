@@ -1,11 +1,9 @@
+import 'package:atb_booking/presentation/interface/app_in.dart';
 import 'package:flutter/material.dart';
-
-import 'presentation/user_interface/app_in.dart';
-
-//Стандартная точка входа нашего приложения
-//Вызываем функцию запуска
-//Точка входа описана в отдельном файле в app_func.
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  runApp(const Application());
+  // можно сделать проверку для авторизации
+  initializeDateFormatting();
+  runApp(Application());
 }

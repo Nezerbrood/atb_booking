@@ -1,0 +1,10 @@
+part of 'new_booking_confirmation_popup_bloc.dart';
+
+@immutable
+abstract class NewBookingConfirmationPopupState {}
+
+class NewBookingConfirmationPopupInitialState extends NewBookingConfirmationPopupState {}
+class NewBookingConfirmationPopupLoadingState extends NewBookingConfirmationPopupState {}
+class NewBookingConfirmationPopupSuccessfulState extends NewBookingConfirmationPopupState {}
+class NewBookingConfirmationPopupErrorState extends NewBookingConfirmationPopupState {}
+

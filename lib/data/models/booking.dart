@@ -1,33 +1,42 @@
+import 'package:atb_booking/data/models/user.dart';
 import 'package:flutter/material.dart';
 
 import 'workspace.dart';
 
-enum PLACETYPE {
+enum PlaceType {
   meetingRoom,
   workPlace,
 }
 
 class Booking {
   final int id;
-  final String cityAddress;
+  final String cityName;
+  final int levelId;
   final String officeAddress;
-  final int level;
   final Workspace workspace;
-  final DateTimeRange dateTimeRange;
-
-  Booking(
-      {required this.id,
-      required this.cityAddress,
-      required this.officeAddress,
-      required this.workspace,
-      required this.dateTimeRange,
-      required this.level});
+  final DateTimeRange reservationInterval;
+  final List<User>? guests;
+  Booking({
+    required this.id,
+    required this.levelId,
+    required this.cityName,
+    required this.officeAddress,
+    required this.workspace,
+    required this.reservationInterval,
+    required this.guests,
+  });
 
   Booking.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        cityAddress = json['cityAddress'],
+        cityName = json['cityName'],
+        levelId = json['levelId'],
         officeAddress = json['officeAddress'],
-        level = json['level'],
-        workspace = json['workspace'],
-        dateTimeRange = json['dateTimeRange'];
+        reservationInterval = DateTimeRange(
+          start: DateTime.parse(json['reservationInterval']['startsAt'])
+              .toLocal(), //..add(Duration(hours: 10)),
+          end: DateTime.parse(json['reservationInterval']['endsAt'])
+              .toLocal(), //..add(Duration(hours: 10)),
+        ),
+        workspace = Workspace.fromJson(json['workspaceInfo']),
+        guests =  json['guests']!=null?(json['guests'] as List<dynamic>).map((elem)=>User.fromJson(elem)).toList():null;
 }
