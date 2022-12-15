@@ -77,6 +77,14 @@ class LevelPlanEditorBloc
           selectedElementId: _selectedElementId));
     });
 
+    ///
+    ///
+    /// Принудительно обновляет состояние
+    on<LevelPlanEditorForceUpdateEvent>((event,emit){
+      emit(LevelPlanEditorBaseState(
+          mapOfPlanElements: _mapOfPlanElements,
+          selectedElementId: _selectedElementId));
+    });
     emit(LevelPlanEditorBaseState(
         mapOfPlanElements: _mapOfPlanElements,
         selectedElementId: _selectedElementId));

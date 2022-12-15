@@ -23,17 +23,68 @@ class LevelEditor extends StatelessWidget {
   }
 }
 
+class _LevelPlanEditor extends StatelessWidget {
+  const _LevelPlanEditor({Key? key}) : super(key: key);
+  static TransformationController _transformationController =
+      TransformationController();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+        builder: (context, state) {
+      if (state is LevelPlanEditorBaseState) {
+        _transformationController = TransformationController(_transformationController.value);
+        _transformationController.addListener(() {
+          print("transformationControllerListener");
+          context.read<LevelPlanEditorBloc>().add(LevelPlanEditorForceUpdateEvent());
+        });
+        var elements = state.mapOfPlanElements.entries
+            .map((e) => _LevelPlanEditorElementWidget(
+                id: e.key,
+                data: e.value,
+                isSelect: state.selectedElementId == e.key,
+                scaleInteractiveViewValue:
+                    _transformationController.value.getMaxScaleOnAxis()))
+            .toList();
+        return InteractiveViewer(
+          minScale: 0.3,
+          maxScale: 2.5,
+          transformationController: _transformationController,
+          child: Container(
+              color: Color.fromARGB(255, 232, 232, 232),
+              width: 100.0 * SCALE_FACTOR,
+              height: 100.0 * SCALE_FACTOR,
+              child: Stack(
+                children: elements,
+              )),
+        );
+      } else if (state is LevelPlanEditorInitial) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        throw Exception('State: $state');
+      }
+    });
+  }
+}
+
 class _LevelPlanEditorElementWidget extends StatelessWidget {
   final int id;
   final LevelPlanEditorElementData data;
   final bool isSelect;
+  final double scaleInteractiveViewValue;
 
   const _LevelPlanEditorElementWidget(
-      {required this.data, required this.id, required this.isSelect});
+      {required this.data,
+      required this.id,
+      required this.isSelect,
+      required this.scaleInteractiveViewValue});
 
   @override
   Widget build(BuildContext context) {
-    var cornerSize = 5 * SCALE_FACTOR;
+    var cornerSize = 5 * SCALE_FACTOR / scaleInteractiveViewValue;
+    print(scaleInteractiveViewValue.toString());
     return Positioned(
       left: data.positionX * SCALE_FACTOR,
       top: data.positionY * SCALE_FACTOR,
@@ -86,316 +137,329 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                 ),
               ),
             ),
-            if(isSelect)Stack(
-              children:[
-            ///
-            ///
-            /// Левая верхняя точка
-            Positioned(
-                left: 0, //data.positionX * SCALE_FACTOR,
-                top: 0, //data.positionY * SCALE_FACTOR,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    context.read<LevelPlanEditorBloc>().add(
-                        LevelPlanEditorElementMoveEvent(
-                            id,
-                            data.positionY + (details.delta.dy / SCALE_FACTOR),
-                            data.positionX +
-                                (details.delta.dx / SCALE_FACTOR)));
-                    context
-                        .read<LevelPlanEditorBloc>()
-                        .add(LevelPlanEditorElementChangeSizeEvent(
-                          id,
-                          data.width + -(details.delta.dx / SCALE_FACTOR),
-                          data.height + -(details.delta.dy / SCALE_FACTOR),
-                        ));
-                  },
-                  child: Container(
-                    width: cornerSize,
-                    height: cornerSize,
-                    //color: AtbAdditionalColors.debugTranslucent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
-                        border: Border.all(
-                            color: AtbAdditionalColors
-                                .planBorderElementTranslucent,
-                            width: 1 * SCALE_FACTOR),
-                      ),
-                    ),
-                  ),
-                )),
-
-            ///
-            ///
-            ///Правая верхня точка
-            Positioned(
-                right: 0,
-                top: 0, //data.positionY * SCALE_FACTOR,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    context.read<LevelPlanEditorBloc>().add(
-                        LevelPlanEditorElementMoveEvent(
-                            id,
-                            data.positionY + (details.delta.dy / SCALE_FACTOR),
-                            data.positionX));
-                    context
-                        .read<LevelPlanEditorBloc>()
-                        .add(LevelPlanEditorElementChangeSizeEvent(
-                          id,
-                          data.width + (details.delta.dx / SCALE_FACTOR),
-                          data.height + -(details.delta.dy / SCALE_FACTOR),
-                        ));
-                  },
-                  child: Container(
-                    width: cornerSize,
-                    height: cornerSize,
-                    //color: AtbAdditionalColors.debugTranslucent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
-                        border: Border.all(
-                            color: AtbAdditionalColors
-                                .planBorderElementTranslucent,
-                            width: 1 * SCALE_FACTOR),
-                      ),
-                    ),
-                  ),
-                )),
-
-            ///
-            ///
-            ///Левая нижняя точка
-            Positioned(
-                bottom: 0,
-                left: 0, //data.positionY * SCALE_FACTOR,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    context.read<LevelPlanEditorBloc>().add(
-                        LevelPlanEditorElementMoveEvent(
-                            id,
-                            data.positionY,
-                            data.positionX +
-                                (details.delta.dx / SCALE_FACTOR)));
-                    context
-                        .read<LevelPlanEditorBloc>()
-                        .add(LevelPlanEditorElementChangeSizeEvent(
-                          id,
-                          data.width + -(details.delta.dx / SCALE_FACTOR),
-                          data.height + (details.delta.dy / SCALE_FACTOR),
-                        ));
-                  },
-                  child: Container(
-                    width: cornerSize,
-                    height: cornerSize,
-                    //color: AtbAdditionalColors.debugTranslucent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
-                        border: Border.all(
-                            color: AtbAdditionalColors
-                                .planBorderElementTranslucent,
-                            width: 1 * SCALE_FACTOR),
-                      ),
-                    ),
-                  ),
-                )),
-
-            ///
-            ///
-            ///Правая нижняя точка
-            Positioned(
-                bottom: 0,
-                right: 0, //data.positionY * SCALE_FACTOR,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    context
-                        .read<LevelPlanEditorBloc>()
-                        .add(LevelPlanEditorElementChangeSizeEvent(
-                          id,
-                          data.width + (details.delta.dx / SCALE_FACTOR),
-                          data.height + (details.delta.dy / SCALE_FACTOR),
-                        ));
-                  },
-                  child: Container(
-                    width: cornerSize,
-                    height: cornerSize,
-                    //color: AtbAdditionalColors.debugTranslucent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
-                        border: Border.all(
-                            color: AtbAdditionalColors
-                                .planBorderElementTranslucent,
-                            width: 1 * SCALE_FACTOR),
-                      ),
-                    ),
-                  ),
-                )),
-
-            ///
-            ///
-            /// Левая cтенка для изменения размера
-            Positioned(
-                left: 0,
-                top: 0 + cornerSize,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    context.read<LevelPlanEditorBloc>().add(
-                        LevelPlanEditorElementMoveEvent(
-                            id,
-                            data.positionY,
-                            data.positionX +
-                                (details.delta.dx / SCALE_FACTOR)));
-                    context
-                        .read<LevelPlanEditorBloc>()
-                        .add(LevelPlanEditorElementChangeSizeEvent(
-                          id,
-                          data.width + -(details.delta.dx / SCALE_FACTOR),
-                          data.height,
-                        ));
-                  },
-                  child: Container(
-                    //color: AtbAdditionalColors.debugTranslucent
-                    color: Colors.transparent,
-                    width: cornerSize/2,
-                    height: ((data.height) * SCALE_FACTOR) - (cornerSize * 2),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
+            if (isSelect)
+              Stack(children: [
+                ///
+                ///
+                /// Левая верхняя точка
+                Positioned(
+                    left: 0, //data.positionX * SCALE_FACTOR,
+                    top: 0, //data.positionY * SCALE_FACTOR,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        context.read<LevelPlanEditorBloc>().add(
+                            LevelPlanEditorElementMoveEvent(
+                                id,
+                                data.positionY +
+                                    (details.delta.dy / SCALE_FACTOR),
+                                data.positionX +
+                                    (details.delta.dx / SCALE_FACTOR)));
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorElementChangeSizeEvent(
+                              id,
+                              data.width + -(details.delta.dx / SCALE_FACTOR),
+                              data.height + -(details.delta.dy / SCALE_FACTOR),
+                            ));
+                      },
                       child: Container(
-                        width: 1 * SCALE_FACTOR,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          color:
-                              AtbAdditionalColors.planBorderElementTranslucent,
-                          borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        width: cornerSize,
+                        height: cornerSize,
+                        //color: AtbAdditionalColors.debugTranslucent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(1 * SCALE_FACTOR),
+                            border: Border.all(
+                                color: AtbAdditionalColors
+                                    .planBorderElementTranslucent,
+                                width: 1 * SCALE_FACTOR),
+                          ),
                         ),
-                        //color: AtbAdditionalColors.planBorderElementTranslucent,
-                        child: SizedBox.shrink(),
                       ),
-                    ),
-                  ),
-                )),
+                    )),
 
-            ///
-            ///
-            /// Правая cтенка для изменения размера
-            Positioned(
-                right: 0,
-                top: 0 + cornerSize,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    context.read<LevelPlanEditorBloc>().add(
-                        LevelPlanEditorElementMoveEvent(
-                            id, data.positionY, data.positionX));
-                    context
-                        .read<LevelPlanEditorBloc>()
-                        .add(LevelPlanEditorElementChangeSizeEvent(
-                          id,
-                          data.width + (details.delta.dx / SCALE_FACTOR),
-                          data.height,
-                        ));
-                  },
-                  child: Container(
-                    width: cornerSize,
-                    height: ((data.height) * SCALE_FACTOR) - (cornerSize * 2),
-                    //color: AtbAdditionalColors.debugTranslucent
-                    color: Colors.transparent,
-                    child: Align(
-                      alignment: Alignment.centerRight,
+                ///
+                ///
+                ///Правая верхня точка
+                Positioned(
+                    right: 0,
+                    top: 0, //data.positionY * SCALE_FACTOR,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        context.read<LevelPlanEditorBloc>().add(
+                            LevelPlanEditorElementMoveEvent(
+                                id,
+                                data.positionY +
+                                    (details.delta.dy / SCALE_FACTOR),
+                                data.positionX));
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorElementChangeSizeEvent(
+                              id,
+                              data.width + (details.delta.dx / SCALE_FACTOR),
+                              data.height + -(details.delta.dy / SCALE_FACTOR),
+                            ));
+                      },
                       child: Container(
-                        width: 1 * SCALE_FACTOR,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
-                          color: AtbAdditionalColors.planBorderElementTranslucent
+                        width: cornerSize,
+                        height: cornerSize,
+                        //color: AtbAdditionalColors.debugTranslucent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(1 * SCALE_FACTOR),
+                            border: Border.all(
+                                color: AtbAdditionalColors
+                                    .planBorderElementTranslucent,
+                                width: 1 * SCALE_FACTOR),
+                          ),
                         ),
-                        //color: AtbAdditionalColors.planBorderElementTranslucent,
-                        child: SizedBox.shrink(),
                       ),
-                    ),
-                  ),
-                )),
+                    )),
 
-            ///
-            ///
-            /// Верхняя стенка
-            Positioned(
-                right: 0 + cornerSize,
-                top: 0,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    context.read<LevelPlanEditorBloc>().add(
-                        LevelPlanEditorElementMoveEvent(
-                            id,
-                            data.positionY + (details.delta.dy / SCALE_FACTOR),
-                            data.positionX));
-                    context
-                        .read<LevelPlanEditorBloc>()
-                        .add(LevelPlanEditorElementChangeSizeEvent(
-                          id,
-                          data.width,
-                          data.height - (details.delta.dy / SCALE_FACTOR),
-                        ));
-                  },
-                  child: Container(
-                    width: ((data.width) * SCALE_FACTOR) - (cornerSize * 2),
-                    height: cornerSize,
-                    //color: AtbAdditionalColors.debugTranslucent
-                    color: Colors.transparent,
-                    child: Align(
-                      alignment: Alignment.topCenter,
+                ///
+                ///
+                ///Левая нижняя точка
+                Positioned(
+                    bottom: 0,
+                    left: 0, //data.positionY * SCALE_FACTOR,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        context.read<LevelPlanEditorBloc>().add(
+                            LevelPlanEditorElementMoveEvent(
+                                id,
+                                data.positionY,
+                                data.positionX +
+                                    (details.delta.dx / SCALE_FACTOR)));
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorElementChangeSizeEvent(
+                              id,
+                              data.width + -(details.delta.dx / SCALE_FACTOR),
+                              data.height + (details.delta.dy / SCALE_FACTOR),
+                            ));
+                      },
                       child: Container(
-                        height: 1 * SCALE_FACTOR,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color:
-                              AtbAdditionalColors.planBorderElementTranslucent,
-                          borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        width: cornerSize,
+                        height: cornerSize,
+                        //color: AtbAdditionalColors.debugTranslucent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(1 * SCALE_FACTOR),
+                            border: Border.all(
+                                color: AtbAdditionalColors
+                                    .planBorderElementTranslucent,
+                                width: 1 * SCALE_FACTOR),
+                          ),
                         ),
-                        child: SizedBox.shrink(),
                       ),
-                    ),
-                  ),
-                )),
+                    )),
 
-            ///
-            ///
-            /// нижняя стенка для изменения размеров
-            Positioned(
-                bottom: 0,
-                left: cornerSize,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    context
-                        .read<LevelPlanEditorBloc>()
-                        .add(LevelPlanEditorElementChangeSizeEvent(
-                          id,
-                          data.width + (details.delta.dx / SCALE_FACTOR),
-                          data.height,
-                        ));
-                  },
-                  child: Container(
-                    width: ((data.width) * SCALE_FACTOR) - (cornerSize * 2),
-                    height: cornerSize,
-                    //color: AtbAdditionalColors.debugTranslucent
-                    color: Colors.transparent,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
+                ///
+                ///
+                ///Правая нижняя точка
+                Positioned(
+                    bottom: 0,
+                    right: 0, //data.positionY * SCALE_FACTOR,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorElementChangeSizeEvent(
+                              id,
+                              data.width + (details.delta.dx / SCALE_FACTOR),
+                              data.height + (details.delta.dy / SCALE_FACTOR),
+                            ));
+                      },
                       child: Container(
-                        height: 1 * SCALE_FACTOR,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color:
-                              AtbAdditionalColors.planBorderElementTranslucent,
-                          borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        width: cornerSize,
+                        height: cornerSize,
+                        //color: AtbAdditionalColors.debugTranslucent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(1 * SCALE_FACTOR),
+                            border: Border.all(
+                                color: AtbAdditionalColors
+                                    .planBorderElementTranslucent,
+                                width: 1 * SCALE_FACTOR),
+                          ),
                         ),
-                        child: SizedBox.shrink(),
                       ),
-                    ),
-                  ),
-                ))
-            ])
+                    )),
+
+                ///
+                ///
+                /// Левая cтенка для изменения размера
+                Positioned(
+                    left: 0,
+                    top: 0 + cornerSize,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        context.read<LevelPlanEditorBloc>().add(
+                            LevelPlanEditorElementMoveEvent(
+                                id,
+                                data.positionY,
+                                data.positionX +
+                                    (details.delta.dx / SCALE_FACTOR)));
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorElementChangeSizeEvent(
+                              id,
+                              data.width + -(details.delta.dx / SCALE_FACTOR),
+                              data.height,
+                            ));
+                      },
+                      child: Container(
+                        //color: AtbAdditionalColors.debugTranslucent
+                        color: Colors.transparent,
+                        width: cornerSize / 2,
+                        height:
+                            ((data.height) * SCALE_FACTOR) - (cornerSize * 2),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            width: 1 * SCALE_FACTOR,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AtbAdditionalColors
+                                  .planBorderElementTranslucent,
+                              borderRadius:
+                                  BorderRadius.circular(1 * SCALE_FACTOR),
+                            ),
+                            //color: AtbAdditionalColors.planBorderElementTranslucent,
+                            child: SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                    )),
+
+                ///
+                ///
+                /// Правая cтенка для изменения размера
+                Positioned(
+                    right: 0,
+                    top: 0 + cornerSize,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        context.read<LevelPlanEditorBloc>().add(
+                            LevelPlanEditorElementMoveEvent(
+                                id, data.positionY, data.positionX));
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorElementChangeSizeEvent(
+                              id,
+                              data.width + (details.delta.dx / SCALE_FACTOR),
+                              data.height,
+                            ));
+                      },
+                      child: Container(
+                        width: cornerSize,
+                        height:
+                            ((data.height) * SCALE_FACTOR) - (cornerSize * 2),
+                        //color: AtbAdditionalColors.debugTranslucent
+                        color: Colors.transparent,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            width: 1 * SCALE_FACTOR,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(1 * SCALE_FACTOR),
+                                color: AtbAdditionalColors
+                                    .planBorderElementTranslucent),
+                            //color: AtbAdditionalColors.planBorderElementTranslucent,
+                            child: SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                    )),
+
+                ///
+                ///
+                /// Верхняя стенка
+                Positioned(
+                    right: 0 + cornerSize,
+                    top: 0,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        context.read<LevelPlanEditorBloc>().add(
+                            LevelPlanEditorElementMoveEvent(
+                                id,
+                                data.positionY +
+                                    (details.delta.dy / SCALE_FACTOR),
+                                data.positionX));
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorElementChangeSizeEvent(
+                              id,
+                              data.width,
+                              data.height - (details.delta.dy / SCALE_FACTOR),
+                            ));
+                      },
+                      child: Container(
+                        width: ((data.width) * SCALE_FACTOR) - (cornerSize * 2),
+                        height: cornerSize,
+                        //color: AtbAdditionalColors.debugTranslucent
+                        color: Colors.transparent,
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            height: 1 * SCALE_FACTOR,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AtbAdditionalColors
+                                  .planBorderElementTranslucent,
+                              borderRadius:
+                                  BorderRadius.circular(1 * SCALE_FACTOR),
+                            ),
+                            child: SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                    )),
+
+                ///
+                ///
+                /// нижняя стенка для изменения размеров
+                Positioned(
+                    bottom: 0,
+                    left: cornerSize,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorElementChangeSizeEvent(
+                              id,
+                              data.width + (details.delta.dx / SCALE_FACTOR),
+                              data.height,
+                            ));
+                      },
+                      child: Container(
+                        width: ((data.width) * SCALE_FACTOR) - (cornerSize * 2),
+                        height: cornerSize,
+                        //color: AtbAdditionalColors.debugTranslucent
+                        color: Colors.transparent,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: 1 * SCALE_FACTOR,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AtbAdditionalColors
+                                  .planBorderElementTranslucent,
+                              borderRadius:
+                                  BorderRadius.circular(1 * SCALE_FACTOR),
+                            ),
+                            child: SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                    ))
+              ])
           ]),
         ),
       ),
@@ -465,45 +529,5 @@ class _HorizontalWorkspaceBar extends StatelessWidget {
             );
           }),
     );
-  }
-}
-
-class _LevelPlanEditor extends StatelessWidget {
-  const _LevelPlanEditor({Key? key}) : super(key: key);
-  static final TransformationController _transformationController =
-      TransformationController();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
-        builder: (context, state) {
-      if (state is LevelPlanEditorBaseState) {
-        var elements = state.mapOfPlanElements.entries
-            .map((e) => _LevelPlanEditorElementWidget(
-                  id: e.key,
-                  data: e.value,
-                  isSelect: state.selectedElementId == e.key,
-                ))
-            .toList();
-        return InteractiveViewer(
-          minScale: 0.3,
-          maxScale: 4,
-          transformationController: _transformationController,
-          child: Container(
-              color: Color.fromARGB(255, 232, 232, 232),
-              width: 100.0 * SCALE_FACTOR,
-              height: 100.0 * SCALE_FACTOR,
-              child: Stack(
-                children: elements,
-              )),
-        );
-      } else if (state is LevelPlanEditorInitial) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      } else {
-        throw Exception('State: $state');
-      }
-    });
   }
 }

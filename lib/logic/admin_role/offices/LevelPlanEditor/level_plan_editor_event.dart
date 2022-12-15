@@ -34,3 +34,6 @@ class LevelPlanEditorCreateElementEvent extends LevelPlanEditorEvent {
 
   LevelPlanEditorCreateElementEvent(this.type);
 }
+
+class LevelPlanEditorForceUpdateEvent extends LevelPlanEditorEvent {
+}
