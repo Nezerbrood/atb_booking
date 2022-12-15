@@ -12,8 +12,25 @@ class LevelPlanEditorElementMoveEvent extends LevelPlanEditorEvent {
   LevelPlanEditorElementMoveEvent(
       this.id, this.newPositionY, this.newPositionX);
 }
+
+class LevelPlanEditorElementChangeSizeEvent extends LevelPlanEditorEvent{
+  final int id;
+
+  final double newWidth;
+  final double newHeight;
+
+  LevelPlanEditorElementChangeSizeEvent(this.id, this.newWidth, this.newHeight);
+}
 class LevelPlanEditorElementTapEvent extends LevelPlanEditorEvent {
   final int id;
+
   LevelPlanEditorElementTapEvent(
-      this.id,);
+    this.id,
+  );
+}
+
+class LevelPlanEditorCreateElementEvent extends LevelPlanEditorEvent {
+  final WorkspaceType type;
+
+  LevelPlanEditorCreateElementEvent(this.type);
 }

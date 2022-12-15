@@ -22,6 +22,9 @@ class AuthController {
     /// Создание headers запроса
     Map<String, String> headers = {};
     headers["Content-type"] = 'application/json';
+    headers["Access-Control-Allow-Origin"] = '*';
+    headers["Access-Control-Allow-Headers"] = '*';
+    headers["Access-Control-Allow-Methods"] = '*';
 
     /// Вызов POST запроса
     var response = await http.post(uri, headers: headers, body: encoded);

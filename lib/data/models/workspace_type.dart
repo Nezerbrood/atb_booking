@@ -14,8 +14,6 @@ class WorkspaceType {
         type = json['type'],
         cachedNetworkImage = (json['image'] != null) ? CachedNetworkImage(
             imageUrl: json['image']) : getCachedNetworkImage(json['id']);
-
-
 }
 
 var image1 = CachedNetworkImage(
