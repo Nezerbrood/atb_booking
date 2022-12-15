@@ -256,7 +256,9 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                         ));
                   },
                   child: Container(
-                    width: cornerSize,
+                    //color: AtbAdditionalColors.debugTranslucent
+                    color: Colors.transparent,
+                    width: cornerSize/2,
                     height: ((data.height) * SCALE_FACTOR) - (cornerSize * 2),
                     child: Align(
                       alignment: Alignment.centerLeft,
@@ -297,7 +299,8 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                   child: Container(
                     width: cornerSize,
                     height: ((data.height) * SCALE_FACTOR) - (cornerSize * 2),
-                    //color: AtbAdditionalColors.debugTranslucent,
+                    //color: AtbAdditionalColors.debugTranslucent
+                    color: Colors.transparent,
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Container(
@@ -338,7 +341,8 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                   child: Container(
                     width: ((data.width) * SCALE_FACTOR) - (cornerSize * 2),
                     height: cornerSize,
-                    //color: AtbAdditionalColors.debugTranslucent,
+                    //color: AtbAdditionalColors.debugTranslucent
+                    color: Colors.transparent,
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Container(
@@ -374,7 +378,8 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                   child: Container(
                     width: ((data.width) * SCALE_FACTOR) - (cornerSize * 2),
                     height: cornerSize,
-                    //color: AtbAdditionalColors.debugTranslucent,
+                    //color: AtbAdditionalColors.debugTranslucent
+                    color: Colors.transparent,
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
