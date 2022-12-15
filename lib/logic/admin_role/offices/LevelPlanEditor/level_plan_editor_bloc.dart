@@ -122,6 +122,7 @@ class LevelPlanEditorBloc
       _mapOfPlanElements[id] = LevelPlanEditorElementData(
         positionX: 50,
         positionY: 50,
+        minSize: 10,
         width: 10,
         height: 10,
         numberOfWorkspaces: 1,
@@ -133,6 +134,7 @@ class LevelPlanEditorBloc
       _mapOfPlanElements[id] = LevelPlanEditorElementData(
         positionX: 50,
         positionY: 50,
+        minSize: 10,
         width: 20,
         height: 20,
         numberOfWorkspaces: 20,
@@ -149,6 +151,12 @@ class LevelPlanEditorBloc
   void _changeSizeElement(LevelPlanEditorElementData levelPlanEditorElementData,
       double newWidth, double newHeight) {
     ///todo добавить проверки на границы
+    if (newWidth<levelPlanEditorElementData.minSize){
+      newWidth = levelPlanEditorElementData.minSize;
+    }
+    if(newHeight<levelPlanEditorElementData.minSize){
+      newHeight = levelPlanEditorElementData.minSize;
+    }
     levelPlanEditorElementData.width = newWidth;
     levelPlanEditorElementData.height = newHeight;
 
@@ -158,6 +166,7 @@ class LevelPlanEditorBloc
 class LevelPlanEditorElementData {
   double positionX;
   double positionY;
+  double minSize;
   double width;
   double height;
   int numberOfWorkspaces;
@@ -168,6 +177,7 @@ class LevelPlanEditorElementData {
   LevelPlanEditorElementData({
     required this.positionX,
     required this.positionY,
+    required this.minSize,
     required this.width,
     required this.height,
     required this.numberOfWorkspaces,

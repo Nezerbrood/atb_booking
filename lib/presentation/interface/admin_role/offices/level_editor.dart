@@ -33,14 +33,14 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cornerSize = 6*SCALE_FACTOR;
+    var cornerSize = 5 * SCALE_FACTOR;
     return Positioned(
       left: data.positionX * SCALE_FACTOR,
       top: data.positionY * SCALE_FACTOR,
       child: Container(
-        color: Colors.green,
-        height: data.height*SCALE_FACTOR,
-        width: data.width*SCALE_FACTOR,
+        //color: AtbAdditionalColors.debugTranslucent,
+        height: data.height * SCALE_FACTOR,
+        width: data.width * SCALE_FACTOR,
         child: GestureDetector(
           onPanUpdate: (details) {
             print("dx:${details.delta.dx}");
@@ -86,7 +86,8 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                 ),
               ),
             ),
-
+            if(isSelect)Stack(
+              children:[
             ///
             ///
             /// Левая верхняя точка
@@ -112,7 +113,16 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                   child: Container(
                     width: cornerSize,
                     height: cornerSize,
-                    color: Colors.red,
+                    //color: AtbAdditionalColors.debugTranslucent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        border: Border.all(
+                            color: AtbAdditionalColors
+                                .planBorderElementTranslucent,
+                            width: 1 * SCALE_FACTOR),
+                      ),
+                    ),
                   ),
                 )),
 
@@ -140,7 +150,16 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                   child: Container(
                     width: cornerSize,
                     height: cornerSize,
-                    color: Colors.red,
+                    //color: AtbAdditionalColors.debugTranslucent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        border: Border.all(
+                            color: AtbAdditionalColors
+                                .planBorderElementTranslucent,
+                            width: 1 * SCALE_FACTOR),
+                      ),
+                    ),
                   ),
                 )),
 
@@ -169,7 +188,16 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                   child: Container(
                     width: cornerSize,
                     height: cornerSize,
-                    color: Colors.red,
+                    //color: AtbAdditionalColors.debugTranslucent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        border: Border.all(
+                            color: AtbAdditionalColors
+                                .planBorderElementTranslucent,
+                            width: 1 * SCALE_FACTOR),
+                      ),
+                    ),
                   ),
                 )),
 
@@ -192,7 +220,16 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                   child: Container(
                     width: cornerSize,
                     height: cornerSize,
-                    color: Colors.red,
+                    //color: AtbAdditionalColors.debugTranslucent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        border: Border.all(
+                            color: AtbAdditionalColors
+                                .planBorderElementTranslucent,
+                            width: 1 * SCALE_FACTOR),
+                      ),
+                    ),
                   ),
                 )),
 
@@ -213,17 +250,31 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                     context
                         .read<LevelPlanEditorBloc>()
                         .add(LevelPlanEditorElementChangeSizeEvent(
-                      id,
-                      data.width + -(details.delta.dx / SCALE_FACTOR),
-                      data.height,
-                    ));
+                          id,
+                          data.width + -(details.delta.dx / SCALE_FACTOR),
+                          data.height,
+                        ));
                   },
                   child: Container(
                     width: cornerSize,
-                    height: ((data.height) * SCALE_FACTOR)-(cornerSize*2),
-                    color: Colors.blue,
+                    height: ((data.height) * SCALE_FACTOR) - (cornerSize * 2),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        width: 1 * SCALE_FACTOR,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          color:
+                              AtbAdditionalColors.planBorderElementTranslucent,
+                          borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        ),
+                        //color: AtbAdditionalColors.planBorderElementTranslucent,
+                        child: SizedBox.shrink(),
+                      ),
+                    ),
                   ),
                 )),
+
             ///
             ///
             /// Правая cтенка для изменения размера
@@ -234,29 +285,41 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                   onPanUpdate: (details) {
                     context.read<LevelPlanEditorBloc>().add(
                         LevelPlanEditorElementMoveEvent(
-                            id,
-                            data.positionY,
-                            data.positionX));
+                            id, data.positionY, data.positionX));
                     context
                         .read<LevelPlanEditorBloc>()
                         .add(LevelPlanEditorElementChangeSizeEvent(
-                      id,
-                      data.width + (details.delta.dx / SCALE_FACTOR),
-                      data.height,
-                    ));
+                          id,
+                          data.width + (details.delta.dx / SCALE_FACTOR),
+                          data.height,
+                        ));
                   },
                   child: Container(
                     width: cornerSize,
-                    height: ((data.height) * SCALE_FACTOR)-(cornerSize*2),
-                    color: Colors.blue,
+                    height: ((data.height) * SCALE_FACTOR) - (cornerSize * 2),
+                    //color: AtbAdditionalColors.debugTranslucent,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        width: 1 * SCALE_FACTOR,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                          color: AtbAdditionalColors.planBorderElementTranslucent
+                        ),
+                        //color: AtbAdditionalColors.planBorderElementTranslucent,
+                        child: SizedBox.shrink(),
+                      ),
+                    ),
                   ),
                 )),
+
             ///
             ///
             /// Верхняя стенка
             Positioned(
                 right: 0 + cornerSize,
-                top: 0 ,
+                top: 0,
                 child: GestureDetector(
                   onPanUpdate: (details) {
                     context.read<LevelPlanEditorBloc>().add(
@@ -267,18 +330,34 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                     context
                         .read<LevelPlanEditorBloc>()
                         .add(LevelPlanEditorElementChangeSizeEvent(
-                      id,
-                      data.width ,
-                      data.height-(details.delta.dy / SCALE_FACTOR),
-                    ));
+                          id,
+                          data.width,
+                          data.height - (details.delta.dy / SCALE_FACTOR),
+                        ));
                   },
                   child: Container(
-                    width: ((data.width) * SCALE_FACTOR)-(cornerSize*2),
-                    height:cornerSize,
-                    color: Colors.blue,
+                    width: ((data.width) * SCALE_FACTOR) - (cornerSize * 2),
+                    height: cornerSize,
+                    //color: AtbAdditionalColors.debugTranslucent,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        height: 1 * SCALE_FACTOR,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color:
+                              AtbAdditionalColors.planBorderElementTranslucent,
+                          borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        ),
+                        child: SizedBox.shrink(),
+                      ),
+                    ),
                   ),
                 )),
 
+            ///
+            ///
+            /// нижняя стенка для изменения размеров
             Positioned(
                 bottom: 0,
                 left: cornerSize,
@@ -287,17 +366,31 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                     context
                         .read<LevelPlanEditorBloc>()
                         .add(LevelPlanEditorElementChangeSizeEvent(
-                      id,
-                      data.width + (details.delta.dx / SCALE_FACTOR),
-                      data.height,
-                    ));
+                          id,
+                          data.width + (details.delta.dx / SCALE_FACTOR),
+                          data.height,
+                        ));
                   },
                   child: Container(
-                    width: ((data.width) * SCALE_FACTOR)-(cornerSize*2),
-                    height:cornerSize,
-                    color: Colors.blue,
+                    width: ((data.width) * SCALE_FACTOR) - (cornerSize * 2),
+                    height: cornerSize,
+                    //color: AtbAdditionalColors.debugTranslucent,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 1 * SCALE_FACTOR,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color:
+                              AtbAdditionalColors.planBorderElementTranslucent,
+                          borderRadius: BorderRadius.circular(1 * SCALE_FACTOR),
+                        ),
+                        child: SizedBox.shrink(),
+                      ),
+                    ),
                   ),
                 ))
+            ])
           ]),
         ),
       ),

@@ -194,4 +194,7 @@ var appDarkThemeData = ThemeData(
 
 class AtbAdditionalColors {
   static Color primalTranslucent = const Color.fromARGB(228, 255, 105, 0);
+  static Color planBorderElementTranslucent = const Color.fromARGB(
+      155, 0, 104, 255);
+  static Color debugTranslucent = const Color.fromARGB(116, 237, 0, 255);
 }
