@@ -20,14 +20,13 @@ class OfficeProvider {
     if (response.statusCode == 200) {
       final List<dynamic> officeListItemJson =
           json.decode(utf8.decode(response.bodyBytes));
-      return officeListItemJson
-          .map((json) => Office.fromJson(json))
-          .toList();
+      return officeListItemJson.map((json) => Office.fromJson(json)).toList();
     } else if (response.statusCode == 401) {
       /// Обновление access токена
       await NetworkController().updateAccessToken();
       return getOfficesByCityId(id);
     } else {
+      print("Error fetching offices");
       throw Exception('Error fetching offices');
     }
   }
@@ -50,9 +49,11 @@ class OfficeProvider {
       await NetworkController().updateAccessToken();
       return getLevelsByOfficeId(id);
     } else {
+      print("Error fetching levels");
       throw Exception('Error fetching office');
     }
   }
+
   Future<Office> getOfficeById(int id) async {
     print("PROVIDER getOfficeById");
     var baseUrl = NetworkController().getUrl();
@@ -63,8 +64,7 @@ class OfficeProvider {
     final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       print('successful fetching office');
-      final dynamic officeJson =
-      json.decode(utf8.decode(response.bodyBytes));
+      final dynamic officeJson = json.decode(utf8.decode(response.bodyBytes));
       return Office.fromJson(officeJson);
     } else if (response.statusCode == 401) {
       /// Обновление access токена

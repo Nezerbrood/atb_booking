@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:http/http.dart' as http;
 
 import '../logic/secure_storage_api.dart';
@@ -7,7 +8,7 @@ import 'models/login.dart';
 
 class AuthController {
   var uri = Uri.http(
-    '85.192.32.12:8080',
+    NetworkController().getUrl(),
     '/api/auth/login',
   );
 

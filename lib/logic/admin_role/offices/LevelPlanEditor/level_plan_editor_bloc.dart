@@ -24,8 +24,12 @@ class _IdGenerator {
 class LevelPlanEditorBloc
     extends Bloc<LevelPlanEditorEvent, LevelPlanEditorState> {
   final Map<int, LevelPlanEditorElementData> _mapOfPlanElements = {};
+  static final Map<int,_Size> _mapLastSize = {
+    1:_Size(width:10,height: 10),
+    2:_Size(width: 20,height:20),
+  };
+  int levelNumber = 0;
   int? _selectedElementId;
-
   LevelPlanEditorBloc() : super(LevelPlanEditorInitial()) {
     on<LevelPlanEditorEvent>((event, emit) {
       // TODO: implement event handler
@@ -37,9 +41,10 @@ class LevelPlanEditorBloc
     on<LevelPlanEditorElementMoveEvent>((event, emit) {
       _setElementToNewPosition(_mapOfPlanElements[event.id]!,
           event.newPositionX, event.newPositionY);
-      emit(LevelPlanEditorBaseState(
+      emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId));
+          selectedElementId: _selectedElementId,
+      levelNumber: levelNumber));
     });
 
     ///
@@ -47,9 +52,9 @@ class LevelPlanEditorBloc
     /// меняем активный эелмент isSelect
     on<LevelPlanEditorElementTapEvent>((event, emit) {
       _changeSelectedElement(event.id);
-      emit(LevelPlanEditorBaseState(
+      emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId));
+          selectedElementId: _selectedElementId,levelNumber: levelNumber));
     });
 
     ///
@@ -61,9 +66,9 @@ class LevelPlanEditorBloc
       _changeSelectedElement(idOfCreatedElement);
 
       ///меняем выбраный элемент на созданный
-      emit(LevelPlanEditorBaseState(
+      emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId));
+          selectedElementId: _selectedElementId,levelNumber: levelNumber));
     });
 
     ///
@@ -72,22 +77,43 @@ class LevelPlanEditorBloc
     on<LevelPlanEditorElementChangeSizeEvent>((event, emit) {
       _changeSizeElement(
           _mapOfPlanElements[event.id]!, event.newWidth, event.newHeight);
-      emit(LevelPlanEditorBaseState(
+      emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId));
+          selectedElementId: _selectedElementId,levelNumber: levelNumber));
+    });
+
+    ///
+    ///
+    /// Удаляем место
+    on<LevelPlanEditorDeleteWorkspaceButtonPressEvent>((event, emit) {
+      _deleteElement(_selectedElementId);
+      _selectedElementId = null;
+      emit(LevelPlanEditorMainState(
+          mapOfPlanElements: _mapOfPlanElements,
+          selectedElementId: _selectedElementId,levelNumber: levelNumber));
+    });
+
+    ///
+    ///
+    ///
+    on<LevelPlanEditorChangeLevelFieldEvent>((event,emit){
+      levelNumber = event.newLevel;
+      emit(LevelPlanEditorMainState(
+          mapOfPlanElements: _mapOfPlanElements,
+          selectedElementId: _selectedElementId,levelNumber: levelNumber));
     });
 
     ///
     ///
     /// Принудительно обновляет состояние
-    on<LevelPlanEditorForceUpdateEvent>((event,emit){
-      emit(LevelPlanEditorBaseState(
+    on<LevelPlanEditorForceUpdateEvent>((event, emit) {
+      emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId));
+          selectedElementId: _selectedElementId,levelNumber: levelNumber));
     });
-    emit(LevelPlanEditorBaseState(
+    emit(LevelPlanEditorMainState(
         mapOfPlanElements: _mapOfPlanElements,
-        selectedElementId: _selectedElementId));
+        selectedElementId: _selectedElementId,levelNumber: levelNumber));
   }
 
   /// функция размещает елемент на плане,
@@ -131,8 +157,8 @@ class LevelPlanEditorBloc
         positionX: 50,
         positionY: 50,
         minSize: 10,
-        width: 10,
-        height: 10,
+        width: _getLastSize(type.id).width,
+        height: _getLastSize(type.id).height,
         numberOfWorkspaces: 1,
         type: type,
         description: 'description type 1',
@@ -143,8 +169,8 @@ class LevelPlanEditorBloc
         positionX: 50,
         positionY: 50,
         minSize: 10,
-        width: 20,
-        height: 20,
+        width: _getLastSize(type.id).width,
+        height:_getLastSize(type.id).height,
         numberOfWorkspaces: 20,
         type: type,
         description: 'description type 2',
@@ -159,16 +185,35 @@ class LevelPlanEditorBloc
   void _changeSizeElement(LevelPlanEditorElementData levelPlanEditorElementData,
       double newWidth, double newHeight) {
     ///todo добавить проверки на границы
-    if (newWidth<levelPlanEditorElementData.minSize){
+    if (newWidth < levelPlanEditorElementData.minSize) {
       newWidth = levelPlanEditorElementData.minSize;
     }
-    if(newHeight<levelPlanEditorElementData.minSize){
+    if (newHeight < levelPlanEditorElementData.minSize) {
       newHeight = levelPlanEditorElementData.minSize;
     }
     levelPlanEditorElementData.width = newWidth;
     levelPlanEditorElementData.height = newHeight;
-
+    _mapLastSize[levelPlanEditorElementData.type.id] = _Size(width: newWidth,height: newHeight);
   }
+
+  ///
+  ///
+  ///метод удаляет место
+  void _deleteElement(int? selectedElementId) {
+    _mapOfPlanElements.remove(selectedElementId);
+  }
+
+  _Size _getLastSize(int id) {
+    _Size lastSize = _mapLastSize[id]!;
+    return lastSize;
+  }
+}
+
+class _Size {
+  final double width;
+  final double height;
+
+  _Size({required this.width, required this.height});
 }
 
 class LevelPlanEditorElementData {

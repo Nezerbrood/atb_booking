@@ -37,3 +37,11 @@ class LevelPlanEditorCreateElementEvent extends LevelPlanEditorEvent {
 
 class LevelPlanEditorForceUpdateEvent extends LevelPlanEditorEvent {
 }
+
+class LevelPlanEditorDeleteWorkspaceButtonPressEvent extends LevelPlanEditorEvent {
+}
+class LevelPlanEditorChangeLevelFieldEvent extends LevelPlanEditorEvent {
+  final int newLevel;
+
+  LevelPlanEditorChangeLevelFieldEvent(this.newLevel);
+}

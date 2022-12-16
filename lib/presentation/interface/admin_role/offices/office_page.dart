@@ -494,7 +494,6 @@ class _BookingsButton extends StatelessWidget {
   }
 }
 
-
 class _AddNewLevelButton extends StatelessWidget {
   final AdminOfficePageLoadedState state;
 
@@ -529,6 +528,91 @@ class _AddNewLevelButton extends StatelessWidget {
             const Icon(Icons.add)
           ],
         ),
+      ),
+    );
+  }
+}
+
+
+class _AddLevelField extends StatelessWidget {
+  static TextEditingController? _levelFieldController;
+  final AdminOfficePageLoadedState state;
+
+  _AddLevelField({super.key, required this.state}) {
+    if (_levelFieldController == null) {
+      _levelFieldController =
+          TextEditingController(text: state.bookingRange.toString());
+    } else {
+      if (state.address != _levelFieldController!.text) {
+        _levelFieldController =
+            TextEditingController(text: state.bookingRange.toString());
+      }
+    }
+    _levelFieldController!.selection = TextSelection(
+        baseOffset: 0, extentOffset: _levelFieldController!.text.length);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            flex: 9,
+            child: Row(
+              children: [
+                Text("Дальность \nбронирования в днях",
+                    textAlign: TextAlign.right,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Colors.black54,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w300)),
+                const SizedBox(
+                  width: 5,
+                ),
+                Container(
+                  height: 60,
+                  width: 0.3,
+                  color: Colors.black54,
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                onTap: () {
+                  print('tap');
+                  context
+                      .read<AdminOfficePageBloc>()
+                      .add(AdminOfficePageUpdateFieldsEvent());
+                },
+                onChanged: (form) {
+                  print("controller.text: ${_levelFieldController!.text}");
+                  context
+                      .read<AdminOfficePageBloc>()
+                      .add(AdminBookingRangeChangeEvent(int.parse(form)));
+                },
+                onSubmitted: (form){
+                  context
+                      .read<AdminOfficePageBloc>()
+                      .add(AdminOfficePageUpdateFieldsEvent());
+                },
+                controller: _levelFieldController,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: Colors.black, fontSize: 23),
+                //keyboardType: TextInputType.multiline,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

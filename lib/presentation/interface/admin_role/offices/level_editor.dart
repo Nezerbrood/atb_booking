@@ -2,10 +2,11 @@ import 'package:atb_booking/data/models/workspace_type.dart';
 import 'package:atb_booking/data/services/workspace_type_repository.dart';
 import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
+import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-double SCALE_FACTOR = 3.8;
+double SCALE_FACTOR = 3.9;
 
 class LevelEditor extends StatelessWidget {
   const LevelEditor({Key? key}) : super(key: key);
@@ -14,11 +15,50 @@ class LevelEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => LevelPlanEditorBloc(),
-        child: Column(
-          children: const [
-            _HorizontalWorkspaceBar(),
-            _LevelPlanEditor(),
-          ],
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("этаж №"), //todo add level to string
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Container();
+                        });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "удалить этаж",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(
+                              decoration: TextDecoration.underline,
+                              color: Colors.red,
+                              fontSize: 20),
+                    ),
+                  ))
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                const _HorizontalWorkspaceBar(),
+                const _LevelPlanEditor(),
+                const _TitleUnderPlan(),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      _DeleteWorkspaceButton(),
+                      _AddInfoButton()
+                    ]),
+                _LevelNumberField(),
+                const _SaveButton(),
+              ],
+            ),
+          ),
         ));
   }
 }
@@ -32,11 +72,13 @@ class _LevelPlanEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
         builder: (context, state) {
-      if (state is LevelPlanEditorBaseState) {
-        _transformationController = TransformationController(_transformationController.value);
+      if (state is LevelPlanEditorMainState) {
+        _transformationController =
+            TransformationController(_transformationController.value);
         _transformationController.addListener(() {
-          print("transformationControllerListener");
-          context.read<LevelPlanEditorBloc>().add(LevelPlanEditorForceUpdateEvent());
+          context
+              .read<LevelPlanEditorBloc>()
+              .add(LevelPlanEditorForceUpdateEvent());
         });
         var elements = state.mapOfPlanElements.entries
             .map((e) => _LevelPlanEditorElementWidget(
@@ -51,7 +93,7 @@ class _LevelPlanEditor extends StatelessWidget {
           maxScale: 2.5,
           transformationController: _transformationController,
           child: Container(
-              color: Color.fromARGB(255, 232, 232, 232),
+              color: const Color.fromARGB(255, 232, 232, 232),
               width: 100.0 * SCALE_FACTOR,
               height: 100.0 * SCALE_FACTOR,
               child: Stack(
@@ -84,18 +126,15 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cornerSize = 5 * SCALE_FACTOR / scaleInteractiveViewValue;
-    print(scaleInteractiveViewValue.toString());
     return Positioned(
       left: data.positionX * SCALE_FACTOR,
       top: data.positionY * SCALE_FACTOR,
-      child: Container(
+      child: SizedBox(
         //color: AtbAdditionalColors.debugTranslucent,
         height: data.height * SCALE_FACTOR,
         width: data.width * SCALE_FACTOR,
         child: GestureDetector(
           onPanUpdate: (details) {
-            print("dx:${details.delta.dx}");
-            print("dy:${details.delta.dy}");
             if (isSelect) {
               context.read<LevelPlanEditorBloc>().add(
                   LevelPlanEditorElementMoveEvent(
@@ -162,7 +201,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                               data.height + -(details.delta.dy / SCALE_FACTOR),
                             ));
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: cornerSize,
                         height: cornerSize,
                         //color: AtbAdditionalColors.debugTranslucent,
@@ -201,7 +240,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                               data.height + -(details.delta.dy / SCALE_FACTOR),
                             ));
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: cornerSize,
                         height: cornerSize,
                         //color: AtbAdditionalColors.debugTranslucent,
@@ -240,7 +279,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                               data.height + (details.delta.dy / SCALE_FACTOR),
                             ));
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: cornerSize,
                         height: cornerSize,
                         //color: AtbAdditionalColors.debugTranslucent,
@@ -273,7 +312,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                               data.height + (details.delta.dy / SCALE_FACTOR),
                             ));
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: cornerSize,
                         height: cornerSize,
                         //color: AtbAdditionalColors.debugTranslucent,
@@ -330,7 +369,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                                   BorderRadius.circular(1 * SCALE_FACTOR),
                             ),
                             //color: AtbAdditionalColors.planBorderElementTranslucent,
-                            child: SizedBox.shrink(),
+                            child: const SizedBox.shrink(),
                           ),
                         ),
                       ),
@@ -372,7 +411,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                                 color: AtbAdditionalColors
                                     .planBorderElementTranslucent),
                             //color: AtbAdditionalColors.planBorderElementTranslucent,
-                            child: SizedBox.shrink(),
+                            child: const SizedBox.shrink(),
                           ),
                         ),
                       ),
@@ -416,7 +455,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                               borderRadius:
                                   BorderRadius.circular(1 * SCALE_FACTOR),
                             ),
-                            child: SizedBox.shrink(),
+                            child: const SizedBox.shrink(),
                           ),
                         ),
                       ),
@@ -454,7 +493,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                               borderRadius:
                                   BorderRadius.circular(1 * SCALE_FACTOR),
                             ),
-                            child: SizedBox.shrink(),
+                            child: const SizedBox.shrink(),
                           ),
                         ),
                       ),
@@ -480,31 +519,32 @@ class _HorizontalWorkspaceBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
+    return SizedBox(
+      height: 65,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: types.length,
           itemBuilder: (context, index) {
-            return Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    child: Text(
-                      types[index].type,
-                      style: appThemeData.textTheme.titleSmall,
-                      textAlign: TextAlign.right,
+            return Card(
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: () {
+                  context
+                      .read<LevelPlanEditorBloc>()
+                      .add(LevelPlanEditorCreateElementEvent(types[index]));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      child: Text(
+                        types[index].type,
+                        style: appThemeData.textTheme.titleSmall,
+                        textAlign: TextAlign.right,
+                      ),
+                      width: 30 * SCALE_FACTOR,
                     ),
-                    width: 26 * SCALE_FACTOR,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      context
-                          .read<LevelPlanEditorBloc>()
-                          .add(LevelPlanEditorCreateElementEvent(types[index]));
-                    },
-                    child: Card(
+                    Card(
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       shape: RoundedRectangleBorder(
                           side:
@@ -513,9 +553,9 @@ class _HorizontalWorkspaceBar extends StatelessWidget {
                       shadowColor: const Color.fromARGB(255, 255, 223, 186),
                       elevation: 3,
                       color: const Color.fromARGB(255, 255, 255, 255),
-                      child: Container(
-                        width: 15 * SCALE_FACTOR,
-                        height: 15 * SCALE_FACTOR,
+                      child: SizedBox(
+                        width: 14 * SCALE_FACTOR,
+                        height: 14 * SCALE_FACTOR,
                         child: Padding(
                           padding: const EdgeInsets.all(5.0),
                           child:
@@ -523,11 +563,275 @@ class _HorizontalWorkspaceBar extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }),
+    );
+  }
+}
+
+class _DeleteWorkspaceButton extends StatelessWidget {
+  const _DeleteWorkspaceButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+      builder: (context, state) {
+        if (state is LevelPlanEditorMainState) {
+          if (state.selectedElementId != null) {
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: MaterialButton(
+                shape: RoundedRectangleBorder(
+                    side:
+                        BorderSide(width: 1, color: appThemeData.primaryColor),
+                    borderRadius: BorderRadius.circular(7.0)),
+                onPressed: () {
+                  context
+                      .read<LevelPlanEditorBloc>()
+                      .add(LevelPlanEditorDeleteWorkspaceButtonPressEvent());
+                },
+                color: appThemeData.primaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Удалить место",
+                        style: appThemeData.textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      const Icon(Icons.delete)
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        } else {
+          throw Exception("Unexpected state: $state");
+        }
+      },
+    );
+  }
+}
+
+class _AddInfoButton extends StatelessWidget {
+  const _AddInfoButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+        builder: (context, state) {
+          if (state is LevelPlanEditorMainState) {
+            if (state.selectedElementId != null) {
+              return MaterialButton(
+                shape: RoundedRectangleBorder(
+                    side:
+                        BorderSide(width: 1, color: appThemeData.primaryColor),
+                    borderRadius: BorderRadius.circular(7.0)),
+                onPressed: () {
+                  //todo push event and show alertdialog
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (_) {
+                        return BlocProvider.value(
+                          value: context.read<LevelPlanEditorBloc>(),
+                          child: const _BottomSheet(),
+                        );
+                      });
+                },
+                color: appThemeData.primaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Изменить",
+                        style: appThemeData.textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      const Icon(Icons.featured_play_list)
+                    ],
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          } else {
+            throw Exception("Unexpected state: $state");
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _SaveButton extends StatelessWidget {
+  const _SaveButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+      builder: (context, state) {
+        if (state is LevelPlanEditorMainState) {
+          return Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: AtbElevatedButton(
+              onPressed: () {},
+              text: 'Сохранить изменения',
+            ),
+          );
+        } else {
+          throw Exception("unexpected state: $state");
+        }
+      },
+    );
+  }
+}
+
+class _TitleUnderPlan extends StatelessWidget {
+  const _TitleUnderPlan({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+      builder: (context, state) {
+        if (state is LevelPlanEditorMainState) {
+          String title;
+          if (state.selectedElementId != null) {
+            title = state.mapOfPlanElements[state.selectedElementId]!.type.type;
+          } else {
+            if (state.mapOfPlanElements.length == 0) {
+              title = "Добавьте место на\n карту из верхнего меню";
+            } else {
+              title = "Выберите место";
+            }
+          }
+          return Container(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Colors.black54,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w300),
+              textAlign: TextAlign.center,
+            ),
+          );
+        } else {
+          throw Exception("unexpected state: $state");
+        }
+      },
+    );
+  }
+}
+
+class _LevelNumberField extends StatelessWidget {
+  static final TextEditingController _levelNumberTextController =
+      TextEditingController();
+
+  _LevelNumberField() {
+    _levelNumberTextController!.selection = TextSelection(
+        baseOffset: 0, extentOffset: _levelNumberTextController!.text.length);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+      builder: (context, state) {
+        if (state is LevelPlanEditorMainState) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    children: [
+                      Text("Номер этажа",
+                          textAlign: TextAlign.right,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                  color: Colors.black54,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w300)),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Container(
+                        height: 60,
+                        width: 0.3,
+                        color: Colors.black54,
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      onTap: () {},
+                      onChanged: (form) {
+                        context.read<LevelPlanEditorBloc>().add(
+                            LevelPlanEditorChangeLevelFieldEvent(
+                                int.parse(form)));
+                      },
+                      controller: _levelNumberTextController,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(color: Colors.black, fontSize: 23),
+                      //keyboardType: TextInputType.multiline,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else {
+          throw Exception("unecpected state: $state");
+        }
+      },
+    );
+  }
+}
+
+class _BottomSheet extends StatelessWidget {
+  const _BottomSheet({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+      builder: (context, state) {
+        if (state is LevelPlanEditorMainState) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: Container(
+              height: 100,
+            ),
+          );
+        } else {
+          return ErrorWidget(Exception("unexpected state: $state"));
+        }
+      },
     );
   }
 }
