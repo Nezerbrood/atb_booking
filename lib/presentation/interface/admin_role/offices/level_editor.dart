@@ -24,7 +24,7 @@ class LevelEditor extends StatelessWidget {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          return Container();
+                          return const _DeleteLevelConfirmationPopup();
                         });
                   },
                   child: Padding(
@@ -55,7 +55,6 @@ class LevelEditor extends StatelessWidget {
                       _AddInfoButton()
                     ]),
                 _LevelNumberField(),
-                const _SaveButton(),
               ],
             ),
           ),
@@ -589,9 +588,14 @@ class _DeleteWorkspaceButton extends StatelessWidget {
                         BorderSide(width: 1, color: appThemeData.primaryColor),
                     borderRadius: BorderRadius.circular(7.0)),
                 onPressed: () {
-                  context
-                      .read<LevelPlanEditorBloc>()
-                      .add(LevelPlanEditorDeleteWorkspaceButtonPressEvent());
+                  showDialog(
+                      context: context,
+                      builder: (buildContext) {
+                        return BlocProvider.value(
+                          value: context.read<LevelPlanEditorBloc>(),
+                          child: _DeleteWorkspaceConfirmationPopup(),
+                        );
+                      });
                 },
                 color: appThemeData.primaryColor,
                 child: Padding(
@@ -643,10 +647,16 @@ class _AddInfoButton extends StatelessWidget {
                   //todo push event and show alertdialog
                   showModalBottomSheet(
                       context: context,
+                      isScrollControlled: true,
                       builder: (_) {
-                        return BlocProvider.value(
-                          value: context.read<LevelPlanEditorBloc>(),
-                          child: const _BottomSheet(),
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.75,
+                          child: Center(
+                            child: BlocProvider.value(
+                              value: context.read<LevelPlanEditorBloc>(),
+                              child: const _BottomSheet(),
+                            ),
+                          ),
                         );
                       });
                 },
@@ -753,6 +763,9 @@ class _LevelNumberField extends StatelessWidget {
     return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
       builder: (context, state) {
         if (state is LevelPlanEditorMainState) {
+          if (_levelNumberTextController.text != state.levelNumber.toString()) {
+            _levelNumberTextController.text = state.levelNumber.toString();
+          }
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
             child: Row(
@@ -819,19 +832,341 @@ class _BottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+          builder: (context, state) {
+            if (state is LevelPlanEditorMainState) {
+              return Text(
+                  state.mapOfPlanElements[state.selectedElementId]!.type.type);
+            } else {
+              return ErrorWidget(Exception("unexpected state: $state"));
+            }
+          },
+        ),
+      ),
+      body: Wrap(
+        alignment: WrapAlignment.center,
+
+        //mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const _DescriptionWorkspaceField(),
+          _NumberOfWorkspacesField(),
+          const _ActiveStatusAndButton(),
+          const _SaveButton(),
+        ],
+      ),
+    );
+  }
+}
+
+class _DescriptionWorkspaceField extends StatelessWidget {
+  static final TextEditingController _officeDescriptionController =
+      TextEditingController();
+
+  const _DescriptionWorkspaceField({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
       builder: (context, state) {
         if (state is LevelPlanEditorMainState) {
-          return Scaffold(
-            appBar: AppBar(),
-            body: Container(
-              height: 100,
+          var workspace = state.mapOfPlanElements[state.selectedElementId]!;
+          if (_officeDescriptionController.text != workspace.description) {
+            _officeDescriptionController.text = workspace.description;
+          }
+          ;
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Text("Описание",
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(
+                              color: Colors.black54,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w300)),
+                ),
+                Container(
+                  height: 0.3,
+                  color: Colors.black54,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextField(
+                    keyboardType: TextInputType.streetAddress,
+                    onTap: () {},
+                    onChanged: (form) {
+                      context.read<LevelPlanEditorBloc>().add(
+                          LevelPlanEditorChangeDescriptionFieldEvent(form));
+                    },
+                    controller: _officeDescriptionController,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(color: Colors.black, fontSize: 23),
+                    maxLines: 4,
+                    minLines: 2,
+                    maxLength: 1000,
+                    //keyboardType: TextInputType.multiline,
+                  ),
+                )
+              ],
             ),
           );
         } else {
-          return ErrorWidget(Exception("unexpected state: $state"));
+          throw Exception("unexpected state: $state");
         }
       },
+    );
+  }
+}
+
+class _NumberOfWorkspacesField extends StatelessWidget {
+  static final TextEditingController _numberOfWorkspacesController =
+      TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+      builder: (context, state) {
+        if (state is LevelPlanEditorMainState) {
+          var workspace = state.mapOfPlanElements[state.selectedElementId]!;
+          if (_numberOfWorkspacesController.text !=
+              workspace.numberOfWorkspaces.toString()) {
+            _numberOfWorkspacesController.text =
+                workspace.numberOfWorkspaces.toString();
+          }
+          if (workspace.type.id == 2) {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("Количество\nмест",
+                            textAlign: TextAlign.right,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                    color: Colors.black54,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w300)),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Container(
+                          height: 60,
+                          width: 0.3,
+                          color: Colors.black54,
+                        ),
+                        const SizedBox(
+                          width: 30,
+                        )
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        onTap: () {},
+                        onChanged: (form) {
+                          context.read<LevelPlanEditorBloc>().add(
+                              LevelPlanEditorChangeNumberOfWorkplacesFieldEvent(
+                                  int.parse(form)));
+                        },
+                        controller: _numberOfWorkspacesController,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(color: Colors.black, fontSize: 23),
+                        //keyboardType: TextInputType.multiline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        } else {
+          throw Exception("unexpected state: $state");
+        }
+      },
+    );
+  }
+}
+
+class _ActiveStatusAndButton extends StatelessWidget {
+  const _ActiveStatusAndButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(30.0),
+      child: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+        builder: (context, state) {
+          if (state is LevelPlanEditorMainState) {
+            var workspace = state.mapOfPlanElements[state.selectedElementId]!;
+            return Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(workspace.isActive ? "АКТИВНО" : "НЕ АКТИВНО",
+                          textAlign: TextAlign.right,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                  color: workspace.isActive
+                                      ? Colors.black54
+                                      : Colors.red,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w300)),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Container(
+                        height: 60,
+                        width: 0.3,
+                        color: Colors.black54,
+                      ),
+                      Container(
+                        width: 30,
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: MaterialButton(
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            width: 1, color: appThemeData.primaryColor),
+                        borderRadius: BorderRadius.circular(7.0)),
+                    onPressed: () {
+                      context
+                          .read<LevelPlanEditorBloc>()
+                          .add(LevelPlanEditorChangeActiveStatusEvent());
+                    },
+                    color: appThemeData.primaryColor,
+                    child: Text(
+                      !workspace.isActive ? "Активировать" : "Деактивировать",
+                      style: appThemeData.textTheme.titleMedium!.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            throw Exception("Unexpected state: $state");
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _DeleteLevelConfirmationPopup extends StatelessWidget {
+  const _DeleteLevelConfirmationPopup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Удалить этаж?'),
+      content: Text(
+        'После удаления все созданные брони на этом этаже будут отменены.\nВы уверены что хотите удалить этаж?',
+        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: Colors.black54, fontSize: 20, fontWeight: FontWeight.w300),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: Text(
+            'Отмена',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.black54,
+                fontSize: 20,
+                fontWeight: FontWeight.w500),
+          ),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: Text(
+            'Удалить',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.black54,
+                fontSize: 20,
+                fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DeleteWorkspaceConfirmationPopup extends StatelessWidget {
+  const _DeleteWorkspaceConfirmationPopup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Удалить место?'),
+      content: Text(
+        'После удаления все созданные брони этого места будут отменены.\nВы уверены что хотите удалить это место?',
+        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: Colors.black54, fontSize: 20, fontWeight: FontWeight.w300),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, 'Cancel');
+          },
+          child: Text(
+            'Отмена',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.black54,
+                fontSize: 20,
+                fontWeight: FontWeight.w500),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            context
+                .read<LevelPlanEditorBloc>()
+                .add(LevelPlanEditorDeleteWorkspaceButtonPressEvent());
+            Navigator.pop(context, 'OK');
+          },
+          child: Text(
+            'Удалить',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.black54,
+                fontSize: 20,
+                fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
     );
   }
 }

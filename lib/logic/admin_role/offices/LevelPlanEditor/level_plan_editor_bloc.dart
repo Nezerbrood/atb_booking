@@ -24,12 +24,13 @@ class _IdGenerator {
 class LevelPlanEditorBloc
     extends Bloc<LevelPlanEditorEvent, LevelPlanEditorState> {
   final Map<int, LevelPlanEditorElementData> _mapOfPlanElements = {};
-  static final Map<int,_Size> _mapLastSize = {
-    1:_Size(width:10,height: 10),
-    2:_Size(width: 20,height:20),
+  static final Map<int, _Size> _mapLastSize = {
+    1: _Size(width: 10, height: 10),
+    2: _Size(width: 20, height: 20),
   };
   int levelNumber = 0;
   int? _selectedElementId;
+
   LevelPlanEditorBloc() : super(LevelPlanEditorInitial()) {
     on<LevelPlanEditorEvent>((event, emit) {
       // TODO: implement event handler
@@ -44,7 +45,7 @@ class LevelPlanEditorBloc
       emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
           selectedElementId: _selectedElementId,
-      levelNumber: levelNumber));
+          levelNumber: levelNumber));
     });
 
     ///
@@ -54,7 +55,8 @@ class LevelPlanEditorBloc
       _changeSelectedElement(event.id);
       emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,levelNumber: levelNumber));
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
     });
 
     ///
@@ -68,7 +70,8 @@ class LevelPlanEditorBloc
       ///меняем выбраный элемент на созданный
       emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,levelNumber: levelNumber));
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
     });
 
     ///
@@ -79,7 +82,8 @@ class LevelPlanEditorBloc
           _mapOfPlanElements[event.id]!, event.newWidth, event.newHeight);
       emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,levelNumber: levelNumber));
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
     });
 
     ///
@@ -90,17 +94,51 @@ class LevelPlanEditorBloc
       _selectedElementId = null;
       emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,levelNumber: levelNumber));
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
     });
 
     ///
     ///
-    ///
-    on<LevelPlanEditorChangeLevelFieldEvent>((event,emit){
+    ///Изменяем номер этажа
+    on<LevelPlanEditorChangeLevelFieldEvent>((event, emit) {
       levelNumber = event.newLevel;
       emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,levelNumber: levelNumber));
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
+    });
+
+    ///
+    ///
+    /// Изменяем описание воркспейса
+    on<LevelPlanEditorChangeDescriptionFieldEvent>((event, emit) {
+      _changeDescriptionOfElement(_selectedElementId!, event.form);
+      emit(LevelPlanEditorMainState(
+          mapOfPlanElements: _mapOfPlanElements,
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
+    });
+
+    ///
+    ///
+    /// Изменяем статус (активно или нет) воркспейса
+    on<LevelPlanEditorChangeActiveStatusEvent>((event, emit) {
+      _switchActiveStatus(_selectedElementId!);
+      emit(LevelPlanEditorMainState(
+          mapOfPlanElements: _mapOfPlanElements,
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
+    });
+    ///
+    ///
+    /// Изменяем количество мест воркспейса
+    on<LevelPlanEditorChangeNumberOfWorkplacesFieldEvent>((event, emit) {
+      _changeCountOfWorkplaces(_selectedElementId!,event.countOfWorkplaces);
+      emit(LevelPlanEditorMainState(
+          mapOfPlanElements: _mapOfPlanElements,
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
     });
 
     ///
@@ -109,11 +147,14 @@ class LevelPlanEditorBloc
     on<LevelPlanEditorForceUpdateEvent>((event, emit) {
       emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,levelNumber: levelNumber));
+          selectedElementId: _selectedElementId,
+          levelNumber: levelNumber));
     });
+
     emit(LevelPlanEditorMainState(
         mapOfPlanElements: _mapOfPlanElements,
-        selectedElementId: _selectedElementId,levelNumber: levelNumber));
+        selectedElementId: _selectedElementId,
+        levelNumber: levelNumber));
   }
 
   /// функция размещает елемент на плане,
@@ -170,7 +211,7 @@ class LevelPlanEditorBloc
         positionY: 50,
         minSize: 10,
         width: _getLastSize(type.id).width,
-        height:_getLastSize(type.id).height,
+        height: _getLastSize(type.id).height,
         numberOfWorkspaces: 20,
         type: type,
         description: 'description type 2',
@@ -193,11 +234,10 @@ class LevelPlanEditorBloc
     }
     levelPlanEditorElementData.width = newWidth;
     levelPlanEditorElementData.height = newHeight;
-    _mapLastSize[levelPlanEditorElementData.type.id] = _Size(width: newWidth,height: newHeight);
+    _mapLastSize[levelPlanEditorElementData.type.id] =
+        _Size(width: newWidth, height: newHeight);
   }
 
-  ///
-  ///
   ///метод удаляет место
   void _deleteElement(int? selectedElementId) {
     _mapOfPlanElements.remove(selectedElementId);
@@ -206,6 +246,21 @@ class LevelPlanEditorBloc
   _Size _getLastSize(int id) {
     _Size lastSize = _mapLastSize[id]!;
     return lastSize;
+  }
+
+  void _changeDescriptionOfElement(
+      int selectedElementId, String newDescription) {
+    _mapOfPlanElements[selectedElementId]!.description = newDescription;
+  }
+
+  /// меняем статус для места
+  void _switchActiveStatus(int selectedElementId) {
+    _mapOfPlanElements[selectedElementId]!.isActive =
+        !(_mapOfPlanElements[selectedElementId]!.isActive);
+  }
+  /// меняем количество мест в воркспейсе
+  void _changeCountOfWorkplaces(int selectedElementId,int count) {
+    _mapOfPlanElements[selectedElementId]!.numberOfWorkspaces = count;
   }
 }
 

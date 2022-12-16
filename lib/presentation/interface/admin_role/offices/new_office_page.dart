@@ -172,7 +172,7 @@ class _OfficeAddress extends StatelessWidget {
                   .textTheme
                   .headlineSmall
                   ?.copyWith(color: Colors.black, fontSize: 20),
-              maxLines: 20,
+              maxLines: 2,
               minLines: 1,
               maxLength: 1000,
               //keyboardType: TextInputType.multiline,

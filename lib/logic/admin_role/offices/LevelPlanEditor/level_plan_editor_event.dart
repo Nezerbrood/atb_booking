@@ -13,7 +13,7 @@ class LevelPlanEditorElementMoveEvent extends LevelPlanEditorEvent {
       this.id, this.newPositionY, this.newPositionX);
 }
 
-class LevelPlanEditorElementChangeSizeEvent extends LevelPlanEditorEvent{
+class LevelPlanEditorElementChangeSizeEvent extends LevelPlanEditorEvent {
   final int id;
 
   final double newWidth;
@@ -21,6 +21,7 @@ class LevelPlanEditorElementChangeSizeEvent extends LevelPlanEditorEvent{
 
   LevelPlanEditorElementChangeSizeEvent(this.id, this.newWidth, this.newHeight);
 }
+
 class LevelPlanEditorElementTapEvent extends LevelPlanEditorEvent {
   final int id;
 
@@ -35,13 +36,28 @@ class LevelPlanEditorCreateElementEvent extends LevelPlanEditorEvent {
   LevelPlanEditorCreateElementEvent(this.type);
 }
 
-class LevelPlanEditorForceUpdateEvent extends LevelPlanEditorEvent {
-}
+class LevelPlanEditorForceUpdateEvent extends LevelPlanEditorEvent {}
 
-class LevelPlanEditorDeleteWorkspaceButtonPressEvent extends LevelPlanEditorEvent {
-}
+class LevelPlanEditorDeleteWorkspaceButtonPressEvent
+    extends LevelPlanEditorEvent {}
+
 class LevelPlanEditorChangeLevelFieldEvent extends LevelPlanEditorEvent {
   final int newLevel;
 
   LevelPlanEditorChangeLevelFieldEvent(this.newLevel);
 }
+
+class LevelPlanEditorChangeDescriptionFieldEvent extends LevelPlanEditorEvent {
+  final String form;
+
+  LevelPlanEditorChangeDescriptionFieldEvent(this.form);
+}
+
+class LevelPlanEditorChangeNumberOfWorkplacesFieldEvent
+    extends LevelPlanEditorEvent {
+  final int countOfWorkplaces;
+
+  LevelPlanEditorChangeNumberOfWorkplacesFieldEvent(this.countOfWorkplaces);
+}
+
+class LevelPlanEditorChangeActiveStatusEvent extends LevelPlanEditorEvent {}

@@ -153,7 +153,7 @@ class _OfficeAddress extends StatelessWidget {
                   .textTheme
                   .headlineSmall
                   ?.copyWith(color: Colors.black, fontSize: 23),
-              maxLines: 20,
+              maxLines: 4,
               minLines: 1,
               maxLength: 1000,
               //keyboardType: TextInputType.multiline,
@@ -532,7 +532,6 @@ class _AddNewLevelButton extends StatelessWidget {
     );
   }
 }
-
 
 class _AddLevelField extends StatelessWidget {
   static TextEditingController? _levelFieldController;
