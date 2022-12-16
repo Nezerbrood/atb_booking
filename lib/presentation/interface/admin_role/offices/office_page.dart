@@ -1,11 +1,12 @@
 import 'package:atb_booking/data/models/level_plan.dart';
+import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/booking_stats/admin_booking_stats_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/bookings_page/admin_bookings_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/bookings_page.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/booking_stats_page.dart';
-import 'package:atb_booking/presentation/interface/admin_role/offices/create_level_page.dart';
+import 'package:atb_booking/presentation/interface/admin_role/offices/level_editor_page.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -229,7 +230,7 @@ class _BookingRange extends StatelessWidget {
                       .read<AdminOfficePageBloc>()
                       .add(AdminBookingRangeChangeEvent(int.parse(form)));
                 },
-                onSubmitted: (form){
+                onSubmitted: (form) {
                   context
                       .read<AdminOfficePageBloc>()
                       .add(AdminOfficePageUpdateFieldsEvent());
@@ -287,8 +288,16 @@ class _WorkTimeRange extends StatelessWidget {
               showDividers: true,
               minorTicksPerInterval: 2,
               values: values,
-              min: DateTime(state.workTimeRange.start.year,state.workTimeRange.start.month,state.workTimeRange.start.day,0),
-              max: DateTime(state.workTimeRange.start.year,state.workTimeRange.start.month,state.workTimeRange.start.day,24),
+              min: DateTime(
+                  state.workTimeRange.start.year,
+                  state.workTimeRange.start.month,
+                  state.workTimeRange.start.day,
+                  0),
+              max: DateTime(
+                  state.workTimeRange.start.year,
+                  state.workTimeRange.start.month,
+                  state.workTimeRange.start.day,
+                  24),
               showLabels: true,
               interval: 4,
               stepDuration: const SliderStepDuration(minutes: 30),
@@ -334,40 +343,41 @@ class _LevelsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
-      child:
-       Column(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: Text("Этажи",
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Colors.black54,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w300)),
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: Text("Этажи",
+                textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.black54,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w300)),
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Container(
+            height: 0.3,
+            width: double.infinity,
+            color: Colors.black54,
+          ),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: state.levels.length,
+            itemBuilder: (context, index) {
+              return _LevelCard(level: state.levels[index]);
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 8),
+            child: _AddNewLevelButton(
+              state: state,
             ),
-            const SizedBox(
-              width: 5,
-            ),
-            Container(
-              height: 0.3,
-              width: double.infinity,
-              color: Colors.black54,
-            ),
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: state.levels.length,
-              itemBuilder: (context, index) {
-                return _LevelCard(level: state.levels[index]);
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5.0,vertical: 8),
-              child: _AddNewLevelButton(state: state,),
-            )
-          ],
-        ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -379,8 +389,19 @@ class _LevelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        title: Text("${level.number} Этаж"),
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            print("LEVEL ID: ${level.id}");
+            return BlocProvider(
+              create: (context) => LevelPlanEditorBloc(level.id),
+              child: const LevelEditorPage(),
+            );
+          }));
+        },
+        child: ListTile(
+          title: Text("${level.number} Этаж"),
+        ),
       ),
     );
   }
@@ -436,9 +457,9 @@ class _StatisticsButton extends StatelessWidget {
       onPressed: () {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => BlocProvider<AdminBookingStatsBloc>(
-              create: (context) => AdminBookingStatsBloc(),
-              child: AdminBookingsStatsPage(),
-            )));
+                  create: (context) => AdminBookingStatsBloc(),
+                  child: AdminBookingsStatsPage(),
+                )));
       },
       color: appThemeData.primaryColor,
       child: Row(
@@ -506,9 +527,7 @@ class _AddNewLevelButton extends StatelessWidget {
           side: BorderSide(width: 1, color: appThemeData.primaryColor),
           borderRadius: BorderRadius.circular(10.0)),
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const AdminCreateLevelPage(),
-        ));
+        // todo add onpress
       },
       color: appThemeData.primaryColor,
       child: Padding(
@@ -597,7 +616,7 @@ class _AddLevelField extends StatelessWidget {
                       .read<AdminOfficePageBloc>()
                       .add(AdminBookingRangeChangeEvent(int.parse(form)));
                 },
-                onSubmitted: (form){
+                onSubmitted: (form) {
                   context
                       .read<AdminOfficePageBloc>()
                       .add(AdminOfficePageUpdateFieldsEvent());

@@ -1,3 +1,4 @@
+import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
 import 'package:atb_booking/data/services/workspace_type_repository.dart';
 import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
@@ -8,57 +9,63 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 double SCALE_FACTOR = 3.9;
 
-class LevelEditor extends StatelessWidget {
-  const LevelEditor({Key? key}) : super(key: key);
+class LevelEditorPage extends StatelessWidget {
+  const LevelEditorPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => LevelPlanEditorBloc(),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text("этаж №"), //todo add level to string
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return const _DeleteLevelConfirmationPopup();
-                        });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "удалить этаж",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(
-                              decoration: TextDecoration.underline,
-                              color: Colors.red,
-                              fontSize: 20),
-                    ),
-                  ))
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                const _HorizontalWorkspaceBar(),
-                const _LevelPlanEditor(),
-                const _TitleUnderPlan(),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      _DeleteWorkspaceButton(),
-                      _AddInfoButton()
-                    ]),
-                _LevelNumberField(),
-              ],
-            ),
-          ),
-        ));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Этаж"), //todo add level to string
+        actions: [
+          TextButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const _DeleteLevelConfirmationPopup();
+                    });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "удалить этаж",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      decoration: TextDecoration.underline,
+                      color: Colors.red,
+                      fontSize: 20),
+                ),
+              ))
+        ],
+      ),
+      body: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+        builder: (context, state) {
+          if (state is LevelPlanEditorMainState) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  const _HorizontalWorkspaceBar(),
+                  const _LevelPlanEditor(),
+                  const _TitleUnderPlan(),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        _DeleteWorkspaceButton(),
+                        _AddInfoButton()
+                      ]),
+                  _LevelNumberField(),
+                  const _UploadBackgroundImageButton()
+                ],
+              ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
   }
 }
 
@@ -112,7 +119,7 @@ class _LevelPlanEditor extends StatelessWidget {
 
 class _LevelPlanEditorElementWidget extends StatelessWidget {
   final int id;
-  final LevelPlanEditorElementData data;
+  final LevelPlanElementData data;
   final bool isSelect;
   final double scaleInteractiveViewValue;
 
@@ -472,8 +479,8 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
                               id,
-                              data.width + (details.delta.dx / SCALE_FACTOR),
-                              data.height,
+                              data.width,
+                              data.height + (details.delta.dy / SCALE_FACTOR),
                             ));
                       },
                       child: Container(
@@ -1167,6 +1174,79 @@ class _DeleteWorkspaceConfirmationPopup extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _UploadBackgroundImageButton extends StatelessWidget {
+  const _UploadBackgroundImageButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+        builder: (context, state) {
+          if (state is LevelPlanEditorMainState) {
+            if (state.selectedElementId == null) {
+              return MaterialButton(
+                shape: RoundedRectangleBorder(
+                    side:
+                        BorderSide(width: 1, color: appThemeData.primaryColor),
+                    borderRadius: BorderRadius.circular(7.0)),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (contextB) {
+                        return BlocProvider.value(
+                          value: context.read<LevelPlanEditorBloc>(),
+                          child: _UploadImageToBackgroundPopup(),
+                        );
+                      });
+                },
+                color: appThemeData.primaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        "Изменить изображение\n"
+                        "на заднем плане",
+                        style: appThemeData.textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      const Icon(Icons.image)
+                    ],
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          } else {
+            throw Exception("Unexpected state: $state");
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _UploadImageToBackgroundPopup extends StatelessWidget {
+  const _UploadImageToBackgroundPopup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Container(
+        width: 100,
+        height: 100,
+      ),
     );
   }
 }

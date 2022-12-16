@@ -13,15 +13,18 @@ class Level {
 
 class LevelPlan {
   final int id;
-  final String? plan;
-  final List<WorkspaceOnPlan> workspaces;
+  final int number;
+  final int? planId;
+  final List<LevelPlanElementData> workspaces;
 
-  LevelPlan({required this.id, required this.plan, required this.workspaces});
+  LevelPlan({required this.id, required this.number,required this.planId, required this.workspaces});
 
   LevelPlan.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        plan = json['plan'],
+        planId = json['planId'],
+        number = json['number'],
         workspaces = (json['workspaces'] as List<dynamic>)
-            .map((json) => WorkspaceOnPlan.fromJson(json))
+            .map((json) => LevelPlanElementData.fromJson(json))
             .toList();
 }
+

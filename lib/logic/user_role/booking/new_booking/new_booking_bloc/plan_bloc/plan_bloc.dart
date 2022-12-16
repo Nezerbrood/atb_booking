@@ -24,7 +24,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
   LevelPlan? levelPlan;
   int? maxBookingRangeInDays;
   Map<int, WorkspaceType>? workspaceTypes;
-  WorkspaceOnPlan? selectedWorkspace;
+  LevelPlanElementData? selectedWorkspace;
   DateTime selectedDate = DateTime.now().add(Duration(days: 1));
   final LevelPlanRepository levelPlanRepository = LevelPlanRepository();
   final WorkspaceTypeRepository workspaceTypeRepository =
@@ -43,8 +43,9 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
             selectedWorkspace,
             selectedWorkspace == null
                 ? _defaultTitle
-                : workspaceTypes![selectedWorkspace!.typeId]!.type,
-            levelPlan!.plan,
+                : selectedWorkspace!.type.type,
+            null//todo replace to imageid
+            //levelPlan!.plan,
           ));
         } else {
           selectedWorkspace = event.workspace;
@@ -57,8 +58,9 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
             selectedWorkspace,
             selectedWorkspace == null
                 ? _defaultTitle
-                : workspaceTypes![selectedWorkspace!.typeId]!.type,
-            levelPlan!.plan,
+                : workspaceTypes![selectedWorkspace!.type.id]!.type,
+            null//todo replace to imageid
+            //levelPlan!.plan,
           ));
         }
       } catch (_) {}
@@ -77,8 +79,9 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
           selectedWorkspace,
           selectedWorkspace == null
               ? _defaultTitle
-              : workspaceTypes![selectedWorkspace!.typeId]!.type,
-          levelPlan!.plan,
+              : selectedWorkspace!.type.type,
+          null
+          //levelPlan!.plan,
         ));
       } catch (_) {
         emit(PlanErrorState(selectedDate));

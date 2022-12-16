@@ -6,17 +6,17 @@ import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class PlanElement extends StatelessWidget {
+class PlanElementWidget extends StatelessWidget {
   final bool isActive;
   final bool isSelect;
-  final WorkspaceOnPlan workspace;
+  final LevelPlanElementData workspace;
   final double x;
   final double y;
   final double height;
   final double width;
   final CachedNetworkImage cachedNetworkImage;
 
-  const PlanElement(
+  const PlanElementWidget(
       {super.key,
       required this.x,
       required this.y,
@@ -69,21 +69,21 @@ class PlanElement extends StatelessWidget {
         ));
   }
 
-  static List<PlanElement> getListOfPlanElement(
-      List<WorkspaceOnPlan> workspaces, WorkspaceOnPlan? selectedWorkplace, Map<int, WorkspaceType> types) {
-    List<PlanElement> elements = [];
-    for (WorkspaceOnPlan workspace in workspaces) {
-      elements.add(PlanElement(
+  static List<PlanElementWidget> getListOfPlanElementWidget(
+      List<LevelPlanElementData> workspaces, LevelPlanElementData? selectedWorkplace, Map<int, WorkspaceType> types) {
+    List<PlanElementWidget> elements = [];
+    for (LevelPlanElementData workspace in workspaces) {
+      elements.add(PlanElementWidget(
         isActive: workspace.isActive,
         x: workspace.positionX,
         y: workspace.positionY,
-        height: workspace.sizeY,
+        height: workspace.height,
         // workspace.height,
-        width: workspace.sizeX,
+        width: workspace.width,
         //workspace.width,
         workspace: workspace,
         isSelect: workspace == selectedWorkplace ? true : false,
-        cachedNetworkImage: getCachedNetworkImage(workspace.typeId),
+        cachedNetworkImage: getCachedNetworkImage(workspace.type.id),
       )); //workspace.isSelect));
     }
     return elements;

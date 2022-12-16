@@ -19,8 +19,8 @@ class PlanLoadedState extends PlanState {
   final double height;
   final double width;
   //final Image background;
-  final List<WorkspaceOnPlan> workspaces;
-  final WorkspaceOnPlan? selectedWorkspace;
+  final List<LevelPlanElementData> workspaces;
+  final LevelPlanElementData? selectedWorkspace;
   final Map<int,WorkspaceType> workspaceTypes;
   final String? planBackgroundImage;
   PlanLoadedState(DateTime selectedDate,this.workspaces,this.workspaceTypes, this.height, this.width, this.selectedWorkspace, this.title, this.planBackgroundImage,)
@@ -31,8 +31,8 @@ class PlanWorkplaceSelectedState extends PlanState {
   final double height;
   final double width;
   //final Image background;
-  final List<WorkspaceOnPlan> workspaces;
-  final WorkspaceOnPlan? selectedWorkspace;
+  final List<LevelPlanElementData> workspaces;
+  final LevelPlanElementData? selectedWorkspace;
   final Map<int,WorkspaceType> workspaceTypes;
   final String? planBackgroundImage;
   PlanWorkplaceSelectedState(DateTime selectedDate, this.workspaces,this.workspaceTypes, this.height, this.width, this.selectedWorkspace, this.title, this.planBackgroundImage)

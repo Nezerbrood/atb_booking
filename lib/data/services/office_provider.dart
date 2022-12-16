@@ -37,7 +37,7 @@ class OfficeProvider {
     Map<String, String> headers = {};
     var token = await NetworkController().getAccessToken();
     headers["Authorization"] = 'Bearer $token';
-    var uri = Uri.http(baseUrl, '/api/offices/levels/$id');
+    var uri = Uri.http(baseUrl, '/api/officeLevels/$id');
     final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       print('successful fetching levels');

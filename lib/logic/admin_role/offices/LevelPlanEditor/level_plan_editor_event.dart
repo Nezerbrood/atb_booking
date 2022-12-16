@@ -61,3 +61,9 @@ class LevelPlanEditorChangeNumberOfWorkplacesFieldEvent
 }
 
 class LevelPlanEditorChangeActiveStatusEvent extends LevelPlanEditorEvent {}
+
+class LevelPlanEditorLoadWorkspacesFromServerEvent extends LevelPlanEditorEvent{
+}
+class LevelPlanEditorSendChangesToServerEvent extends LevelPlanEditorEvent{
+
+}

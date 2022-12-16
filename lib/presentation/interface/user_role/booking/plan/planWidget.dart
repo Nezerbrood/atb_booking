@@ -39,7 +39,7 @@ class PlanWidget extends StatelessWidget {
                     ),
                     child: Stack(
                       //fit: StackFit.expand,
-                      children: PlanElement.getListOfPlanElement(state.workspaces,
+                      children: PlanElementWidget.getListOfPlanElementWidget(state.workspaces,
                           state.selectedWorkspace, state.workspaceTypes),
                     ),
                   ),
@@ -81,7 +81,7 @@ class PlanWidget extends StatelessWidget {
                     ),
                     child: Stack(
                       //fit: StackFit.expand,
-                      children: PlanElement.getListOfPlanElement(state.workspaces,
+                      children: PlanElementWidget.getListOfPlanElementWidget(state.workspaces,
                           state.selectedWorkspace, state.workspaceTypes),
                     ),
                   ),

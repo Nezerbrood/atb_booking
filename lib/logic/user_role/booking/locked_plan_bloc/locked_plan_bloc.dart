@@ -30,7 +30,7 @@ class LockedPlanBloc extends Bloc<LockedPlanEvent, LockedPlanState> {
     on<LockedPlanLoadEvent>((event, emit) async {
       try {
         workspaceTypes = await workspaceTypeRepository.getMapOfTypes();
-        levelPlan = await levelPlanRepository.getPlanByLevelId(event.levelId);
+        LevelPlan levelPlan = await levelPlanRepository.getPlanByLevelId(event.levelId);
         selectedWorkspaceId = event.workspaceId;
         emit(LockedPlanLoadedState(
           levelPlan!.workspaces,
@@ -38,7 +38,7 @@ class LockedPlanBloc extends Bloc<LockedPlanEvent, LockedPlanState> {
           HEIGHT,
           WIDTH,
           selectedWorkspaceId!,
-          levelPlan!.plan
+          null//todo replace
         ));
       } catch (_) {
         emit(LockedPlanErrorState());

@@ -36,6 +36,7 @@ class AdminOfficePageBloc
         emit(AdminOfficePageLoadedState(address!, bookingRangeDays!,
             workRange!, isSaveButtonActive(), levels!));
       } catch (_) {
+        print(_);
         emit(AdminOfficePageErrorState());
       }
     });

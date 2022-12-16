@@ -12,7 +12,7 @@ class LockedPlanLoadingState extends LockedPlanState {
 class LockedPlanLoadedState extends LockedPlanState {
   final double height;
   final double width;
-  final List<WorkspaceOnPlan> workspaces;
+  final List<LevelPlanElementData> workspaces;
   final int selectedWorkspaceId;
   final Map<int,WorkspaceType> workspaceTypes;
   final String? planBackgroundImage;
@@ -23,8 +23,8 @@ class PlanWorkplaceSelectedState extends LockedPlanState {
   final double height;
   final double width;
   //final Image background;
-  final List<WorkspaceOnPlan> workspaces;
-  final WorkspaceOnPlan? selectedWorkspace;
+  final List<LevelPlanElementData> workspaces;
+  final LevelPlanElementData? selectedWorkspace;
   final Map<int,WorkspaceType> workspaceTypes;
   final String? planBackgroundImage;
   PlanWorkplaceSelectedState(DateTime selectedDate, this.workspaces,this.workspaceTypes, this.height, this.width, this.selectedWorkspace, this.title, this.planBackgroundImage);

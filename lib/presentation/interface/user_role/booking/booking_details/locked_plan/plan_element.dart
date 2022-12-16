@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class LockedPlanElement extends StatelessWidget {
   final bool isActive;
   final bool isSelect;
-  final WorkspaceOnPlan workspace;
+  final LevelPlanElementData workspace;
   final double x;
   final double y;
   final double height;
@@ -62,20 +62,20 @@ class LockedPlanElement extends StatelessWidget {
   }
 
   static List<LockedPlanElement> getListOfLockedPlanElement(
-      List<WorkspaceOnPlan> workspaces, int selectedWorkspaceId, Map<int, WorkspaceType> types) {
+      List<LevelPlanElementData> workspaces, int selectedWorkspaceId, Map<int, WorkspaceType> types) {
     List<LockedPlanElement> elements = [];
-    for (WorkspaceOnPlan item in workspaces) {
+    for (LevelPlanElementData item in workspaces) {
       elements.add(LockedPlanElement(
         isActive: item.isActive,
         x: item.positionX,
         y: item.positionY,
-        height: item.sizeY,
+        height: item.height,
         // workspace.height,
-        width: item.sizeX,
+        width: item.width,
         //workspace.width,
         workspace: item,
         isSelect: item.id == selectedWorkspaceId,
-        cachedNetworkImage: getCachedNetworkImage(item.typeId),
+        cachedNetworkImage: getCachedNetworkImage(item.type.id),
       )); //workspace.isSelect));
     }
     return elements;
