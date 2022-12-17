@@ -8,8 +8,8 @@ import 'level_plan_provider.dart';
 // }
 
 class LevelPlanRepository {
-  final LevelPlanProvider _levelPlanProvider = LevelPlanProvider();
-  Future<LevelPlan> getPlanByLevelId(int id) => _levelPlanProvider.getPlanByLevelId(id);
+  final LevelProvider _levelPlanProvider = LevelProvider();
+  Future<Level> getPlanByLevelId(int id) => _levelPlanProvider.getPlanByLevelId(id);
   // Future<LevelPlan> getPlanByLevelId(int id) async {
   //   var levelPlan =
   //       LevelPlan(id: 42, plan: "https://i.ibb.co/vZJzGDp/map.png", workspaces: [

@@ -208,7 +208,7 @@ class _LevelField extends StatelessWidget {
                 //color: appThemeData.colorScheme.tertiary,
                 borderRadius: BorderRadius.circular(10).copyWith(),
               ),
-              child: DropdownSearch<Level>(
+              child: DropdownSearch<LevelListItem>(
                 selectedItem: state.selectedLevel,
                 onChanged: (level) {
                   if (level != null) {
@@ -232,10 +232,10 @@ class _LevelField extends StatelessWidget {
                 //items: snapshot.data!,
                 asyncItems: (state).getFutureLevelList,
                 //asyncItems: getFutureLevelList,
-                itemAsString: (Level level) {
+                itemAsString: (LevelListItem level) {
                   return "${level.number} Этаж";
                 },
-                dropdownBuilder: (BuildContext context, Level? level) {
+                dropdownBuilder: (BuildContext context, LevelListItem? level) {
                   if (level != null) {
                     return Text(
                       "${level.number} Этаж",

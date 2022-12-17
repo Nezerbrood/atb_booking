@@ -31,7 +31,7 @@ class OfficeProvider {
     }
   }
 
-  Future<List<Level>> getLevelsByOfficeId(int id) async {
+  Future<List<LevelListItem>> getLevelsByOfficeId(int id) async {
     print("PROVIDER getLevelsByOfficeId");
     var baseUrl = NetworkController().getUrl();
     Map<String, String> headers = {};
@@ -43,7 +43,7 @@ class OfficeProvider {
       print('successful fetching levels');
       final List<dynamic> levelsJson =
           json.decode(utf8.decode(response.bodyBytes));
-      return levelsJson.map((json) => Level.fromJson(json)).toList();
+      return levelsJson.map((json) => LevelListItem.fromJson(json)).toList();
     } else if (response.statusCode == 401) {
       /// Обновление access токена
       await NetworkController().updateAccessToken();
@@ -72,6 +72,59 @@ class OfficeProvider {
       return getOfficeById(id);
     } else {
       throw Exception('Error fetching office');
+    }
+  }
+
+  Future<void> changeOffice(Office office) async {
+    var baseUrl = NetworkController().getUrl();
+    Map<String, String> headers = {};
+    var token = await NetworkController().getAccessToken();
+    headers["Authorization"] = 'Bearer $token';
+    headers["Content-type"] = 'application/json; charset=utf-8';
+    headers["Accept"] = "application/json";
+
+    var body = jsonEncode(office.toJson());
+
+    var uri = Uri.http(baseUrl, '/api/offices/${office.id}');
+    final response = await http.put(uri, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      print("successful editing office");
+    } else if (response.statusCode == 401) {
+      /// Обновление access токена
+      await NetworkController().updateAccessToken();
+      return changeOffice(office);
+    } else {
+      //print(json.decode(utf8.decode(response.bodyBytes)));
+      print("'Error editing office, status code: ${response.statusCode}");
+      throw Exception('Error editing office');
+    }
+  }
+
+  Future<int> createOffice(Office office)async {
+    var baseUrl = NetworkController().getUrl();
+    Map<String, String> headers = {};
+    var token = await NetworkController().getAccessToken();
+    headers["Authorization"] = 'Bearer $token';
+    headers["Content-type"] = 'application/json; charset=utf-8';
+    headers["Accept"] = "application/json";
+
+    var body = jsonEncode(office.toJson());
+
+    var uri = Uri.http(baseUrl, '/api/offices');
+    final response = await http.post(uri, headers: headers, body: body);
+    if (response.statusCode == 201) {
+      var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      int id = jsonResponse['id'];
+      print("successful create office");
+      return id;
+    } else if (response.statusCode == 401) {
+      /// Обновление access токена
+      await NetworkController().updateAccessToken();
+      return createOffice(office);
+    } else {
+      //print(json.decode(utf8.decode(response.bodyBytes)));
+      print("'Error create office, status code: ${response.statusCode}");
+      throw Exception('Error create office');
     }
   }
 }

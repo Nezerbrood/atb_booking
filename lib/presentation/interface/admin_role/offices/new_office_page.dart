@@ -1,16 +1,21 @@
 import 'package:atb_booking/data/models/city.dart';
 import 'package:atb_booking/data/services/city_provider.dart';
+import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
+import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
+import 'package:atb_booking/presentation/interface/admin_role/offices/office_page.dart';
+import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-
 class NewOfficePage extends StatelessWidget {
   const NewOfficePage({Key? key}) : super(key: key);
-  static final TextEditingController cityInputController = TextEditingController();
+  static final TextEditingController cityInputController =
+      TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     print("crete city_controller)");
@@ -30,12 +35,15 @@ class NewOfficePage extends StatelessWidget {
             if (state is NewOfficePageLoadedState) {
               return Column(
                 children: [
-                  _CityField(cityInputController: cityInputController,),
+                  _CityField(
+                    cityInputController: cityInputController,
+                  ),
                   _OfficeAddress(
                     state: state,
                   ),
                   _BookingRange(state: state),
                   _WorkTimeRange(state: state),
+                  if (state.buttonIsActive) const _CreateButton()
                 ],
               );
             } else if (state is NewOfficePageInitialState) {
@@ -44,8 +52,10 @@ class NewOfficePage extends StatelessWidget {
                   stream: null,
                   builder: (context, snapshot) {
                     return Column(
-                      children:[
-                        _CityField(cityInputController: cityInputController,),
+                      children: [
+                        _CityField(
+                          cityInputController: cityInputController,
+                        ),
                       ],
                     );
                   });
@@ -59,7 +69,6 @@ class NewOfficePage extends StatelessWidget {
   }
 }
 
-
 class _CityField extends StatelessWidget {
   ///
   ///City input fields
@@ -67,6 +76,7 @@ class _CityField extends StatelessWidget {
   final TextEditingController cityInputController;
 
   const _CityField({super.key, required this.cityInputController});
+
   @override
   Widget build(BuildContext context) {
     print(cityInputController.text);
@@ -87,7 +97,8 @@ class _CityField extends StatelessWidget {
               // context
               //     .read<NewOfficePageBloc>()
               //     .add(NewOfficePageUpdateFieldsEvent());
-              return CityProvider().getCitiesByName(pattern);// //CityRepository().getAllCities();
+              return CityProvider().getCitiesByName(
+                  pattern); // //CityRepository().getAllCities();
             },
 
             itemBuilder: (context, City suggestion) {
@@ -107,7 +118,7 @@ class _CityField extends StatelessWidget {
               //todo _selectedCity = suggestion;
             },
             validator: (value) =>
-            value!.isEmpty ? 'Please select a city' : null,
+                value!.isEmpty ? 'Please select a city' : null,
             //onSaved: (value) => this._selectedCity = value,
           ),
         );
@@ -153,9 +164,7 @@ class _OfficeAddress extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: TextField(
-              decoration: InputDecoration(
-                  hintText: 'Введите адресс'
-              ),
+              decoration: const InputDecoration(hintText: 'Введите адресс'),
               keyboardType: TextInputType.streetAddress,
               onTap: () {
                 context
@@ -294,7 +303,7 @@ class _WorkTimeRange extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
           child: SfRangeSlider(
               showTicks: true,
               showDividers: true,
@@ -322,6 +331,80 @@ class _WorkTimeRange extends StatelessWidget {
               }),
         ),
       ],
+    );
+  }
+}
+
+class _CreateButton extends StatelessWidget {
+  const _CreateButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AtbElevatedButton(
+      onPressed: () {
+        // Navigator.of(context).popUntil((route) {
+        //   return route.isFirst;
+        // });
+        // Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(builder: (context) {
+        //       return Scaffold(
+        //         appBar: AppBar(),
+        //         body: Container(
+        //           color: Colors.purple,
+        //         ),
+        //       );
+        //     })
+        // );
+        showDialog(
+            useRootNavigator: false,
+            context: context,
+            builder: (context_) {
+              return BlocProvider.value(
+                value: context.read<NewOfficePageBloc>(),
+                child:  MultiBlocProvider(providers: [
+                  BlocProvider.value(value: context.read<AdminOfficePageBloc>(),),
+                  BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
+                ], child: const _CreateAlertDialog()),
+              );
+            });
+        context
+            .read<NewOfficePageBloc>()
+            .add(NewOfficePageButtonPressEvent(context));
+      },
+      text: "Создать",
+    );
+  }
+}
+
+class _CreateAlertDialog extends StatelessWidget {
+  const _CreateAlertDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: BlocListener<NewOfficePageBloc, NewOfficePageState>(
+        child: const CircularProgressIndicator(),
+        listener: (_, state) {
+          if (state is NewOfficePageSuccessfulCreatedState) {
+            context.read<AdminOfficePageBloc>().add(OfficePageLoadEvent(state.officeId));
+            Navigator.pop(context);
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context_) {
+              return MultiBlocProvider(
+                  providers: [BlocProvider.value(
+                    value: context.read<NewOfficePageBloc>(),
+                  ),
+                    BlocProvider.value(
+                      value: context.read<AdminOfficePageBloc>(),
+                    ),
+                    BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),],
+                  child: const OfficePage());
+            }));
+
+          }
+        },
+      ),
     );
   }
 }

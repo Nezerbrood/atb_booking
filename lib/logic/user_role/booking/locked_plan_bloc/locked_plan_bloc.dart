@@ -20,7 +20,7 @@ class LockedPlanBloc extends Bloc<LockedPlanEvent, LockedPlanState> {
 
   static const double WIDTH = 350;
   static const double HEIGHT = 350;
-  LevelPlan? levelPlan;
+  Level? levelPlan;
   Map<int, WorkspaceType>? workspaceTypes;
   int? selectedWorkspaceId;
   final LevelPlanRepository levelPlanRepository = LevelPlanRepository();
@@ -30,7 +30,7 @@ class LockedPlanBloc extends Bloc<LockedPlanEvent, LockedPlanState> {
     on<LockedPlanLoadEvent>((event, emit) async {
       try {
         workspaceTypes = await workspaceTypeRepository.getMapOfTypes();
-        LevelPlan levelPlan = await levelPlanRepository.getPlanByLevelId(event.levelId);
+        Level levelPlan = await levelPlanRepository.getPlanByLevelId(event.levelId);
         selectedWorkspaceId = event.workspaceId;
         emit(LockedPlanLoadedState(
           levelPlan!.workspaces,

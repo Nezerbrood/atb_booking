@@ -1,6 +1,7 @@
 import 'package:atb_booking/data/models/city.dart';
 import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/data/services/city_provider.dart';
+import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
@@ -19,17 +20,23 @@ class AdminOfficesScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Офисы")),
       body: Column(
         children: [
-          _CityField(),
+          const _CityField(),
           _OfficesList(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return BlocProvider<NewOfficePageBloc>(
-              create: (context) => NewOfficePageBloc(),
-              child: const NewOfficePage(),
-            );
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (bcontext) {
+            return MultiBlocProvider(providers: [
+              BlocProvider.value(
+                value: context.read<NewOfficePageBloc>(),
+              ),
+              BlocProvider.value(
+                value: context.read<AdminOfficePageBloc>(),
+              ),
+              BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
+            ], child: const NewOfficePage());
           }));
         },
         child: const Icon(Icons.add, color: Colors.white),
@@ -43,7 +50,7 @@ class _CityField extends StatelessWidget {
   ///City input fields
   /// -> -> ->
   static final TextEditingController _cityInputController =
-  TextEditingController();
+      TextEditingController();
 
   const _CityField({Key? key}) : super(key: key);
 
@@ -63,7 +70,8 @@ class _CityField extends StatelessWidget {
             ),
             suggestionsCallback: (pattern) {
               // при нажатии на поле
-              return CityProvider().getCitiesByName(pattern);// state.futureCityList;
+              return CityProvider()
+                  .getCitiesByName(pattern); // state.futureCityList;
             },
             itemBuilder: (context, City suggestion) {
               return ListTile(
@@ -82,7 +90,7 @@ class _CityField extends StatelessWidget {
               //todo _selectedCity = suggestion;
             },
             validator: (value) =>
-            value!.isEmpty ? 'Please select a city' : null,
+                value!.isEmpty ? 'Please select a city' : null,
             //onSaved: (value) => this._selectedCity = value,
           ),
         );
@@ -136,21 +144,25 @@ class OfficeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<AdminOfficePageBloc>().add(OfficePageLoadEvent(officeListItem.id));
-        Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (cont) =>
-                  BlocProvider.value(
-                    value: context.read<AdminOfficePageBloc>(),
-                    child: OfficePage(),
-                  )),
-        );
+        context
+            .read<AdminOfficePageBloc>()
+            .add(OfficePageLoadEvent(officeListItem.id));
+        Navigator.of(context).push(MaterialPageRoute(builder: (cont) {
+          return MultiBlocProvider(providers: [
+            BlocProvider.value(
+              value: context.read<AdminOfficePageBloc>(),
+            ),
+            BlocProvider.value(
+              value: context.read<LevelPlanEditorBloc>(),
+            ),
+          ], child: OfficePage());
+        }));
       },
       child: Card(
           child: ListTile(
-            title: Text(officeListItem.address),
-            subtitle: Text("ID: ${officeListItem.id}"),
-          )),
+        title: Text(officeListItem.address),
+        subtitle: Text("ID: ${officeListItem.id}"),
+      )),
     );
   }
 }

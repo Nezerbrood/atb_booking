@@ -6,10 +6,10 @@ abstract class LevelPlanEditorState {}
 class LevelPlanEditorInitial extends LevelPlanEditorState {}
 
 class LevelPlanEditorMainState extends LevelPlanEditorState{
-  final Map<int,LevelPlanElementData> mapOfPlanElements;
-  final int? selectedElementId;
+  final List<LevelPlanElementData> listOfPlanElements;
   final int levelNumber;
-  LevelPlanEditorMainState({required this.mapOfPlanElements,required this.selectedElementId,required this.levelNumber});
+  final int? selectedElementIndex;
+  LevelPlanEditorMainState({required this.selectedElementIndex, required this.listOfPlanElements,required this.levelNumber});
 }
 class LevelPlanEditorLoadingState extends LevelPlanEditorState{
 

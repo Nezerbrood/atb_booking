@@ -21,7 +21,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
   static const double WIDTH = 350;
   static const double HEIGHT = 350;
   static const String _defaultTitle = "Выберите место для бронирования";
-  LevelPlan? levelPlan;
+  Level? levelPlan;
   int? maxBookingRangeInDays;
   Map<int, WorkspaceType>? workspaceTypes;
   LevelPlanElementData? selectedWorkspace;

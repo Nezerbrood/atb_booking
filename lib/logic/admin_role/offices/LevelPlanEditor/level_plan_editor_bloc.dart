@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:atb_booking/data/models/level_plan.dart';
 import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
 import 'package:atb_booking/data/services/level_plan_provider.dart';
 import 'package:atb_booking/data/services/office_provider.dart';
 import 'package:atb_booking/data/services/workspace_provider.dart';
 import 'package:atb_booking/data/services/workspace_type_repository.dart';
+import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
 part 'level_plan_editor_event.dart';
@@ -36,11 +40,14 @@ class LevelPlanEditorBloc
     2: _Size(width: 200, height: 200),
   };
   int levelNumber = 0;
-  int? _selectedElementId;
-  final int _levelId;
+  int? backgroundImagePlanId;
 
+  /// это айди картинки этажа
+  int? _selectedElementId;
+  int? _levelId;
 
   Timer? _debounce;
+
   _onChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 1000), () {
@@ -49,11 +56,20 @@ class LevelPlanEditorBloc
     });
   }
 
+  LevelPlanEditorBloc() : super(LevelPlanEditorInitial()) {
 
-  LevelPlanEditorBloc(this._levelId) : super(LevelPlanEditorInitial()) {
+    ///
+    ///
+    /// удаляем этаж
+    on<LevelPlanEditorDeleteLevelEvent>((event,emit)async{
+      await LevelProvider().deleteLevel(_levelId!);
+      event.context.read<AdminOfficePageBloc>().add(OfficePageReloadEvent());///не знаю как нужно сделать
+    });
+
     on<LevelPlanEditorEvent>((event, emit) {
       // TODO: implement event handler
     });
+
 
     ///
     ///
@@ -62,21 +78,20 @@ class LevelPlanEditorBloc
       _setElementToNewPosition(_mapOfPlanElements[event.id]!,
           event.newPositionX, event.newPositionY);
       _onChanged();
-      emit(LevelPlanEditorMainState(
-          mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,
-          levelNumber: levelNumber));
+
+      add(LevelPlanEditorForceUpdateEvent());
     });
 
     ///
     ///
     /// меняем активный эелмент isSelect
     on<LevelPlanEditorElementTapEvent>((event, emit) {
-      _changeSelectedElement(event.id);
-      emit(LevelPlanEditorMainState(
-          mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,
-          levelNumber: levelNumber));
+      if(_selectedElementId==event.id){
+        _selectedElementId = null;
+      }else{
+        _selectedElementId = event.id;
+      }
+      add(LevelPlanEditorForceUpdateEvent());
     });
 
     ///
@@ -85,17 +100,13 @@ class LevelPlanEditorBloc
     on<LevelPlanEditorCreateElementEvent>((event, emit) async {
       try {
         var element = _createNewElement(
-            event.type, WorkspaceTypeRepository().getMapOfTypes(), _levelId);
+            event.type, WorkspaceTypeRepository().getMapOfTypes(), _levelId!);
         int idOfCreatedWorkspace = await WorkspaceProvider()
             .createWorkspaceByLevelPlanEditorElementData(element);
         element.id = idOfCreatedWorkspace;
         _mapOfPlanElements[idOfCreatedWorkspace] = element;
-
-        _changeSelectedElement(idOfCreatedWorkspace);
-        emit(LevelPlanEditorMainState(
-            mapOfPlanElements: _mapOfPlanElements,
-            selectedElementId: _selectedElementId,
-            levelNumber: levelNumber));
+        _selectedElementId = idOfCreatedWorkspace;
+        add(LevelPlanEditorForceUpdateEvent());
       } catch (_) {
         //todo add logic
       }
@@ -108,10 +119,7 @@ class LevelPlanEditorBloc
       _changeSizeElement(
           _mapOfPlanElements[event.id]!, event.newWidth, event.newHeight);
       await _onChanged();
-      emit(LevelPlanEditorMainState(
-          mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,
-          levelNumber: levelNumber));
+      add(LevelPlanEditorForceUpdateEvent());
     });
 
     ///
@@ -119,14 +127,14 @@ class LevelPlanEditorBloc
     /// Удаляем место
     on<LevelPlanEditorDeleteWorkspaceButtonPressEvent>((event, emit) async {
       try {
+        if(_selectedElementId==null){
+          print("POPALSAYAA HAHAHAHA!!!");
+        }
         int id = _selectedElementId!;
+        _selectedElementId = null;
         await WorkspaceProvider().deleteById(id);
         _deleteElement(id);
-        _selectedElementId = null;
-        emit(LevelPlanEditorMainState(
-            mapOfPlanElements: _mapOfPlanElements,
-            selectedElementId: _selectedElementId,
-            levelNumber: levelNumber));
+        add(LevelPlanEditorForceUpdateEvent());
       } catch (_) {
         print(_);
       }
@@ -136,11 +144,27 @@ class LevelPlanEditorBloc
     ///
     ///Изменяем номер этажа
     on<LevelPlanEditorChangeLevelFieldEvent>((event, emit) {
-      levelNumber = event.newLevel;
-      emit(LevelPlanEditorMainState(
-          mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,
-          levelNumber: levelNumber));
+      var oldValue = levelNumber;
+      try {
+        levelNumber = int.parse(event.newLevelForm);
+        try {
+          ///передаю пустой массив потому что я их все равно не сериализую
+          ///По-хорошему - переделать
+          var levelInfo = Level(
+              id: _levelId!,
+              planId: backgroundImagePlanId,
+              number: levelNumber,
+              workspaces: []);
+          LevelProvider().putNewLevelInfo(levelInfo);
+        } catch (_) {
+          print(_);
+          levelNumber = oldValue;
+        }
+        ;
+        add(LevelPlanEditorForceUpdateEvent());
+      } catch (_) {
+        print(_);
+      }
     });
 
     ///
@@ -148,10 +172,8 @@ class LevelPlanEditorBloc
     /// Изменяем описание воркспейса
     on<LevelPlanEditorChangeDescriptionFieldEvent>((event, emit) {
       _changeDescriptionOfElement(_selectedElementId!, event.form);
-      emit(LevelPlanEditorMainState(
-          mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,
-          levelNumber: levelNumber));
+      _onChanged();
+      add(LevelPlanEditorForceUpdateEvent());
     });
 
     ///
@@ -159,30 +181,36 @@ class LevelPlanEditorBloc
     /// Изменяем статус (активно или нет) воркспейса
     on<LevelPlanEditorChangeActiveStatusEvent>((event, emit) {
       _switchActiveStatus(_selectedElementId!);
-      emit(LevelPlanEditorMainState(
-          mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,
-          levelNumber: levelNumber));
+      _onChanged();
+      add(LevelPlanEditorForceUpdateEvent());
     });
 
+    ///
     ///
     ///
     /// Изменяем количество мест воркспейса
     on<LevelPlanEditorChangeNumberOfWorkplacesFieldEvent>((event, emit) {
       _changeCountOfWorkplaces(_selectedElementId!, event.countOfWorkplaces);
-      emit(LevelPlanEditorMainState(
-          mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,
-          levelNumber: levelNumber));
+      _onChanged();
+      add(LevelPlanEditorForceUpdateEvent());
     });
 
     ///
     ///
     /// Принудительно обновляет состояние
     on<LevelPlanEditorForceUpdateEvent>((event, emit) {
+      var listOfElem = <LevelPlanElementData>[];
+      int? selectedIndex;
+      int tmp =0;
+      _mapOfPlanElements.entries.map((e) {
+          if(e.key==_selectedElementId) selectedIndex = tmp;
+          tmp++;
+          listOfElem.add(e.value);
+      }).toList();
+
       emit(LevelPlanEditorMainState(
-          mapOfPlanElements: _mapOfPlanElements,
-          selectedElementId: _selectedElementId,
+          listOfPlanElements: listOfElem,
+          selectedElementIndex: selectedIndex,
           levelNumber: levelNumber));
     });
 
@@ -190,44 +218,53 @@ class LevelPlanEditorBloc
     ///
     /// Загружаем этаж с сервера
     on<LevelPlanEditorLoadWorkspacesFromServerEvent>((event, emit) async {
+      if(_levelId!=event.levelId){
+        emit(LevelPlanEditorLoadingState());
+        _selectedElementId = null;
+      }
+      _levelId = event.levelId;
       try {
         //emit(LevelPlanEditorLoadingState());
-        var levelPlan = await LevelPlanProvider().getPlanByLevelId(_levelId);
+        var levelPlan = await LevelProvider().getPlanByLevelId(_levelId!);
+        backgroundImagePlanId = levelPlan.planId;
+        levelNumber = levelPlan.number;
         _mapOfPlanElements.clear();
-        for(var elem in levelPlan.workspaces){
-          _mapOfPlanElements[elem.id!]= elem;
+        print('ids of fetching workspaces:[');
+        for (var elem in levelPlan.workspaces) {
+          print(elem.id);
+          _mapOfPlanElements[elem.id!] = elem;
         }
-        if(_selectedElementId!=null){
-        print("old width:${_mapOfPlanElements[_selectedElementId]!.width}");
-        print("old heidht:${_mapOfPlanElements[_selectedElementId]!.height}");}
-        emit(LevelPlanEditorMainState(
-            mapOfPlanElements: _mapOfPlanElements,
-            selectedElementId: _selectedElementId,
-            levelNumber: levelNumber));
+        print("]");
+        add(LevelPlanEditorForceUpdateEvent());
       } catch (_) {}
     });
 
     ///
     ///
     /// Загружаем воркплейсы на сервер
-    on<LevelPlanEditorSendChangesToServerEvent>((event,emit)async{
-      try{if(_selectedElementId!=null){
-        print("old width:${_mapOfPlanElements[_selectedElementId]!.width}");
-        print("old heidht:${_mapOfPlanElements[_selectedElementId]!.height}");}
-        List<LevelPlanElementData> listOfChangedWorkspaces = _mapOfPlanElements.entries.map((e) => e.value).toList();
-        await WorkspaceProvider().sendWorkspacesChangesByLevelId(listOfChangedWorkspaces);
-        add(LevelPlanEditorLoadWorkspacesFromServerEvent());
-      }catch(_){
+    on<LevelPlanEditorSendChangesToServerEvent>((event, emit) async {
+      try {
+        print("send ids:[");
+        List<LevelPlanElementData> listOfChangedWorkspaces =
+            _mapOfPlanElements.entries.map((e) {
+              print(e.value.id);
+              return e.value;}).toList();
+        print("]");
+        await WorkspaceProvider()
+            .sendWorkspacesChangesByLevelId(listOfChangedWorkspaces);
+        //add(LevelPlanEditorLoadWorkspacesFromServerEvent(_levelId!));
+      } catch (_) {
         print(_);
-        print("ids:[");
-        for(var elem in _mapOfPlanElements.entries){
+        print("^277^ ids:[");
+        for (var elem in _mapOfPlanElements.entries) {
           print(elem.value.id);
         }
         print("]");
-        add(LevelPlanEditorLoadWorkspacesFromServerEvent());
+        add(LevelPlanEditorLoadWorkspacesFromServerEvent(_levelId!));
       }
     });
-    add(LevelPlanEditorLoadWorkspacesFromServerEvent());
+
+
   }
 
   /// функция размещает елемент на плане,
@@ -248,18 +285,18 @@ class LevelPlanEditorBloc
     planElement.positionX = newPositionX;
     planElement.positionY = newPositionY;
   }
-
-  void _changeSelectedElement(int id) {
-    if (_selectedElementId == null) {
-      _selectedElementId = id;
-    } else {
-      if (_selectedElementId == id) {
-        _selectedElementId = null;
-      } else {
-        _selectedElementId = id;
-      }
-    }
-  }
+  //
+  // void _changeSelectedElement(int id) {
+  //   if (_selectedElementId == null) {
+  //     _selectedElementId = id;
+  //   } else {
+  //     if (_selectedElementId == id) {
+  //       _selectedElementId = null;
+  //     } else {
+  //       _selectedElementId = id;
+  //     }
+  //   }
+  // }
 
   ///
   ///
@@ -310,8 +347,8 @@ class LevelPlanEditorBloc
   }
 
   ///метод удаляет место
-  void _deleteElement(int? selectedElementId) {
-    _mapOfPlanElements.remove(selectedElementId);
+  void _deleteElement(int id) {
+    _mapOfPlanElements.remove(id);
   }
 
   _Size _getLastSize(int id) {

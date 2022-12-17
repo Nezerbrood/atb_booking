@@ -2,6 +2,7 @@ import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
 import 'package:atb_booking/data/services/workspace_type_repository.dart';
 import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
+import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
@@ -11,27 +12,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LevelEditorPage extends StatelessWidget {
   const LevelEditorPage({Key? key}) : super(key: key);
-  static double SCALE_FACTOR = 1.0;//MediaQuery.of(context).size.height * 0.75,
+  static double SCALE_FACTOR = 1.0; //MediaQuery.of(context).size.height * 0.75,
   @override
-  Widget build(BuildContext context) {
-    SCALE_FACTOR = MediaQuery.of(context).size.width / 1000.0;
+  Widget build(BuildContext pageContext) {
+    SCALE_FACTOR = MediaQuery.of(pageContext).size.width / 1000.0;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Этаж"), //todo add level to string
         actions: [
           TextButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
+              onPressed: () async {
+                 bool? wasDelete = await showDialog<bool>(
+                    context: pageContext,
                     builder: (context) {
                       return const _DeleteLevelConfirmationPopup();
                     });
+                 print("was delete:$wasDelete");
+                 if(wasDelete!=null && wasDelete){
+                   pageContext.read<LevelPlanEditorBloc>().add(LevelPlanEditorDeleteLevelEvent(pageContext));
+                   try{
+                     Navigator.of(pageContext).pop();
+                   }catch(_){}
+                 }
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   "удалить этаж",
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  style: Theme.of(pageContext).textTheme.headlineSmall?.copyWith(
                       decoration: TextDecoration.underline,
                       color: Colors.red,
                       fontSize: 20),
@@ -42,20 +50,22 @@ class LevelEditorPage extends StatelessWidget {
       body: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
         builder: (context, state) {
           if (state is LevelPlanEditorMainState) {
-            return Column(
-              children: [
-                const _HorizontalWorkspaceBar(),
-                const _LevelPlanEditor(),
-                const _TitleUnderPlan(),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      _DeleteWorkspaceButton(),
-                      _AddInfoButton()
-                    ]),
-                _LevelNumberField(),
-                const _UploadBackgroundImageButton()
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  const _HorizontalWorkspaceBar(),
+                  const _LevelPlanEditor(),
+                  const _TitleUnderPlan(),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        _DeleteWorkspaceButton(),
+                        _AddInfoButton()
+                      ]),
+                  _LevelNumberField(),
+                  const _UploadBackgroundImageButton()
+                ],
+              ),
             );
           } else {
             return const Center(
@@ -85,14 +95,13 @@ class _LevelPlanEditor extends StatelessWidget {
               .read<LevelPlanEditorBloc>()
               .add(LevelPlanEditorForceUpdateEvent());
         });
-        var elements = state.mapOfPlanElements.entries
-            .map((e) => _LevelPlanEditorElementWidget(
-                id: e.key,
-                data: e.value,
-                isSelect: state.selectedElementId == e.key,
-                scaleInteractiveViewValue:
-                    _transformationController.value.getMaxScaleOnAxis()))
-            .toList();
+        print("____________");
+        var elements = <Widget>[];
+        for(int i=0;i<state.listOfPlanElements.length;i++){
+          bool isSelect = i==state.selectedElementIndex;
+          elements.add(_LevelPlanEditorElementWidget(data: state.listOfPlanElements[i], isSelect: isSelect, scaleInteractiveViewValue: _transformationController.value.getMaxScaleOnAxis()));
+        }
+        print("____________");
         return InteractiveViewer(
           minScale: 0.3,
           maxScale: 2.5,
@@ -117,20 +126,19 @@ class _LevelPlanEditor extends StatelessWidget {
 }
 
 class _LevelPlanEditorElementWidget extends StatelessWidget {
-  final int id;
   final LevelPlanElementData data;
   final bool isSelect;
   final double scaleInteractiveViewValue;
 
   const _LevelPlanEditorElementWidget(
       {required this.data,
-      required this.id,
       required this.isSelect,
       required this.scaleInteractiveViewValue});
 
   @override
   Widget build(BuildContext context) {
-    var cornerSize = 30 * LevelEditorPage.SCALE_FACTOR / scaleInteractiveViewValue;
+    var cornerSize =
+        30 * LevelEditorPage.SCALE_FACTOR / scaleInteractiveViewValue;
     var BLUE_PRINT_FRAME_WIDTH = 6;
     return Positioned(
       left: data.positionX * LevelEditorPage.SCALE_FACTOR,
@@ -144,32 +152,34 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
             if (isSelect) {
               context.read<LevelPlanEditorBloc>().add(
                   LevelPlanEditorElementMoveEvent(
-                      id,
-                      data.positionY + (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
-                      data.positionX + (details.delta.dx / LevelEditorPage.SCALE_FACTOR)));
+                      data.id!,
+                      data.positionY +
+                          (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                      data.positionX +
+                          (details.delta.dx / LevelEditorPage.SCALE_FACTOR)));
             }
           },
           onTap: () {
             context
                 .read<LevelPlanEditorBloc>()
-                .add(LevelPlanEditorElementTapEvent(id));
+                .add(LevelPlanEditorElementTapEvent(data.id!));
           },
           child: Stack(children: [
             Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,
               shape: RoundedRectangleBorder(
                   side: !isSelect
-                      ? BorderSide(width: 0, color: Colors.grey)
-                      : BorderSide(width: 6*LevelEditorPage.SCALE_FACTOR, color: appThemeData.primaryColor),
-                  borderRadius: BorderRadius.circular(8*LevelEditorPage.SCALE_FACTOR)),
-              shadowColor: !data.isActive
-                  ? Colors.black
-                  : isSelect
-                      ? const Color.fromARGB(255, 255, 126, 0)
-                      : const Color.fromARGB(255, 198, 255, 170),
+                      ? const BorderSide(width: 0, color: Colors.grey)
+                      : BorderSide(
+                          width: 6 * LevelEditorPage.SCALE_FACTOR,
+                          color: appThemeData.primaryColor),
+                  borderRadius:
+                      BorderRadius.circular(8 * LevelEditorPage.SCALE_FACTOR)),
+              shadowColor: Colors.black,
+
               elevation: isSelect ? 8 : 3,
               color: !data.isActive
-                  ? Colors.black
+                  ? Colors.black12
                   : isSelect
                       ? const Color.fromARGB(255, 255, 231, 226)
                       : const Color.fromARGB(255, 234, 255, 226),
@@ -194,17 +204,23 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                       onPanUpdate: (details) {
                         context.read<LevelPlanEditorBloc>().add(
                             LevelPlanEditorElementMoveEvent(
-                                id,
+                                data.id!,
                                 data.positionY +
-                                    (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                                    (details.delta.dy /
+                                        LevelEditorPage.SCALE_FACTOR),
                                 data.positionX +
-                                    (details.delta.dx / LevelEditorPage.SCALE_FACTOR)));
+                                    (details.delta.dx /
+                                        LevelEditorPage.SCALE_FACTOR)));
                         context
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
-                              id,
-                              data.width + -(details.delta.dx / LevelEditorPage.SCALE_FACTOR),
-                              data.height + -(details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                          data.id!,
+                              data.width +
+                                  -(details.delta.dx /
+                                      LevelEditorPage.SCALE_FACTOR),
+                              data.height +
+                                  -(details.delta.dy /
+                                      LevelEditorPage.SCALE_FACTOR),
                             ));
                       },
                       child: SizedBox(
@@ -213,12 +229,14 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                         //color: AtbAdditionalColors.debugTranslucent,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                            borderRadius: BorderRadius.circular(
+                                BLUE_PRINT_FRAME_WIDTH *
+                                    LevelEditorPage.SCALE_FACTOR),
                             border: Border.all(
                                 color: AtbAdditionalColors
                                     .planBorderElementTranslucent,
-                                width: BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                                width: BLUE_PRINT_FRAME_WIDTH *
+                                    LevelEditorPage.SCALE_FACTOR),
                           ),
                         ),
                       ),
@@ -234,16 +252,21 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                       onPanUpdate: (details) {
                         context.read<LevelPlanEditorBloc>().add(
                             LevelPlanEditorElementMoveEvent(
-                                id,
+                                data.id!,
                                 data.positionY +
-                                    (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                                    (details.delta.dy /
+                                        LevelEditorPage.SCALE_FACTOR),
                                 data.positionX));
                         context
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
-                              id,
-                              data.width + (details.delta.dx / LevelEditorPage.SCALE_FACTOR),
-                              data.height + -(details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                          data.id!,
+                              data.width +
+                                  (details.delta.dx /
+                                      LevelEditorPage.SCALE_FACTOR),
+                              data.height +
+                                  -(details.delta.dy /
+                                      LevelEditorPage.SCALE_FACTOR),
                             ));
                       },
                       child: SizedBox(
@@ -252,12 +275,14 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                         //color: AtbAdditionalColors.debugTranslucent,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                            borderRadius: BorderRadius.circular(
+                                BLUE_PRINT_FRAME_WIDTH *
+                                    LevelEditorPage.SCALE_FACTOR),
                             border: Border.all(
                                 color: AtbAdditionalColors
                                     .planBorderElementTranslucent,
-                                width: BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                                width: BLUE_PRINT_FRAME_WIDTH *
+                                    LevelEditorPage.SCALE_FACTOR),
                           ),
                         ),
                       ),
@@ -273,16 +298,21 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                       onPanUpdate: (details) {
                         context.read<LevelPlanEditorBloc>().add(
                             LevelPlanEditorElementMoveEvent(
-                                id,
+                                data.id!,
                                 data.positionY,
                                 data.positionX +
-                                    (details.delta.dx / LevelEditorPage.SCALE_FACTOR)));
+                                    (details.delta.dx /
+                                        LevelEditorPage.SCALE_FACTOR)));
                         context
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
-                              id,
-                              data.width + -(details.delta.dx / LevelEditorPage.SCALE_FACTOR),
-                              data.height + (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                          data.id!,
+                              data.width +
+                                  -(details.delta.dx /
+                                      LevelEditorPage.SCALE_FACTOR),
+                              data.height +
+                                  (details.delta.dy /
+                                      LevelEditorPage.SCALE_FACTOR),
                             ));
                       },
                       child: SizedBox(
@@ -291,12 +321,14 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                         //color: AtbAdditionalColors.debugTranslucent,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                            borderRadius: BorderRadius.circular(
+                                BLUE_PRINT_FRAME_WIDTH *
+                                    LevelEditorPage.SCALE_FACTOR),
                             border: Border.all(
                                 color: AtbAdditionalColors
                                     .planBorderElementTranslucent,
-                                width: BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                                width: BLUE_PRINT_FRAME_WIDTH *
+                                    LevelEditorPage.SCALE_FACTOR),
                           ),
                         ),
                       ),
@@ -313,9 +345,13 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                         context
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
-                              id,
-                              data.width + (details.delta.dx / LevelEditorPage.SCALE_FACTOR),
-                              data.height + (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                          data.id!,
+                              data.width +
+                                  (details.delta.dx /
+                                      LevelEditorPage.SCALE_FACTOR),
+                              data.height +
+                                  (details.delta.dy /
+                                      LevelEditorPage.SCALE_FACTOR),
                             ));
                       },
                       child: SizedBox(
@@ -324,12 +360,14 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                         //color: AtbAdditionalColors.debugTranslucent,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                            borderRadius: BorderRadius.circular(
+                                BLUE_PRINT_FRAME_WIDTH *
+                                    LevelEditorPage.SCALE_FACTOR),
                             border: Border.all(
                                 color: AtbAdditionalColors
                                     .planBorderElementTranslucent,
-                                width: BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                                width: BLUE_PRINT_FRAME_WIDTH *
+                                    LevelEditorPage.SCALE_FACTOR),
                           ),
                         ),
                       ),
@@ -345,15 +383,18 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                       onPanUpdate: (details) {
                         context.read<LevelPlanEditorBloc>().add(
                             LevelPlanEditorElementMoveEvent(
-                                id,
+                                data.id!,
                                 data.positionY,
                                 data.positionX +
-                                    (details.delta.dx / LevelEditorPage.SCALE_FACTOR)));
+                                    (details.delta.dx /
+                                        LevelEditorPage.SCALE_FACTOR)));
                         context
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
-                              id,
-                              data.width + -(details.delta.dx / LevelEditorPage.SCALE_FACTOR),
+                          data.id!,
+                              data.width +
+                                  -(details.delta.dx /
+                                      LevelEditorPage.SCALE_FACTOR),
                               data.height,
                             ));
                       },
@@ -361,18 +402,20 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                         //color: AtbAdditionalColors.debugTranslucent
                         color: Colors.transparent,
                         width: cornerSize / 2,
-                        height:
-                            ((data.height) * LevelEditorPage.SCALE_FACTOR) - (cornerSize * 2),
+                        height: ((data.height) * LevelEditorPage.SCALE_FACTOR) -
+                            (cornerSize * 2),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Container(
-                            width: BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR,
+                            width: BLUE_PRINT_FRAME_WIDTH *
+                                LevelEditorPage.SCALE_FACTOR,
                             height: double.infinity,
                             decoration: BoxDecoration(
                               color: AtbAdditionalColors
                                   .planBorderElementTranslucent,
-                              borderRadius:
-                                  BorderRadius.circular(BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                              borderRadius: BorderRadius.circular(
+                                  BLUE_PRINT_FRAME_WIDTH *
+                                      LevelEditorPage.SCALE_FACTOR),
                             ),
                             //color: AtbAdditionalColors.planBorderElementTranslucent,
                             child: const SizedBox.shrink(),
@@ -391,29 +434,33 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                       onPanUpdate: (details) {
                         context.read<LevelPlanEditorBloc>().add(
                             LevelPlanEditorElementMoveEvent(
-                                id, data.positionY, data.positionX));
+                                data.id!, data.positionY, data.positionX));
                         context
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
-                              id,
-                              data.width + (details.delta.dx / LevelEditorPage.SCALE_FACTOR),
+                          data.id!,
+                              data.width +
+                                  (details.delta.dx /
+                                      LevelEditorPage.SCALE_FACTOR),
                               data.height,
                             ));
                       },
                       child: Container(
                         width: cornerSize,
-                        height:
-                            ((data.height) * LevelEditorPage.SCALE_FACTOR) - (cornerSize * 2),
+                        height: ((data.height) * LevelEditorPage.SCALE_FACTOR) -
+                            (cornerSize * 2),
                         //color: AtbAdditionalColors.debugTranslucent
                         color: Colors.transparent,
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Container(
-                            width: BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR,
+                            width: BLUE_PRINT_FRAME_WIDTH *
+                                LevelEditorPage.SCALE_FACTOR,
                             height: double.infinity,
                             decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                                borderRadius: BorderRadius.circular(
+                                    BLUE_PRINT_FRAME_WIDTH *
+                                        LevelEditorPage.SCALE_FACTOR),
                                 color: AtbAdditionalColors
                                     .planBorderElementTranslucent),
                             //color: AtbAdditionalColors.planBorderElementTranslucent,
@@ -433,33 +480,39 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                       onPanUpdate: (details) {
                         context.read<LevelPlanEditorBloc>().add(
                             LevelPlanEditorElementMoveEvent(
-                                id,
+                                data.id!,
                                 data.positionY +
-                                    (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                                    (details.delta.dy /
+                                        LevelEditorPage.SCALE_FACTOR),
                                 data.positionX));
                         context
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
-                              id,
+                          data.id!,
                               data.width,
-                              data.height - (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                              data.height -
+                                  (details.delta.dy /
+                                      LevelEditorPage.SCALE_FACTOR),
                             ));
                       },
                       child: Container(
-                        width: ((data.width) * LevelEditorPage.SCALE_FACTOR) - (cornerSize * 2),
+                        width: ((data.width) * LevelEditorPage.SCALE_FACTOR) -
+                            (cornerSize * 2),
                         height: cornerSize,
                         //color: AtbAdditionalColors.debugTranslucent
                         color: Colors.transparent,
                         child: Align(
                           alignment: Alignment.topCenter,
                           child: Container(
-                            height: BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR,
+                            height: BLUE_PRINT_FRAME_WIDTH *
+                                LevelEditorPage.SCALE_FACTOR,
                             width: double.infinity,
                             decoration: BoxDecoration(
                               color: AtbAdditionalColors
                                   .planBorderElementTranslucent,
-                              borderRadius:
-                                  BorderRadius.circular(BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                              borderRadius: BorderRadius.circular(
+                                  BLUE_PRINT_FRAME_WIDTH *
+                                      LevelEditorPage.SCALE_FACTOR),
                             ),
                             child: const SizedBox.shrink(),
                           ),
@@ -478,26 +531,31 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                         context
                             .read<LevelPlanEditorBloc>()
                             .add(LevelPlanEditorElementChangeSizeEvent(
-                              id,
+                          data.id!,
                               data.width,
-                              data.height + (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
+                              data.height +
+                                  (details.delta.dy /
+                                      LevelEditorPage.SCALE_FACTOR),
                             ));
                       },
                       child: Container(
-                        width: ((data.width) * LevelEditorPage.SCALE_FACTOR) - (cornerSize * 2),
+                        width: ((data.width) * LevelEditorPage.SCALE_FACTOR) -
+                            (cornerSize * 2),
                         height: cornerSize,
                         //color: AtbAdditionalColors.debugTranslucent
                         color: Colors.transparent,
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Container(
-                            height: BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR,
+                            height: BLUE_PRINT_FRAME_WIDTH *
+                                LevelEditorPage.SCALE_FACTOR,
                             width: double.infinity,
                             decoration: BoxDecoration(
                               color: AtbAdditionalColors
                                   .planBorderElementTranslucent,
-                              borderRadius:
-                                  BorderRadius.circular(BLUE_PRINT_FRAME_WIDTH * LevelEditorPage.SCALE_FACTOR),
+                              borderRadius: BorderRadius.circular(
+                                  BLUE_PRINT_FRAME_WIDTH *
+                                      LevelEditorPage.SCALE_FACTOR),
                             ),
                             child: const SizedBox.shrink(),
                           ),
@@ -548,7 +606,7 @@ class _HorizontalWorkspaceBar extends StatelessWidget {
                         style: appThemeData.textTheme.titleSmall,
                         textAlign: TextAlign.right,
                       ),
-                      width:120,
+                      width: 120,
                     ),
                     Card(
                       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -586,7 +644,7 @@ class _DeleteWorkspaceButton extends StatelessWidget {
     return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
       builder: (context, state) {
         if (state is LevelPlanEditorMainState) {
-          if (state.selectedElementId != null) {
+          if (state.selectedElementIndex != null) {
             return Padding(
               padding: const EdgeInsets.all(5.0),
               child: MaterialButton(
@@ -600,7 +658,7 @@ class _DeleteWorkspaceButton extends StatelessWidget {
                       builder: (buildContext) {
                         return BlocProvider.value(
                           value: context.read<LevelPlanEditorBloc>(),
-                          child: _DeleteWorkspaceConfirmationPopup(),
+                          child: const _DeleteWorkspaceConfirmationPopup(),
                         );
                       });
                 },
@@ -644,7 +702,7 @@ class _AddInfoButton extends StatelessWidget {
       child: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
         builder: (context, state) {
           if (state is LevelPlanEditorMainState) {
-            if (state.selectedElementId != null) {
+            if (state.selectedElementIndex != null) {
               return MaterialButton(
                 shape: RoundedRectangleBorder(
                     side:
@@ -729,10 +787,10 @@ class _TitleUnderPlan extends StatelessWidget {
       builder: (context, state) {
         if (state is LevelPlanEditorMainState) {
           String title;
-          if (state.selectedElementId != null) {
-            title = state.mapOfPlanElements[state.selectedElementId]!.type.type;
+          if (state.selectedElementIndex != null) {
+            title ="title2";// state.listOfPlanElements[state.selectedElementIndex!].type.type;
           } else {
-            if (state.mapOfPlanElements.length == 0) {
+            if (state.listOfPlanElements.isEmpty) {
               title = "Добавьте место на\n карту из верхнего меню";
             } else {
               title = "Выберите место";
@@ -759,11 +817,6 @@ class _TitleUnderPlan extends StatelessWidget {
 class _LevelNumberField extends StatelessWidget {
   static final TextEditingController _levelNumberTextController =
       TextEditingController();
-
-  _LevelNumberField() {
-    _levelNumberTextController!.selection = TextSelection(
-        baseOffset: 0, extentOffset: _levelNumberTextController!.text.length);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -809,10 +862,11 @@ class _LevelNumberField extends StatelessWidget {
                     child: TextField(
                       keyboardType: TextInputType.number,
                       onTap: () {},
+                      //onSubmitted: ({),
                       onChanged: (form) {
-                        context.read<LevelPlanEditorBloc>().add(
-                            LevelPlanEditorChangeLevelFieldEvent(
-                                int.parse(form)));
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorChangeLevelFieldEvent((form)));
                       },
                       controller: _levelNumberTextController,
                       style: Theme.of(context)
@@ -845,7 +899,7 @@ class _BottomSheet extends StatelessWidget {
           builder: (context, state) {
             if (state is LevelPlanEditorMainState) {
               return Text(
-                  state.mapOfPlanElements[state.selectedElementId]!.type.type);
+                  'title');
             } else {
               return ErrorWidget(Exception("unexpected state: $state"));
             }
@@ -860,7 +914,6 @@ class _BottomSheet extends StatelessWidget {
           const _DescriptionWorkspaceField(),
           _NumberOfWorkspacesField(),
           const _ActiveStatusAndButton(),
-          const _SaveButton(),
         ],
       ),
     );
@@ -878,7 +931,7 @@ class _DescriptionWorkspaceField extends StatelessWidget {
     return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
       builder: (context, state) {
         if (state is LevelPlanEditorMainState) {
-          var workspace = state.mapOfPlanElements[state.selectedElementId]!;
+          var workspace = state.listOfPlanElements[state.selectedElementIndex!];
           if (_officeDescriptionController.text != workspace.description) {
             _officeDescriptionController.text = workspace.description;
           }
@@ -943,7 +996,7 @@ class _NumberOfWorkspacesField extends StatelessWidget {
     return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
       builder: (context, state) {
         if (state is LevelPlanEditorMainState) {
-          var workspace = state.mapOfPlanElements[state.selectedElementId]!;
+          var workspace = state.listOfPlanElements[state.selectedElementIndex!];
           if (_numberOfWorkspacesController.text !=
               workspace.numberOfWorkspaces.toString()) {
             _numberOfWorkspacesController.text =
@@ -1029,7 +1082,7 @@ class _ActiveStatusAndButton extends StatelessWidget {
       child: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
         builder: (context, state) {
           if (state is LevelPlanEditorMainState) {
-            var workspace = state.mapOfPlanElements[state.selectedElementId]!;
+            var workspace = state.listOfPlanElements[state.selectedElementIndex!];
             return Row(
               children: [
                 Expanded(
@@ -1071,9 +1124,20 @@ class _ActiveStatusAndButton extends StatelessWidget {
                             width: 1, color: appThemeData.primaryColor),
                         borderRadius: BorderRadius.circular(7.0)),
                     onPressed: () {
-                      context
-                          .read<LevelPlanEditorBloc>()
-                          .add(LevelPlanEditorChangeActiveStatusEvent());
+                      if (workspace.isActive) {
+                        showDialog(
+                            context: context,
+                            builder: (contextBuilder) {
+                              return BlocProvider.value(
+                                value: context.read<LevelPlanEditorBloc>(),
+                                child: const _DeactivateWorkplaceConfirmationPopup(),
+                              );
+                            });
+                      } else {
+                        context
+                            .read<LevelPlanEditorBloc>()
+                            .add(LevelPlanEditorChangeActiveStatusEvent());
+                      }
                     },
                     color: appThemeData.primaryColor,
                     child: Text(
@@ -1109,7 +1173,7 @@ class _DeleteLevelConfirmationPopup extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
+          onPressed: () => Navigator.pop(context, false,),
           child: Text(
             'Отмена',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -1119,7 +1183,9 @@ class _DeleteLevelConfirmationPopup extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: () => Navigator.pop(context, 'OK'),
+          onPressed: () { 
+            Navigator.pop(context, true);
+          },
           child: Text(
             'Удалить',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -1178,6 +1244,47 @@ class _DeleteWorkspaceConfirmationPopup extends StatelessWidget {
   }
 }
 
+class _DeactivateWorkplaceConfirmationPopup extends StatelessWidget {
+  const _DeactivateWorkplaceConfirmationPopup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Деактивировать?'),
+      content: Text(
+        'Все созданные брони на это место будут отменены и создать новые бронирования на это место будет нельзя,\nВы уверены что хотите деактивировать рабочее место?',
+        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: Colors.black54, fontSize: 19, fontWeight: FontWeight.w300),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, 'Cancel');},
+          child: Text(
+            'Отмена',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.black54,
+                fontSize: 18,
+                fontWeight: FontWeight.w500),
+          ),
+        ),
+        TextButton(
+          onPressed: (){
+            context.read<LevelPlanEditorBloc>().add(LevelPlanEditorChangeActiveStatusEvent());
+            Navigator.pop(context, 'OK');},
+          child: Text(
+            'Деактивировать',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.black54,
+                fontSize: 18,
+                fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _UploadBackgroundImageButton extends StatelessWidget {
   const _UploadBackgroundImageButton({Key? key}) : super(key: key);
 
@@ -1188,7 +1295,7 @@ class _UploadBackgroundImageButton extends StatelessWidget {
       child: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
         builder: (context, state) {
           if (state is LevelPlanEditorMainState) {
-            if (state.selectedElementId == null) {
+            if (state.selectedElementIndex == null) {
               return MaterialButton(
                 shape: RoundedRectangleBorder(
                     side:
@@ -1200,7 +1307,7 @@ class _UploadBackgroundImageButton extends StatelessWidget {
                       builder: (contextB) {
                         return BlocProvider.value(
                           value: context.read<LevelPlanEditorBloc>(),
-                          child: _UploadImageToBackgroundPopup(),
+                          child: const _UploadImageToBackgroundPopup(),
                         );
                       });
                 },

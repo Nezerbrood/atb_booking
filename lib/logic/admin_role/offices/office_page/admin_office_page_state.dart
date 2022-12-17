@@ -10,7 +10,7 @@ class AdminOfficePageLoadedState extends AdminOfficePageState{
   final int bookingRange;
   final DateTimeRange workTimeRange;
   final bool isSaveButtonActive;
-  final List<Level> levels;
+  final List<LevelListItem> levels;
   AdminOfficePageLoadedState(this.address, this.bookingRange, this.workTimeRange, this.isSaveButtonActive, this.levels);
 }
 class AdminOfficePageErrorState extends AdminOfficePageState{}

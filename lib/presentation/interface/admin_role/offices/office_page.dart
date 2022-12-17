@@ -15,7 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class OfficePage extends StatelessWidget {
-  OfficePage({super.key});
+  const OfficePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -103,21 +103,16 @@ class OfficePage extends StatelessWidget {
 }
 
 class _OfficeAddress extends StatelessWidget {
-  static TextEditingController? _officeAddressController;
+  static TextEditingController? _officeAddressController = TextEditingController();
   final AdminOfficePageLoadedState state;
 
-  _OfficeAddress({super.key, required this.state}) {
-    if (_officeAddressController == null) {
-      _officeAddressController = TextEditingController(text: state.address);
-    } else {
-      if (state.address != _officeAddressController!.text) {
-        _officeAddressController = TextEditingController(text: state.address);
-      }
-    }
-  }
+  _OfficeAddress({super.key, required this.state}){}
 
   @override
   Widget build(BuildContext context) {
+    if (state.address != _officeAddressController!.text) {
+      _officeAddressController = TextEditingController(text: state.address);
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
       child: Column(
@@ -328,7 +323,9 @@ class _SaveButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: AtbElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          context.read<AdminOfficePageBloc>().add(AdminOfficeSaveChangesButtonEvent());
+        },
         text: 'Сохранить изменения',
       ),
     );
@@ -384,19 +381,23 @@ class _LevelsList extends StatelessWidget {
 
 class _LevelCard extends StatelessWidget {
   const _LevelCard({Key? key, required this.level}) : super(key: key);
-  final Level level;
+  final LevelListItem level;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          Navigator.of(context).push(MaterialPageRoute(builder: (bContext) {
             print("LEVEL ID: ${level.id}");
-            return BlocProvider(
-              create: (context) => LevelPlanEditorBloc(level.id),
-              child: const LevelEditorPage(),
-            );
+            return MultiBlocProvider(providers: [
+              BlocProvider.value(
+                value: context.read<AdminOfficePageBloc>(),
+              ),
+              BlocProvider.value(
+                value: context.read<LevelPlanEditorBloc>()..add(LevelPlanEditorLoadWorkspacesFromServerEvent(level.id)),
+              ),
+            ], child: const LevelEditorPage());
           }));
         },
         child: ListTile(
@@ -458,7 +459,7 @@ class _StatisticsButton extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => BlocProvider<AdminBookingStatsBloc>(
                   create: (context) => AdminBookingStatsBloc(),
-                  child: AdminBookingsStatsPage(),
+                  child: const AdminBookingsStatsPage(),
                 )));
       },
       color: appThemeData.primaryColor,
@@ -527,7 +528,15 @@ class _AddNewLevelButton extends StatelessWidget {
           side: BorderSide(width: 1, color: appThemeData.primaryColor),
           borderRadius: BorderRadius.circular(10.0)),
       onPressed: () {
-        // todo add onpress
+        context
+            .read<AdminOfficePageBloc>()
+            .add(AdminOfficePageCreateNewLevelButtonPress(context));
+        Navigator.of(context).push(MaterialPageRoute(builder: (Bcontext) {
+          return MultiBlocProvider(providers: [
+            BlocProvider.value(value: context.read<AdminOfficePageBloc>(),),
+            BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
+          ], child: const LevelEditorPage());
+        }));
       },
       color: appThemeData.primaryColor,
       child: Padding(

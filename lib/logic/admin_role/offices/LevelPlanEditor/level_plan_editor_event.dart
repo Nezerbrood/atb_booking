@@ -42,9 +42,9 @@ class LevelPlanEditorDeleteWorkspaceButtonPressEvent
     extends LevelPlanEditorEvent {}
 
 class LevelPlanEditorChangeLevelFieldEvent extends LevelPlanEditorEvent {
-  final int newLevel;
+  final String newLevelForm;
 
-  LevelPlanEditorChangeLevelFieldEvent(this.newLevel);
+  LevelPlanEditorChangeLevelFieldEvent(this.newLevelForm);
 }
 
 class LevelPlanEditorChangeDescriptionFieldEvent extends LevelPlanEditorEvent {
@@ -63,7 +63,16 @@ class LevelPlanEditorChangeNumberOfWorkplacesFieldEvent
 class LevelPlanEditorChangeActiveStatusEvent extends LevelPlanEditorEvent {}
 
 class LevelPlanEditorLoadWorkspacesFromServerEvent extends LevelPlanEditorEvent{
+  final int levelId;
+
+  LevelPlanEditorLoadWorkspacesFromServerEvent(this.levelId);
 }
 class LevelPlanEditorSendChangesToServerEvent extends LevelPlanEditorEvent{
 
+}
+
+class LevelPlanEditorDeleteLevelEvent extends LevelPlanEditorEvent{
+  final BuildContext context;
+
+  LevelPlanEditorDeleteLevelEvent(this.context);
 }
