@@ -78,6 +78,7 @@ class LevelPlanElementData {
 
   Map<String, dynamic> toJson() {
     var json = <String, dynamic>{};
+    json['id'] = id;
     json["numberOfWorkspaces"] = numberOfWorkspaces;
     json["description"] = description;
     json["isActive"] = isActive;
@@ -102,7 +103,11 @@ class LevelPlanElementData {
         type = WorkspaceType.fromJson(json['type']),
         levelNumber = json['level'],
         photosIds = json['photos']!=null?(json['photos'] as List<dynamic>)
-            .map((json) => int.parse((json)['imageId']))
+            .map((json) {
+              int id = (json)['imageId'];
+              print(id);
+              return id;
+            })
             .toList():[];
 }
 

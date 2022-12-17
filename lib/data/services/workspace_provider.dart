@@ -85,14 +85,15 @@ class WorkspaceProvider {
       throw Exception('Error create workspace');
     }
   }
-  void sendWorkspacesChangesByLevelId(List<LevelPlanElementData> listOfChangedWorkspaces) async {
+  Future<void> sendWorkspacesChangesByLevelId(List<LevelPlanElementData> listOfChangedWorkspaces) async {
     var baseUrl = NetworkController().getUrl();
     Map<String, String> headers = {};
-    var body = <dynamic>[];
+    var list = <dynamic>[];
     for (var elem in listOfChangedWorkspaces) {
-      var jsonOfElement = elem.toJson();
-      body.add(jsonEncode(jsonOfElement));
+      var jsonElem = elem.toJson();
+      list.add((jsonElem));
     }
+    var body = jsonEncode(list);
     var token = await NetworkController().getAccessToken();
     headers["Authorization"] = 'Bearer $token';
     headers["Content-type"] = 'application/json; charset=utf-8';

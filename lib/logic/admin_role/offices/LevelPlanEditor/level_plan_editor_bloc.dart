@@ -14,8 +14,8 @@ part 'level_plan_editor_event.dart';
 
 part 'level_plan_editor_state.dart';
 
-const _HEIGHT = 100.0;
-const _WIDTH = 100.0;
+const _HEIGHT = 1000.0;
+const _WIDTH = 1000.0;
 
 /// Все координаты относительно этих значений.class
 
@@ -32,12 +32,14 @@ class LevelPlanEditorBloc
     extends Bloc<LevelPlanEditorEvent, LevelPlanEditorState> {
   final Map<int, LevelPlanElementData> _mapOfPlanElements = {};
   static final Map<int, _Size> _mapLastSize = {
-    1: _Size(width: 10, height: 10),
-    2: _Size(width: 20, height: 20),
+    1: _Size(width: 100, height: 100),
+    2: _Size(width: 200, height: 200),
   };
   int levelNumber = 0;
   int? _selectedElementId;
   final int _levelId;
+
+
   Timer? _debounce;
   _onChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -46,6 +48,8 @@ class LevelPlanEditorBloc
       add(LevelPlanEditorSendChangesToServerEvent());
     });
   }
+
+
   LevelPlanEditorBloc(this._levelId) : super(LevelPlanEditorInitial()) {
     on<LevelPlanEditorEvent>((event, emit) {
       // TODO: implement event handler
@@ -54,7 +58,7 @@ class LevelPlanEditorBloc
     ///
     ///
     /// Двигаем элемент по плану
-    on<LevelPlanEditorElementMoveEvent>((event, emit) {
+    on<LevelPlanEditorElementMoveEvent>((event, emit) async {
       _setElementToNewPosition(_mapOfPlanElements[event.id]!,
           event.newPositionX, event.newPositionY);
       _onChanged();
@@ -84,7 +88,9 @@ class LevelPlanEditorBloc
             event.type, WorkspaceTypeRepository().getMapOfTypes(), _levelId);
         int idOfCreatedWorkspace = await WorkspaceProvider()
             .createWorkspaceByLevelPlanEditorElementData(element);
+        element.id = idOfCreatedWorkspace;
         _mapOfPlanElements[idOfCreatedWorkspace] = element;
+
         _changeSelectedElement(idOfCreatedWorkspace);
         emit(LevelPlanEditorMainState(
             mapOfPlanElements: _mapOfPlanElements,
@@ -98,10 +104,10 @@ class LevelPlanEditorBloc
     ///
     ///
     /// Изменяем размер
-    on<LevelPlanEditorElementChangeSizeEvent>((event, emit) {
+    on<LevelPlanEditorElementChangeSizeEvent>((event, emit) async {
       _changeSizeElement(
           _mapOfPlanElements[event.id]!, event.newWidth, event.newHeight);
-      _onChanged();
+      await _onChanged();
       emit(LevelPlanEditorMainState(
           mapOfPlanElements: _mapOfPlanElements,
           selectedElementId: _selectedElementId,
@@ -185,12 +191,15 @@ class LevelPlanEditorBloc
     /// Загружаем этаж с сервера
     on<LevelPlanEditorLoadWorkspacesFromServerEvent>((event, emit) async {
       try {
-        emit(LevelPlanEditorLoadingState());
+        //emit(LevelPlanEditorLoadingState());
         var levelPlan = await LevelPlanProvider().getPlanByLevelId(_levelId);
         _mapOfPlanElements.clear();
         for(var elem in levelPlan.workspaces){
           _mapOfPlanElements[elem.id!]= elem;
         }
+        if(_selectedElementId!=null){
+        print("old width:${_mapOfPlanElements[_selectedElementId]!.width}");
+        print("old heidht:${_mapOfPlanElements[_selectedElementId]!.height}");}
         emit(LevelPlanEditorMainState(
             mapOfPlanElements: _mapOfPlanElements,
             selectedElementId: _selectedElementId,
@@ -198,14 +207,23 @@ class LevelPlanEditorBloc
       } catch (_) {}
     });
 
-
+    ///
+    ///
+    /// Загружаем воркплейсы на сервер
     on<LevelPlanEditorSendChangesToServerEvent>((event,emit)async{
-      try{
+      try{if(_selectedElementId!=null){
+        print("old width:${_mapOfPlanElements[_selectedElementId]!.width}");
+        print("old heidht:${_mapOfPlanElements[_selectedElementId]!.height}");}
         List<LevelPlanElementData> listOfChangedWorkspaces = _mapOfPlanElements.entries.map((e) => e.value).toList();
-        WorkspaceProvider().sendWorkspacesChangesByLevelId(listOfChangedWorkspaces);
+        await WorkspaceProvider().sendWorkspacesChangesByLevelId(listOfChangedWorkspaces);
         add(LevelPlanEditorLoadWorkspacesFromServerEvent());
       }catch(_){
         print(_);
+        print("ids:[");
+        for(var elem in _mapOfPlanElements.entries){
+          print(elem.value.id);
+        }
+        print("]");
         add(LevelPlanEditorLoadWorkspacesFromServerEvent());
       }
     });
@@ -279,11 +297,11 @@ class LevelPlanEditorBloc
   void _changeSizeElement(LevelPlanElementData levelPlanEditorElementData,
       double newWidth, double newHeight) {
     ///todo добавить проверки на границы
-    if (newWidth < 10) {
-      newWidth = 10;
+    if (newWidth < 60) {
+      newWidth = 60;
     }
-    if (newHeight < 10) {
-      newHeight = 10;
+    if (newHeight < 60) {
+      newHeight = 60;
     }
     levelPlanEditorElementData.width = newWidth;
     levelPlanEditorElementData.height = newHeight;
