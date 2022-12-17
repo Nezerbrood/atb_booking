@@ -23,11 +23,11 @@ class NewOfficePageLoadedState extends NewOfficePageState {
 
 class NewOfficePageSuccessfulCreatedState extends NewOfficePageLoadedState{
   final int officeId;
-  NewOfficePageSuccessfulCreatedState(super.futureCityList, super.address, super.bookingRange, super.workTimeRange, super.buttonIsActive, this.officeId);
+  const NewOfficePageSuccessfulCreatedState(super.futureCityList, super.address, super.bookingRange, super.workTimeRange, super.buttonIsActive, this.officeId);
 
 }
 
 class NewOfficePageErrorCreatedState extends NewOfficePageLoadedState{
-  NewOfficePageErrorCreatedState(super.futureCityList, super.address, super.bookingRange, super.workTimeRange, super.buttonIsActive);
+  const NewOfficePageErrorCreatedState(super.futureCityList, super.address, super.bookingRange, super.workTimeRange, super.buttonIsActive);
 
 }

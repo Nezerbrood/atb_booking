@@ -32,7 +32,9 @@ class NewOfficePage extends StatelessWidget {
         },
         child: BlocBuilder<NewOfficePageBloc, NewOfficePageState>(
           builder: (context, state) {
+            print("newOfficePage state: $state");
             if (state is NewOfficePageLoadedState) {
+              print("${state.buttonIsActive}");
               return Column(
                 children: [
                   _CityField(
@@ -94,9 +96,7 @@ class _CityField extends StatelessWidget {
             ),
             suggestionsCallback: (pattern) {
               // при нажатии на поле
-              // context
-              //     .read<NewOfficePageBloc>()
-              //     .add(NewOfficePageUpdateFieldsEvent());
+
               return CityProvider().getCitiesByName(
                   pattern); // //CityRepository().getAllCities();
             },

@@ -48,7 +48,8 @@ class _HomeState extends State<AdminHome> {
               create: (context) => AdminOfficePageBloc(),
             ),
             BlocProvider<NewOfficePageBloc>(
-                          create: (context) => NewOfficePageBloc(),
+                          create: (context){
+                            return NewOfficePageBloc();},
                         ),
             BlocProvider<LevelPlanEditorBloc>(
               create: (context)=>LevelPlanEditorBloc(),

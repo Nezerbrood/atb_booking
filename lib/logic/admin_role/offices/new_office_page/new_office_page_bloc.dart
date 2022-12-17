@@ -35,6 +35,7 @@ class NewOfficePageBloc extends Bloc<NewOfficePageEvent, NewOfficePageState> {
 
   NewOfficePageBloc()
       : super(NewOfficePageInitialState(CityRepository().getAllCities())) {
+
     on<NewOfficePageWorkTimeRangeChangeEvent>((event, emit) {
       workTimeRange = event.newWorkTimeRange;
       emit(NewOfficePageLoadedState(futureCityList, address, bookingRange,

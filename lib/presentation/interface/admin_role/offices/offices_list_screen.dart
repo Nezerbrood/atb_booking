@@ -29,13 +29,13 @@ class AdminOfficesScreen extends StatelessWidget {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (bcontext) {
             return MultiBlocProvider(providers: [
-              BlocProvider.value(
-                value: context.read<NewOfficePageBloc>(),
+              BlocProvider<NewOfficePageBloc>(
+                  create: (context) => NewOfficePageBloc()//context.read<NewOfficePageBloc>(),
               ),
-              BlocProvider.value(
-                value: context.read<AdminOfficePageBloc>(),
+              BlocProvider(
+                  create: (context) =>  AdminOfficePageBloc()//context.read<AdminOfficePageBloc>(),
               ),
-              BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
+              //BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
             ], child: const NewOfficePage());
           }));
         },
