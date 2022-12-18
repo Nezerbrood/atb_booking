@@ -18,9 +18,6 @@ class AdminBookingsBloc extends Bloc<AdminBookingsEvent, AdminBookingsState> {
   int _page = 0;
 
   AdminBookingsBloc() : super(AdminBookingsInitialState(null)) {
-    on<AdminBookingsEvent>((event, emit) {
-      // TODO: implement event handler
-    });
     on<AdminBookingsSelectNewRangeEvent>((event, emit) async {
       _selectedDateTimeRange = event.newRange;
       emit(AdminBookingsLoadingState(_selectedDateTimeRange, _loadedBookings));

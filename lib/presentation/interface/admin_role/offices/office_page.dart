@@ -569,76 +569,79 @@ class _AddNewLevelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: appThemeData.primaryColor),
-          borderRadius: BorderRadius.circular(10.0)),
-      onPressed: () {
-        context
-            .read<AdminOfficePageBloc>()
-            .add(AdminOfficePageCreateNewLevelButtonPress());
-        showDialog(
-          useRootNavigator: false,
-            context: context,
-            builder: (_) {
-              return BlocProvider.value(
-                value: context.read<AdminOfficePageBloc>(),
-                child: BlocConsumer<AdminOfficePageBloc, AdminOfficePageState>(
-                    builder: (context, state) {
-                  if (state is AdminOfficePageErrorCreateLevelState) {
-                    return const AlertDialog(
-                      content: Text("Ошибка при создании..."),
-                    );
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                }, listener: (_, state) {
-                  if (state is AdminOfficePageSuccessCreateLevelState) {
-                    Navigator.pop(context);
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (_) {
-                      return MultiBlocProvider(providers: [
-                        BlocProvider.value(
-                          value: context.read<AdminOfficePageBloc>(),
-                        ),
-                        BlocProvider(
-                          create: (_) => LevelPlanEditorBloc()
-                            ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(
-                                state.levelId)),
-                        ),
-                      ], child: const LevelEditorPage());
-                    }));
-                  }
-                }),
-              );
-            });
-        // Navigator.of(context).push(MaterialPageRoute(builder: (Bcontext) {
-        //   return MultiBlocProvider(providers: [
-        //     BlocProvider.value(
-        //       value: context.read<AdminOfficePageBloc>(),
-        //     ),
-        //     BlocProvider(
-        //       create: (_)=>LevelPlanEditorBloc(),
-        //     ),
-        //   ], child: const LevelEditorPage());
-        // }));
-      },
-      color: appThemeData.primaryColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Добавить новый этаж",
-              style: appThemeData.textTheme.titleMedium!.copyWith(
-                color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: MaterialButton(
+        shape: RoundedRectangleBorder(
+            side: BorderSide(width: 1, color: appThemeData.primaryColor),
+            borderRadius: BorderRadius.circular(10.0)),
+        onPressed: () {
+          context
+              .read<AdminOfficePageBloc>()
+              .add(AdminOfficePageCreateNewLevelButtonPress());
+          showDialog(
+            useRootNavigator: false,
+              context: context,
+              builder: (_) {
+                return BlocProvider.value(
+                  value: context.read<AdminOfficePageBloc>(),
+                  child: BlocConsumer<AdminOfficePageBloc, AdminOfficePageState>(
+                      builder: (context, state) {
+                    if (state is AdminOfficePageErrorCreateLevelState) {
+                      return const AlertDialog(
+                        content: Text("Ошибка при создании..."),
+                      );
+                    }
+                    return const Center(child: CircularProgressIndicator());
+                  }, listener: (_, state) {
+                    if (state is AdminOfficePageSuccessCreateLevelState) {
+                      Navigator.pop(context);
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (_) {
+                        return MultiBlocProvider(providers: [
+                          BlocProvider.value(
+                            value: context.read<AdminOfficePageBloc>(),
+                          ),
+                          BlocProvider(
+                            create: (_) => LevelPlanEditorBloc()
+                              ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(
+                                  state.levelId)),
+                          ),
+                        ], child: const LevelEditorPage());
+                      }));
+                    }
+                  }),
+                );
+              });
+          // Navigator.of(context).push(MaterialPageRoute(builder: (Bcontext) {
+          //   return MultiBlocProvider(providers: [
+          //     BlocProvider.value(
+          //       value: context.read<AdminOfficePageBloc>(),
+          //     ),
+          //     BlocProvider(
+          //       create: (_)=>LevelPlanEditorBloc(),
+          //     ),
+          //   ], child: const LevelEditorPage());
+          // }));
+        },
+        color: appThemeData.primaryColor,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Добавить новый этаж",
+                style: appThemeData.textTheme.titleMedium!.copyWith(
+                  color: Colors.white,
+                ),
               ),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            const Icon(Icons.add)
-          ],
+              const SizedBox(
+                width: 5,
+              ),
+              const Icon(Icons.add)
+            ],
+          ),
         ),
       ),
     );

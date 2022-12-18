@@ -95,83 +95,89 @@ class _LevelPlanEditor extends StatelessWidget {
   const _LevelPlanEditor({Key? key}) : super(key: key);
   static TransformationController _transformationController =
       TransformationController();
-
+  static bool _visible = false;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
-        builder: (context, state) {
-      if (state is LevelPlanEditorMainState) {
-        _transformationController =
-            TransformationController(_transformationController.value);
-        _transformationController.addListener(() {
-          context
-              .read<LevelPlanEditorBloc>()
-              .add(LevelPlanEditorForceUpdateEvent());
-        });
-        print("____________");
-        var elements = <Widget>[];
+    bool _visible = true;
+    return AnimatedOpacity(
+      opacity: _visible ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 500),
+      child: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+          builder: (context, state) {
+        if (state is LevelPlanEditorMainState) {
+          _transformationController =
+              TransformationController(_transformationController.value);
+          _transformationController.addListener(() {
+            context
+                .read<LevelPlanEditorBloc>()
+                .add(LevelPlanEditorForceUpdateEvent());
+          });
+          print("____________");
+          var elements = <Widget>[];
 
-        ///
-        ///
-        if (state.levelPlanImageId != null) {
-          var backgroundImage = Center(
-            child: Container(
-              width: double.infinity,
-              //height:  double.infinity,
-              child: CachedNetworkImage(
-                  fit: BoxFit.fitHeight,
-                  imageUrl: "https://i.ibb.co/82gPz00/Capture.png",
-                  httpHeaders: NetworkController().getAuthHeader(),
-                  placeholder: (context, url) => const Center(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error)),
-            ),
-          );
-          elements.add(backgroundImage);
-        }
-
-        ///
-        ///
-        _LevelPlanEditorElementWidget? selectedElem;
-        for (int i = 0; i < state.listOfPlanElements.length; i++) {
-          bool isSelect = i == state.selectedElementIndex;
-          if (isSelect) {
-            selectedElem = _LevelPlanEditorElementWidget(
-                data: state.listOfPlanElements[i],
-                isSelect: isSelect,
-                scaleInteractiveViewValue:
-                    _transformationController.value.getMaxScaleOnAxis());
-          } else {
-            elements.add(_LevelPlanEditorElementWidget(
-                data: state.listOfPlanElements[i],
-                isSelect: isSelect,
-                scaleInteractiveViewValue:
-                    _transformationController.value.getMaxScaleOnAxis()));
+          ///
+          ///
+          if (state.levelPlanImageId != null) {
+            var backgroundImage = Center(
+              child: Container(
+                width: double.infinity,
+                //height:  double.infinity,
+                child: CachedNetworkImage(
+                    fit: BoxFit.fitHeight,
+                    imageUrl: "https://i.ibb.co/82gPz00/Capture.png",
+                    httpHeaders: NetworkController().getAuthHeader(),
+                    placeholder: (context, url) => const Center(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error)),
+              ),
+            );
+            elements.add(backgroundImage);
           }
-        }
-        if (selectedElem != null) elements.add(selectedElem);
 
-        ///кидаем наверх плана выбранный
-        print("____________");
-        return InteractiveViewer(
-          minScale: 0.3,
-          maxScale: 2.5,
-          transformationController: _transformationController,
-          child: Container(
-              color: const Color.fromARGB(255, 232, 232, 232),
-              width: 1000.0 * LevelEditorPage.SCALE_FACTOR,
-              height: 1000.0 * LevelEditorPage.SCALE_FACTOR,
-              child: Stack(
-                children: elements,
-              )),
-        );
-      } else if (state is LevelPlanEditorInitial) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      } else {
-        throw Exception('State: $state');
-      }
-    });
+          ///
+          ///
+          _LevelPlanEditorElementWidget? selectedElem;
+          for (int i = 0; i < state.listOfPlanElements.length; i++) {
+            bool isSelect = i == state.selectedElementIndex;
+            if (isSelect) {
+              selectedElem = _LevelPlanEditorElementWidget(
+                  data: state.listOfPlanElements[i],
+                  isSelect: isSelect,
+                  scaleInteractiveViewValue:
+                      _transformationController.value.getMaxScaleOnAxis());
+            } else {
+              elements.add(_LevelPlanEditorElementWidget(
+                  data: state.listOfPlanElements[i],
+                  isSelect: isSelect,
+                  scaleInteractiveViewValue:
+                      _transformationController.value.getMaxScaleOnAxis()));
+            }
+          }
+          if (selectedElem != null) elements.add(selectedElem);
+
+          ///кидаем наверх плана выбранный
+          print("____________");
+          return InteractiveViewer(
+            minScale: 0.3,
+            maxScale: 2.5,
+            transformationController: _transformationController,
+            child: Container(
+                color: const Color.fromARGB(255, 232, 232, 232),
+                width: 1000.0 * LevelEditorPage.SCALE_FACTOR,
+                height: 1000.0 * LevelEditorPage.SCALE_FACTOR,
+                child: Stack(
+                  children: elements,
+                )),
+          );
+        } else if (state is LevelPlanEditorInitial) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          throw Exception('State: $state');
+        }
+      }),
+    );
   }
 }
 
@@ -622,6 +628,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
     );
   }
 }
+
 ///
 ///
 ///Горизонтальный список с виджетами для размещения на плане.
@@ -840,8 +847,8 @@ class _TitleUnderPlan extends StatelessWidget {
         if (state is LevelPlanEditorMainState) {
           String title;
           if (state.selectedElementIndex != null) {
-            title =
-                state.listOfPlanElements[state.selectedElementIndex!].type.type; // state.listOfPlanElements[state.selectedElementIndex!].type.type;
+            title = state.listOfPlanElements[state.selectedElementIndex!].type
+                .type; // state.listOfPlanElements[state.selectedElementIndex!].type.type;
           } else {
             if (state.listOfPlanElements.isEmpty) {
               title = "Добавьте место на\n карту из верхнего меню";
@@ -951,9 +958,8 @@ class _BottomSheet extends StatelessWidget {
         title: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
           builder: (context, state) {
             if (state is LevelPlanEditorMainState) {
-              return Text(
-                  state.listOfPlanElements[state.selectedElementIndex!].type.type
-              );
+              return Text(state
+                  .listOfPlanElements[state.selectedElementIndex!].type.type);
             } else {
               return ErrorWidget(Exception("unexpected state: $state"));
             }
@@ -985,29 +991,55 @@ class _WorkSpacePhotos extends StatelessWidget {
             height: 200,
             child: state.selectedWorkspacePhotosIds.isNotEmpty
                 ? Scrollbar(
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.selectedWorkspacePhotosIds.length,
-                      itemBuilder: (context, index) {
-                        return Row(
-                          children: [
-                            if (index == 0) _UploadImagePanel(),
-                            Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl: AppImageProvider.getImageUrlFromImageId(
-                                      state.selectedWorkspacePhotosIds[index]),
-                                  httpHeaders: NetworkController().getAuthHeader(),
-                                  placeholder: (context, url) => const Center(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error)),
-                            )
-                          ],
-                        );
-                        ;
-                      }),
-                )
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.selectedWorkspacePhotosIds.length,
+                        itemBuilder: (context, index) {
+                          return Row(
+                            children: [
+                              if (index == 0) _UploadImagePanel(),
+                              Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Stack(
+                                    alignment: Alignment.topRight,
+                                    children: [
+                                      CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl: AppImageProvider
+                                              .getImageUrlFromImageId(state
+                                                      .selectedWorkspacePhotosIds[
+                                                  index]),
+                                          httpHeaders: NetworkController()
+                                              .getAuthHeader(),
+                                          placeholder: (context, url) =>
+                                              const Center(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error)),
+                                      IconButton(
+                                          onPressed: () {
+                                            context.read<LevelPlanEditorBloc>().add(
+                                                LevelPlanEditorDeleteWorkspacePhotoEvent(
+                                                    state.selectedWorkspacePhotosIds[
+                                                        index]));
+                                          },
+                                          icon: Container(
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    appThemeData.primaryColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(3),
+                                              ),
+                                              child: const Icon(
+                                                Icons.clear,
+                                                color: Colors.white,
+                                              )))
+                                    ]),
+                              )
+                            ],
+                          );
+                          ;
+                        }),
+                  )
                 : _UploadImagePanel(),
           );
         } else {

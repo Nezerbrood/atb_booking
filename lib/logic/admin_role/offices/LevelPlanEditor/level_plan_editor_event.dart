@@ -82,3 +82,8 @@ class LevelPlanEditorAddImageToWorkspaceButtonEvent extends LevelPlanEditorEvent
 }
 class LevelPlanEditorChangeBackgroundButtonEvent extends LevelPlanEditorEvent{
 }
+class LevelPlanEditorDeleteWorkspacePhotoEvent extends LevelPlanEditorEvent{
+  final int imageId;
+
+  LevelPlanEditorDeleteWorkspacePhotoEvent(this.imageId);
+}

@@ -62,9 +62,6 @@ class LevelPlanEditorBloc
   }
 
   LevelPlanEditorBloc() : super(LevelPlanEditorInitial()) {
-    on<LevelPlanEditorEvent>((event, emit) {
-      // TODO: implement event handler
-    });
 
     ///
     ///
@@ -250,7 +247,15 @@ class LevelPlanEditorBloc
         add(LevelPlanEditorForceUpdateEvent());
       } catch (_) {}
     });
-
+    on<LevelPlanEditorDeleteWorkspacePhotoEvent>((event,emit)async {
+      try{
+        event.imageId;
+        await WorkspaceProvider().deleteById(event.imageId);
+      }catch(_){
+        print(_);
+      }
+      add(LevelPlanEditorLoadWorkspacesFromServerEvent(_levelId!));
+    });
     ///
     ///
     /// Добавляем фотки к рабочему месту
@@ -261,9 +266,8 @@ class LevelPlanEditorBloc
         if (imageFromPicker == null) return;
         final imageFile = File(imageFromPicker.path);
         try {
-          int idOfCreatedImage = await AppImageProvider.upload(imageFile);
-          await WorkspaceProvider()
-              .addPhotoToWorkspaceByIds(_selectedElementId!, idOfCreatedImage);
+          //int idOfCreatedImage = await AppImageProvider.upload(imageFile);
+          await WorkspaceProvider().uploadWorkspacePhoto(imageFile,_selectedElementId!);
         } catch (_) {
           print(_);
         }
@@ -277,6 +281,7 @@ class LevelPlanEditorBloc
     ///
     /// Добавляем фотки на задник плана
     on<LevelPlanEditorChangeBackgroundButtonEvent>((event, emit) async {
+      //todo
       try {
         final imageFromPicker =
             (await ImagePicker().pickImage(source: ImageSource.gallery));

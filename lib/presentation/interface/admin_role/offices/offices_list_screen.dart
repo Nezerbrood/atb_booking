@@ -94,7 +94,7 @@ class _CityField extends StatelessWidget {
               //todo _selectedCity = suggestion;
             },
             validator: (value) =>
-                value!.isEmpty ? 'Please select a city' : null,
+                value!.isEmpty ? 'Введите название города' : null,
             //onSaved: (value) => this._selectedCity = value,
           ),
         );
@@ -124,12 +124,10 @@ class _OfficesList extends StatelessWidget {
             ),
           );
         } else if (state is AdminOfficesLoadingState) {
-          return const Center(
-            child: Text("loading state"),
-          );
+          return const Center(child: CircularProgressIndicator(),);
         } else if (state is AdminOfficesInitial) {
           return const Center(
-            child: Text("initial state"),
+            child: Text("Выберите город"),
           );
         } else {
           throw Exception("Unknown AdminOfficesBloc state: $state");
@@ -148,16 +146,41 @@ class OfficeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (cont) {
-          return MultiBlocProvider(providers: [
-            BlocProvider.value(
-              value: context.read<AdminOfficesBloc>(),
-            ),
-            BlocProvider<AdminOfficePageBloc>(
-                create: (_) => AdminOfficePageBloc()
-                  ..add(OfficePageLoadEvent(officeListItem.id)))
-          ], child: const OfficePage());
-        }));
+        Navigator.of(context).push(
+            PageRouteBuilder(
+              pageBuilder: (_, animation, secondaryAnimation) => MultiBlocProvider(providers: [
+                BlocProvider.value(
+                  value: context.read<AdminOfficesBloc>(),
+                ),
+                BlocProvider<AdminOfficePageBloc>(
+                    create: (_) => AdminOfficePageBloc()
+                      ..add(OfficePageLoadEvent(officeListItem.id)))
+              ], child: const OfficePage()),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.ease;
+
+                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              },
+            ));
+
+          //
+          //   MaterialPageRoute(builder: (cont) {
+          // return MultiBlocProvider(providers: [
+          //   BlocProvider.value(
+          //     value: context.read<AdminOfficesBloc>(),
+          //   ),
+          //   BlocProvider<AdminOfficePageBloc>(
+          //       create: (_) => AdminOfficePageBloc()
+          //         ..add(OfficePageLoadEvent(officeListItem.id)))
+          // ], child: const OfficePage());
+        //}));
       },
       child: Card(
           child: ListTile(
@@ -167,3 +190,20 @@ class OfficeCard extends StatelessWidget {
     );
   }
 }
+// Route _createRoute() {
+//   return PageRouteBuilder(
+//     pageBuilder: (context, animation, secondaryAnimation) => const (),
+//     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+//       const begin = Offset(0.0, 1.0);
+//       const end = Offset.zero;
+//       const curve = Curves.ease;
+//
+//       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+//
+//       return SlideTransition(
+//         position: animation.drive(tween),
+//         child: child,
+//       );
+//     },
+//   );
+// }
