@@ -622,7 +622,6 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
     );
   }
 }
-
 ///
 ///
 ///Горизонтальный список с виджетами для размещения на плане.
