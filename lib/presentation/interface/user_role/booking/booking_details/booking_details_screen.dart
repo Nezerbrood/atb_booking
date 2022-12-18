@@ -1,10 +1,13 @@
-
+import 'package:atb_booking/data/services/image_provider.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
+import 'package:atb_booking/logic/user_role/booking/locked_plan_bloc/locked_plan_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/user_role/booking/booking_details/booking_delete_confirmation_popup.dart';
 import 'package:atb_booking/presentation/interface/user_role/booking/booking_details/locked_plan/booking_added_people_widget.dart';
-import 'package:atb_booking/presentation/interface/user_role/booking/booking_details/locked_plan/planWidget.dart';
+import 'package:atb_booking/presentation/interface/user_role/booking/booking_details/locked_plan/lockedPlanWidget.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -21,8 +24,8 @@ class BookingDetailsScreen extends StatelessWidget {
       builder: (context, state) {
         if (state is BookingDetailsLoadedState) {
           getPhotoSize() {
-            if (state.booking.workspace.photos.isEmpty) return 0.0;
-            if (state.booking.workspace.photos.length == 1) return 250.0;
+            if (state.booking.workspace.photosIds.isEmpty) return 0.0;
+            if (state.booking.workspace.photosIds.length == 1) return 250.0;
             return 200.0;
           }
 
@@ -45,13 +48,19 @@ class BookingDetailsScreen extends StatelessWidget {
                         child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: state.booking.workspace.photos.length,
+                            itemCount: state.booking.workspace.photosIds.length,
                             //state.workspace.photos.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 behavior: HitTestBehavior.translucent,
                                 child:
-                                    state.booking.workspace.photos[index].photo,
+                                CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: AppImageProvider.getImageUrlFromImageId(state.booking.workspace.photosIds[index]),
+                                  httpHeaders: NetworkController().getAuthHeader(),
+                                  placeholder: (context, url) => const Center(),
+                                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                                ),
                                 onTap: () {
                                   showDialog(
                                       useRootNavigator: false,
@@ -87,8 +96,15 @@ class BookingDetailsScreen extends StatelessWidget {
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 10,
                                                       vertical: 10),
-                                              content: state.booking.workspace
-                                                  .photos[index].photo,
+                                              content:
+                                              CachedNetworkImage(
+                                                fit: BoxFit.cover,
+                                                imageUrl: AppImageProvider.getImageUrlFromImageId(state.booking.workspace
+                                                    .photosIds[index]),
+                                                httpHeaders: NetworkController().getAuthHeader(),
+                                                placeholder: (context, url) => const Center(),
+                                                errorWidget: (context, url, error) => const Icon(Icons.error),
+                                              )
                                             ),
                                           ),
                                         );
@@ -99,6 +115,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   ///
                   ///
                   /// Кнопки показа карты и людей
@@ -113,18 +130,25 @@ class BookingDetailsScreen extends StatelessWidget {
                         onPressed: () {
                           showDialog(
                               context: context,
-                              builder: (context) {
+                              builder: (_) {
                                 return AlertDialog(
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(00.0)),
-                                    insetPadding: const EdgeInsets.symmetric(horizontal: 00,vertical: 00),
-                                    titlePadding: const EdgeInsets.symmetric(horizontal: 00,vertical:00),
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 00,vertical:00),
+                                        borderRadius:
+                                            BorderRadius.circular(00.0)),
+                                    insetPadding: const EdgeInsets.symmetric(
+                                        horizontal: 00, vertical: 00),
+                                    titlePadding: const EdgeInsets.symmetric(
+                                        horizontal: 00, vertical: 00),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 00, vertical: 00),
                                     clipBehavior: Clip.none,
                                     content: SizedBox(
-                                        width: 350,
-                                        height: 350,
-                                        child: LockedPlanWidget()));
+                                        width: double.infinity,
+                                        height: MediaQuery.of(context).size.width,
+                                        child: BlocProvider.value(
+                                          value: LockedPlanBloc(),
+                                          child: const LockedPlanWidget(),
+                                        )));
                               });
                         },
                         color: appThemeData.primaryColor,
@@ -422,8 +446,8 @@ class BookingDetailsScreen extends StatelessWidget {
           return ErrorWidget(Exception("Error state"));
         } else if (state is BookingDetailsDeletedState) {
           getPhotoSize() {
-            if (state.booking.workspace.photos.isEmpty) return 0.0;
-            if (state.booking.workspace.photos.length == 1) return 250.0;
+            if (state.booking.workspace.photosIds.isEmpty) return 0.0;
+            if (state.booking.workspace.photosIds.length == 1) return 250.0;
             return 200.0;
           }
 
@@ -454,13 +478,19 @@ class BookingDetailsScreen extends StatelessWidget {
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     itemCount:
-                                        state.booking.workspace.photos.length,
+                                        state.booking.workspace.photosIds.length,
                                     //state.workspace.photos.length,
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
                                         behavior: HitTestBehavior.translucent,
-                                        child: state.booking.workspace
-                                            .photos[index].photo,
+                                        child: CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl: AppImageProvider.getImageUrlFromImageId(state.booking.workspace
+                                              .photosIds[index]),
+                                          httpHeaders: NetworkController().getAuthHeader(),
+                                          placeholder: (context, url) => const Center(),
+                                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                                        ),
                                         onTap: () {
                                           showDialog(
                                               useRootNavigator: false,
@@ -499,11 +529,18 @@ class BookingDetailsScreen extends StatelessWidget {
                                                                   .symmetric(
                                                               horizontal: 10,
                                                               vertical: 10),
-                                                      content: state
-                                                          .booking
-                                                          .workspace
-                                                          .photos[index]
-                                                          .photo,
+                                                      content:
+                                                      CachedNetworkImage(
+                                                        fit: BoxFit.cover,
+                                                        imageUrl: AppImageProvider.getImageUrlFromImageId( state
+                                                            .booking
+                                                            .workspace
+                                                            .photosIds[index]
+                                                            ),
+                                                        httpHeaders: NetworkController().getAuthHeader(),
+                                                        placeholder: (context, url) => const Center(),
+                                                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                                                      )
                                                     ),
                                                   ),
                                                 );

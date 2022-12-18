@@ -69,23 +69,4 @@ class PlanElementWidget extends StatelessWidget {
         ));
   }
 
-  static List<PlanElementWidget> getListOfPlanElementWidget(
-      List<LevelPlanElementData> workspaces, LevelPlanElementData? selectedWorkplace, Map<int, WorkspaceType> types) {
-    List<PlanElementWidget> elements = [];
-    for (LevelPlanElementData workspace in workspaces) {
-      elements.add(PlanElementWidget(
-        isActive: workspace.isActive,
-        x: workspace.positionX,
-        y: workspace.positionY,
-        height: workspace.height,
-        // workspace.height,
-        width: workspace.width,
-        //workspace.width,
-        workspace: workspace,
-        isSelect: workspace == selectedWorkplace ? true : false,
-        cachedNetworkImage: getCachedNetworkImage(workspace.type.id),
-      )); //workspace.isSelect));
-    }
-    return elements;
-  }
 }

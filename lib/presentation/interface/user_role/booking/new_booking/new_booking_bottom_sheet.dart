@@ -1,4 +1,6 @@
 
+import 'package:atb_booking/data/services/image_provider.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/adding_people_to_booking_bloc/adding_people_to_booking_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/new_booking_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/new_booking_sheet_bloc/new_booking_sheet_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/user_role/booking/new_booking/adding_people_popup.dart';
 import 'package:atb_booking/presentation/interface/user_role/booking/new_booking/new_booking_confirmation_popup.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -190,8 +193,8 @@ class _SheetLoadedStateWidget extends StatelessWidget {
     }
 
     getSize() {
-      if (state.workspace.photos.isEmpty) return 0.0;
-      if (state.workspace.photos.length == 1) return 250.0;
+      if (state.workspace.photosIds.isEmpty) return 0.0;
+      if (state.workspace.photosIds.length == 1) return 250.0;
       return 200.0;
     }
 
@@ -257,12 +260,19 @@ class _SheetLoadedStateWidget extends StatelessWidget {
               child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: state.workspace.photos.length,
+                  itemCount: state.workspace.photosIds.length,
                   //state.workspace.photos.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      child: state.workspace.photos[index].photo,
+                      child:
+                      CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: AppImageProvider.getImageUrlFromImageId(state.workspace.photosIds[index]),
+                        httpHeaders: NetworkController().getAuthHeader(),
+                        placeholder: (context, url) => const Center(),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                      ),
                       onTap: () {
                         showDialog(
                             useRootNavigator: false,
@@ -291,7 +301,13 @@ class _SheetLoadedStateWidget extends StatelessWidget {
                                     contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 10),
                                     content:
-                                        state.workspace.photos[index].photo,
+                                    CachedNetworkImage(
+                                      fit: BoxFit.cover,
+                                      imageUrl: AppImageProvider.getImageUrlFromImageId(state.workspace.photosIds[index]),
+                                      httpHeaders: NetworkController().getAuthHeader(),
+                                      placeholder: (context, url) => const Center(),
+                                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                                    ),
                                   ),
                                 ),
                               );
@@ -465,8 +481,8 @@ class _SheetLoadedEmptyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     getSize() {
-      if (state.workspace.photos.isEmpty) return 0.0;
-      if (state.workspace.photos.length == 1) return 250.0;
+      if (state.workspace.photosIds.isEmpty) return 0.0;
+      if (state.workspace.photosIds.length == 1) return 250.0;
       return 200.0;
     }
 
@@ -486,12 +502,19 @@ class _SheetLoadedEmptyWidget extends StatelessWidget {
           child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: state.workspace.photos.length,
+              itemCount: state.workspace.photosIds.length,
               //state.workspace.photos.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  child: state.workspace.photos[index].photo,
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: AppImageProvider.getImageUrlFromImageId(state.workspace.photosIds[index
+                    ]),
+                    httpHeaders: NetworkController().getAuthHeader(),
+                    placeholder: (context, url) => const Center(),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                  ),
                   onTap: () {
                     showDialog(
                         useRootNavigator: false,
@@ -519,7 +542,14 @@ class _SheetLoadedEmptyWidget extends StatelessWidget {
                                     horizontal: 10, vertical: 200),
                                 contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 10),
-                                content: state.workspace.photos[index].photo,
+                                content: CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: AppImageProvider.getImageUrlFromImageId(state.workspace.photosIds[index]),
+                                  httpHeaders: NetworkController().getAuthHeader(),
+                                  placeholder: (context, url) => const Center(),
+                                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                                )
+
                               ),
                             ),
                           );

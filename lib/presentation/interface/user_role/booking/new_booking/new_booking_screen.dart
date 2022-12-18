@@ -60,10 +60,8 @@ class NewBookingScreen extends StatelessWidget {
                 // TODO: implement listener
               }, builder: (context, state) {
                 if (state is NewBookingFourthState) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: PlanWidget(),
-                  );
+                  return
+                    const PlanWidget();
                 } else {
                   return const Center();
                 }

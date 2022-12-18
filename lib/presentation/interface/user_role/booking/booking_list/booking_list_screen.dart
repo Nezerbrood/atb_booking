@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:atb_booking/data/models/booking.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
+import 'package:atb_booking/data/services/image_provider.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -89,5 +94,12 @@ BookingCard getBookingCard(Booking bookingData, Map<int, WorkspaceType> mapOfTyp
       bookingData.reservationInterval,
       bookingData.workspace.type.type,
       "assets/workplacelogo.png",
-      (bookingData.workspace.photos.isEmpty)?null:bookingData.workspace.photos[0].photo);
+      (bookingData.workspace.photosIds.isEmpty)?null:
+      CachedNetworkImage(
+        fit: BoxFit.cover,
+        imageUrl: AppImageProvider.getImageUrlFromImageId(bookingData.workspace.photosIds[0]),
+        httpHeaders: NetworkController().getAuthHeader(),
+        placeholder: (context, url) => const Center(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ));
 }

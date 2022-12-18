@@ -15,7 +15,7 @@ class Workspace {
   final double sizeY;
   final WorkspaceType type;
   final int level;
-  final List<Photo> photos;
+  final List<int> photosIds;
 
   Workspace.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -28,10 +28,9 @@ class Workspace {
         sizeY = (json['sizeY'] as int).toDouble(),
         type = WorkspaceType.fromJson(json['type']),
         level = json['level'],
-        photos = //getRandomPhotoList();
-            (json['photos'] as List<dynamic>)
-                .map((json) => Photo.fromJson(json))
-                .toList();
+        photosIds = json['photos'] != null
+            ? (json['photos'] as List<dynamic>).map((e) => e as int).toList()
+            : [];
 
   Workspace(
       this.id,
@@ -41,7 +40,7 @@ class Workspace {
       this.positionX,
       this.positionY,
       this.level,
-      this.photos,
+      this.photosIds,
       this.sizeX,
       this.sizeY,
       this.type);
@@ -74,7 +73,7 @@ class LevelPlanElementData {
     required this.description,
     required this.isActive,
     required this.levelId,
-  }){
+  }) {
     photosIds = [];
   }
 
@@ -104,13 +103,9 @@ class LevelPlanElementData {
         height = (json['sizeY'] as int).toDouble(),
         type = WorkspaceType.fromJson(json['type']),
         levelNumber = json['level'],
-        photosIds = json['photos']!=null?(json['photos'] as List<dynamic>)
-            .map((json) {
-              int id = (json)['imageId'];
-              print(id);
-              return id;
-            })
-            .toList():[];
+        photosIds = json['photos'] != null
+            ? (json['photos'] as List<dynamic>).map((e) => e as int).toList()
+            : [];
 }
 
 class Photo {
@@ -129,5 +124,5 @@ class Photo {
           errorWidget: (context, url, error) => const Icon(Icons.error),
         );
 
-  Photo({required this.id, required this.photo,required this.imageId});
+  Photo({required this.id, required this.photo, required this.imageId});
 }

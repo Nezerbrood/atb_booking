@@ -61,13 +61,11 @@ class LevelPlanEditorBloc
     });
   }
 
-
-
   LevelPlanEditorBloc() : super(LevelPlanEditorInitial()) {
-
     on<LevelPlanEditorEvent>((event, emit) {
       // TODO: implement event handler
     });
+
     ///
     ///
     /// удаляем этаж
