@@ -357,14 +357,19 @@ class _CreateButton extends StatelessWidget {
         //     })
         // );
         showDialog(
-            useRootNavigator: false,
+            useRootNavigator: true,
             context: context,
             builder: (context_) {
               return BlocProvider.value(
                 value: context.read<NewOfficePageBloc>(),
-                child:  MultiBlocProvider(providers: [
-                  BlocProvider.value(value: context.read<AdminOfficePageBloc>(),),
-                  BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
+                child: MultiBlocProvider(providers: [
+                  BlocProvider(
+                    create: (_) => AdminOfficePageBloc(),
+                  ),
+                  BlocProvider(
+                    create: (_) =>
+                        LevelPlanEditorBloc(),
+                  ),
                 ], child: const _CreateAlertDialog()),
               );
             });
@@ -386,22 +391,20 @@ class _CreateAlertDialog extends StatelessWidget {
       content: BlocListener<NewOfficePageBloc, NewOfficePageState>(
         child: const CircularProgressIndicator(),
         listener: (_, state) {
-          if (state is NewOfficePageSuccessfulCreatedState) {
-            context.read<AdminOfficePageBloc>().add(OfficePageLoadEvent(state.officeId));
+          print("STATE: $state");
+          if (state is NewOfficePageSuccessfulCreatedState)  {
+            context
+                .read<AdminOfficePageBloc>()
+                .add(OfficePageLoadEvent(state.officeId));
             Navigator.pop(context);
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context_) {
-              return MultiBlocProvider(
-                  providers: [BlocProvider.value(
-                    value: context.read<NewOfficePageBloc>(),
-                  ),
-                    BlocProvider.value(
-                      value: context.read<AdminOfficePageBloc>(),
-                    ),
-                    BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),],
-                  child: const OfficePage());
+              return MultiBlocProvider(providers: [
+                BlocProvider<AdminOfficePageBloc>(
+                  create: (_) => AdminOfficePageBloc(),
+                ),
+              ], child: const OfficePage());
             }));
-
           }
         },
       ),

@@ -26,15 +26,20 @@ class AdminOfficesScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (bcontext) {
+          Navigator.of(context).push(MaterialPageRoute(builder: (bcontext) {
             return MultiBlocProvider(providers: [
+              BlocProvider.value(
+                value: context.read<
+                    AdminOfficesBloc>(), //context.read<NewOfficePageBloc>(),
+              ),
               BlocProvider<NewOfficePageBloc>(
-                  create: (context) => NewOfficePageBloc()//context.read<NewOfficePageBloc>(),
-              ),
+                  create: (context) =>
+                      NewOfficePageBloc() //context.read<NewOfficePageBloc>(),
+                  ),
               BlocProvider(
-                  create: (context) =>  AdminOfficePageBloc()//context.read<AdminOfficePageBloc>(),
-              ),
+                  create: (context) =>
+                      AdminOfficePageBloc() //context.read<AdminOfficePageBloc>(),
+                  ),
               //BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
             ], child: const NewOfficePage());
           }));
@@ -150,9 +155,12 @@ class OfficeCard extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(builder: (cont) {
           return MultiBlocProvider(providers: [
             BlocProvider.value(
-              value: context.read<AdminOfficePageBloc>(),
+              value: context.read<AdminOfficesBloc>(),
             ),
             BlocProvider.value(
+              value: context.read<AdminOfficePageBloc>(),
+            ),
+            BlocProvider.value(//todo delete this
               value: context.read<LevelPlanEditorBloc>(),
             ),
           ], child: OfficePage());

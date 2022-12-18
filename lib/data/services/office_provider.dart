@@ -127,4 +127,26 @@ class OfficeProvider {
       throw Exception('Error create office');
     }
   }
+
+  Future<void> deleteOfficeById(int officeId) async {
+    var baseUrl = NetworkController().getUrl();
+    Map<String, String> headers = {};
+    var token = await NetworkController().getAccessToken();
+    headers["Authorization"] = 'Bearer $token';
+    headers["Content-type"] = 'application/json; charset=utf-8';
+    headers["Accept"] = "application/json";
+    var uri = Uri.http(baseUrl, '/api/offices/$officeId');
+    final response = await http.delete(uri, headers: headers,);
+    if (response.statusCode == 200) {
+      print("successful delete office");
+    } else if (response.statusCode == 401) {
+      /// Обновление access токена
+      await NetworkController().updateAccessToken();
+      return deleteOfficeById(officeId);
+    } else {
+      //print(json.decode(utf8.decode(response.bodyBytes)));
+      print("'Error delete office, status code: ${response.statusCode}");
+      throw Exception('OfficeProvider: Error delete office');
+    }
+  }
 }

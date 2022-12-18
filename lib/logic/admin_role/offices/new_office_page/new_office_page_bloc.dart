@@ -54,7 +54,6 @@ class NewOfficePageBloc extends Bloc<NewOfficePageEvent, NewOfficePageState> {
           workTimeRange: workTimeRange,
           cityId: selectedCity!.id,
         );
-        var context = event.context;
         int createdOfficeId = await OfficeProvider().createOffice(office);
         emit(NewOfficePageSuccessfulCreatedState(futureCityList, address,
             bookingRange, workTimeRange!, buttonIsActive(), createdOfficeId));

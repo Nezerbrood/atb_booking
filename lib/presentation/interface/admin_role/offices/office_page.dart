@@ -1,8 +1,10 @@
 import 'package:atb_booking/data/models/level_plan.dart';
+import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/booking_stats/admin_booking_stats_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/bookings_page/admin_bookings_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
+import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/bookings_page.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/booking_stats_page.dart';
@@ -27,7 +29,7 @@ class OfficePage extends StatelessWidget {
             .add(AdminOfficePageUpdateFieldsEvent());
       },
       child: BlocBuilder<AdminOfficePageBloc, AdminOfficePageState>(
-        builder: (context, state) {
+        builder: (builderContext, state) {
           if (state is AdminOfficePageLoadedState) {
             return Scaffold(
               appBar: AppBar(
@@ -36,16 +38,25 @@ class OfficePage extends StatelessWidget {
                   TextButton(
                       onPressed: () {
                         showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const _DeleteConfirmDialog();
+                            useRootNavigator: false,
+                            context: builderContext,
+                            builder: (_) {
+                              return MultiBlocProvider(providers: [
+                                BlocProvider.value(
+                                  value: context.read<AdminOfficePageBloc>(),
+                                ),
+                                BlocProvider.value(
+                                  value: context.read<
+                                      AdminOfficesBloc>(), //context.read<AdminOfficePageBloc>(),
+                                ),
+                              ], child: const _DeleteConfirmDialog());
                             });
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           "удалить",
-                          style: Theme.of(context)
+                          style: Theme.of(builderContext)
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
@@ -84,7 +95,7 @@ class OfficePage extends StatelessWidget {
             );
           } else if (state is AdminOfficePageLoadingState) {
             return Scaffold(
-              appBar: AppBar(),
+              appBar: AppBar(title: const Text("Офис")),
               body: const Center(
                 child: CircularProgressIndicator(),
               ),
@@ -93,7 +104,10 @@ class OfficePage extends StatelessWidget {
             return const Center(
               child: Text("errorstate"),
             );
-          } else {
+          }
+          else if(state is AdminOfficePageInitial){
+            return Center(child: Text("initial state of office page"),);
+          }else {
             throw Exception("unknown AdminOfficePageState $state");
           }
         },
@@ -103,10 +117,11 @@ class OfficePage extends StatelessWidget {
 }
 
 class _OfficeAddress extends StatelessWidget {
-  static TextEditingController? _officeAddressController = TextEditingController();
+  static TextEditingController? _officeAddressController =
+      TextEditingController();
   final AdminOfficePageLoadedState state;
 
-  _OfficeAddress({super.key, required this.state}){}
+  _OfficeAddress({super.key, required this.state}) {}
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +339,9 @@ class _SaveButton extends StatelessWidget {
       padding: const EdgeInsets.all(15.0),
       child: AtbElevatedButton(
         onPressed: () {
-          context.read<AdminOfficePageBloc>().add(AdminOfficeSaveChangesButtonEvent());
+          context
+              .read<AdminOfficePageBloc>()
+              .add(AdminOfficeSaveChangesButtonEvent());
         },
         text: 'Сохранить изменения',
       ),
@@ -395,7 +412,8 @@ class _LevelCard extends StatelessWidget {
                 value: context.read<AdminOfficePageBloc>(),
               ),
               BlocProvider.value(
-                value: context.read<LevelPlanEditorBloc>()..add(LevelPlanEditorLoadWorkspacesFromServerEvent(level.id)),
+                value: context.read<LevelPlanEditorBloc>()
+                  ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(level.id)),
               ),
             ], child: const LevelEditorPage());
           }));
@@ -413,35 +431,61 @@ class _DeleteConfirmDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Удалить офис?'),
-      content: Text(
-        'После удаления все созданные брони в этом офисе будут отменены.\n Вы уверены что хотите удалить офис?',
-        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            color: Colors.black54, fontSize: 20, fontWeight: FontWeight.w300),
-      ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
-          child: Text(
-            'Отмена',
+    return BlocConsumer<AdminOfficePageBloc, AdminOfficePageState>(
+      listener: (_, state) {
+        if (state is AdminOfficePageDeleteSuccessState) {
+          context.read<AdminOfficesBloc>().add(AdminOfficesReloadEvent());
+          Navigator.pop(context);
+          Navigator.pop(context);
+          //Navigator.popUntil(context, (route) => route.isFirst);
+        }
+      },
+      builder: (context, state) {
+        if (state is AdminOfficePageDeleteErrorState) {
+          return const AlertDialog(
+            content: Text("Ошибка при удалении"),
+          );
+        }
+        if (state is AdminOfficePageDeleteLoadingState) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return AlertDialog(
+          title: const Text('Удалить офис?'),
+          content: Text(
+            'После удаления все созданные брони в этом офисе будут отменены.\n Вы уверены что хотите удалить офис?',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: Colors.black54,
                 fontSize: 20,
-                fontWeight: FontWeight.w500),
+                fontWeight: FontWeight.w300),
           ),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'OK'),
-          child: Text(
-            'Удалить',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.black54,
-                fontSize: 20,
-                fontWeight: FontWeight.w500),
-          ),
-        ),
-      ],
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: Text(
+                'Отмена',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.black54,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                context
+                    .read<AdminOfficePageBloc>()
+                    .add(AdminOfficeDeleteEvent());
+              },
+              child: Text(
+                'Удалить',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.black54,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -533,8 +577,12 @@ class _AddNewLevelButton extends StatelessWidget {
             .add(AdminOfficePageCreateNewLevelButtonPress(context));
         Navigator.of(context).push(MaterialPageRoute(builder: (Bcontext) {
           return MultiBlocProvider(providers: [
-            BlocProvider.value(value: context.read<AdminOfficePageBloc>(),),
-            BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
+            BlocProvider.value(
+              value: context.read<AdminOfficePageBloc>(),
+            ),
+            BlocProvider.value(
+              value: context.read<LevelPlanEditorBloc>(),
+            ),
           ], child: const LevelEditorPage());
         }));
       },

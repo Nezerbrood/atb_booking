@@ -35,3 +35,5 @@ class AdminOfficePageCreateNewLevelButtonPress extends AdminOfficePageEvent{
 }
 class AdminOfficeSaveChangesButtonEvent extends AdminOfficePageEvent{
 }
+class AdminOfficeDeleteEvent extends AdminOfficePageEvent{
+}

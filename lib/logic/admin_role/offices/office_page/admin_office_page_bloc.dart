@@ -18,12 +18,14 @@ class AdminOfficePageBloc
     extends Bloc<AdminOfficePageEvent, AdminOfficePageState> {
   Office? office;
   String? address;
-  int? bookingRangeDays = 5;
-  DateTimeRange? workRange;
+  int? bookingRange = 5;
+  DateTimeRange? workTimeRange;
   List<LevelListItem>? levels;
 
   bool isSaveButtonActive() {
-    return !(office!.address == address && office!.workTimeRange == workRange && office!.maxBookingRangeInDays == bookingRangeDays);
+    return !(office!.address == address &&
+        office!.workTimeRange == workTimeRange &&
+        office!.maxBookingRangeInDays == bookingRange);
   }
 
   AdminOfficePageBloc() : super(AdminOfficePageInitial()) {
@@ -35,16 +37,16 @@ class AdminOfficePageBloc
         office = await OfficeProvider().getOfficeById(event.officeId);
         levels = await OfficeRepository().getLevelsByOfficeId(office!.id);
         address = office!.address!;
-        bookingRangeDays = office!.maxBookingRangeInDays;
-        workRange = office!.workTimeRange;
-        emit(AdminOfficePageLoadedState(address!, bookingRangeDays!,
-            workRange!, isSaveButtonActive(), levels!));
+        bookingRange = office!.maxBookingRangeInDays;
+        workTimeRange = office!.workTimeRange;
+        emit(AdminOfficePageLoadedState(address!, bookingRange!, workTimeRange!,
+            isSaveButtonActive(), levels!));
       } catch (_) {
         print(_);
         emit(AdminOfficePageErrorState());
       }
     });
-    on< OfficePageReloadEvent>((event, emit) async {
+    on<OfficePageReloadEvent>((event, emit) async {
       print("emit loading state");
       emit(AdminOfficePageLoadingState());
       try {
@@ -52,64 +54,88 @@ class AdminOfficePageBloc
         office = await OfficeProvider().getOfficeById(office!.id);
         levels = await OfficeRepository().getLevelsByOfficeId(office!.id);
         address = office!.address!;
-        bookingRangeDays = office!.maxBookingRangeInDays;
-        workRange = office!.workTimeRange;
-        emit(AdminOfficePageLoadedState(address!, bookingRangeDays!,
-            workRange!, isSaveButtonActive(), levels!));
+        bookingRange = office!.maxBookingRangeInDays;
+        workTimeRange = office!.workTimeRange;
+        emit(AdminOfficePageLoadedState(address!, bookingRange!, workTimeRange!,
+            isSaveButtonActive(), levels!));
       } catch (_) {
         print(_);
         emit(AdminOfficePageErrorState());
       }
     });
-    on<AdminOfficePageCreateNewLevelButtonPress>((event,emit) async {
+
+    on<AdminOfficeDeleteEvent>((event, emit) async {
+      try {
+        emit(AdminOfficePageDeleteLoadingState(address!, bookingRange!,
+            workTimeRange!, isSaveButtonActive(), levels!));
+        await OfficeProvider().deleteOfficeById(office!.id);
+        emit(AdminOfficePageDeleteSuccessState(address!, bookingRange!,
+            workTimeRange!, isSaveButtonActive(), levels!));
+      } catch (_) {
+        emit(AdminOfficePageDeleteErrorState(address!, bookingRange!,
+            workTimeRange!, isSaveButtonActive(), levels!));
+      }
+    });
+
+    on<AdminOfficePageCreateNewLevelButtonPress>((event, emit) async {
       int number = 1;
-      for(var level in levels!){
-        if(number<=level.number){
-          number = level.number+1;
+      for (var level in levels!) {
+        if (number <= level.number) {
+          number = level.number + 1;
         }
       }
-      try{
-        int createdLevelId = await LevelProvider().createLevel(office!.id,number);
+      try {
+        int createdLevelId =
+            await LevelProvider().createLevel(office!.id, number);
+
         ///
         ///
         /// ну вот таквота))))))
-        /// извиняюсь
-        event.context.read<LevelPlanEditorBloc>().add(LevelPlanEditorLoadWorkspacesFromServerEvent(createdLevelId));
+        /// извиняюсь //todo remove this shit
+        event.context
+            .read<LevelPlanEditorBloc>()
+            .add(LevelPlanEditorLoadWorkspacesFromServerEvent(createdLevelId));
         add(OfficePageLoadEvent(office!.id));
-      }catch(_){
+      } catch (_) {
         print(_);
       }
     });
     on<AdminOfficeAddressChangeEvent>((event, emit) {
       address = event.address;
       print("emit loaded state");
-      emit(AdminOfficePageLoadedState(address!, bookingRangeDays!, workRange!,
-          isSaveButtonActive(), levels!)); /// эмитить не нужно потом что textfield изменяется сам. контроллер - статик
+      emit(AdminOfficePageLoadedState(address!, bookingRange!, workTimeRange!,
+          isSaveButtonActive(), levels!));
+
+      /// эмитить не нужно потом что textfield изменяется сам. контроллер - статик
     });
     on<AdminBookingRangeChangeEvent>((event, emit) {
-      bookingRangeDays = event.bookingRange;
+      bookingRange = event.bookingRange;
       print("emit loaded state");
       // emit(AdminOfficePageLoadedState(address!,bookingRangeDays!)); /// эмитить не нужно потом что textfield изменяется сам, потому что контроллер статик
     });
-    on<AdminOfficeSaveChangesButtonEvent>((event,emit)async {
-      var newOfficeData = Office(id:office!.id,address: address!,maxBookingRangeInDays: bookingRangeDays!,workTimeRange:workRange!);
-        try {
-          await OfficeProvider().changeOffice(newOfficeData);
-          office = newOfficeData;
-          emit(AdminOfficePageLoadedState(address!, bookingRangeDays!, workRange!,
-              isSaveButtonActive(), levels!));
-        }catch(_){
-          print(_);
-          add(OfficePageLoadEvent(office!.id));
-        }
+    on<AdminOfficeSaveChangesButtonEvent>((event, emit) async {
+      var newOfficeData = Office(
+          id: office!.id,
+          address: address!,
+          maxBookingRangeInDays: bookingRange!,
+          workTimeRange: workTimeRange!);
+      try {
+        await OfficeProvider().changeOffice(newOfficeData);
+        office = newOfficeData;
+        emit(AdminOfficePageLoadedState(address!, bookingRange!, workTimeRange!,
+            isSaveButtonActive(), levels!));
+      } catch (_) {
+        print(_);
+        add(OfficePageLoadEvent(office!.id));
+      }
     });
     on<AdminOfficePageUpdateFieldsEvent>((event, emit) {
-      emit(AdminOfficePageLoadedState(address!, bookingRangeDays!, workRange!,
+      emit(AdminOfficePageLoadedState(address!, bookingRange!, workTimeRange!,
           isSaveButtonActive(), levels!));
     });
     on<AdminOfficePageWorkRangeChangeEvent>((event, emit) {
-      workRange = event.newWorkTimeRange;
-      emit(AdminOfficePageLoadedState(address!, bookingRangeDays!, workRange!,
+      workTimeRange = event.newWorkTimeRange;
+      emit(AdminOfficePageLoadedState(address!, bookingRange!, workTimeRange!,
           isSaveButtonActive(), levels!));
     });
   }

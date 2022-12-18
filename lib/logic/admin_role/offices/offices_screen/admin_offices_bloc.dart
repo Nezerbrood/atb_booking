@@ -28,6 +28,17 @@ class AdminOfficesBloc extends Bloc<AdminOfficesEvent, AdminOfficesState> {
         emit(AdminOfficesErrorState(futureCityList));
       }
     });
+    on<AdminOfficesReloadEvent>((event,emit)async{
+      try {
+        futureCityList = CityRepository().getAllCities();
+        List<Office> offices = await OfficeRepository().getOfficesByCityId(selectedCity!.id);
+        emit(AdminOfficesLoadedState(futureCityList, offices));
+      }catch(_){
+        print(_);
+        futureCityList = CityRepository().getAllCities();
+        emit(AdminOfficesErrorState(futureCityList));
+      }
+    });
 
   }
 }
