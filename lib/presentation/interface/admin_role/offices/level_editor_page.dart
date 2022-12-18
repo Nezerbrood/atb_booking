@@ -1,12 +1,20 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
+import 'package:atb_booking/data/services/image_provider.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/data/services/workspace_type_repository.dart';
 import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 //double SCALE_FACTOR = 0.5;
 
@@ -102,6 +110,27 @@ class _LevelPlanEditor extends StatelessWidget {
         });
         print("____________");
         var elements = <Widget>[];
+
+        ///
+        ///
+        if (state.levelPlanImageId != null) {
+          var backgroundImage = Center(
+            child: Container(
+              width: double.infinity,
+              //height:  double.infinity,
+              child: CachedNetworkImage(
+                  fit: BoxFit.fitHeight,
+                  imageUrl: "https://i.ibb.co/82gPz00/Capture.png",
+                  httpHeaders: NetworkController().getAuthHeader(),
+                  placeholder: (context, url) => const Center(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error)),
+            ),
+          );
+          elements.add(backgroundImage);
+        }
+
+        ///
+        ///
         _LevelPlanEditorElementWidget? selectedElem;
         for (int i = 0; i < state.listOfPlanElements.length; i++) {
           bool isSelect = i == state.selectedElementIndex;
@@ -110,15 +139,18 @@ class _LevelPlanEditor extends StatelessWidget {
                 data: state.listOfPlanElements[i],
                 isSelect: isSelect,
                 scaleInteractiveViewValue:
-                _transformationController.value.getMaxScaleOnAxis());
-          }else{
+                    _transformationController.value.getMaxScaleOnAxis());
+          } else {
             elements.add(_LevelPlanEditorElementWidget(
                 data: state.listOfPlanElements[i],
                 isSelect: isSelect,
                 scaleInteractiveViewValue:
-                _transformationController.value.getMaxScaleOnAxis()));
+                    _transformationController.value.getMaxScaleOnAxis()));
           }
-        }if(selectedElem!=null)elements.add(selectedElem);///кидаем наверх плана выбранный
+        }
+        if (selectedElem != null) elements.add(selectedElem);
+
+        ///кидаем наверх плана выбранный
         print("____________");
         return InteractiveViewer(
           minScale: 0.3,
@@ -810,7 +842,7 @@ class _TitleUnderPlan extends StatelessWidget {
           String title;
           if (state.selectedElementIndex != null) {
             title =
-                "title2"; // state.listOfPlanElements[state.selectedElementIndex!].type.type;
+                state.listOfPlanElements[state.selectedElementIndex!].type.type; // state.listOfPlanElements[state.selectedElementIndex!].type.type;
           } else {
             if (state.listOfPlanElements.isEmpty) {
               title = "Добавьте место на\n карту из верхнего меню";
@@ -920,7 +952,9 @@ class _BottomSheet extends StatelessWidget {
         title: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
           builder: (context, state) {
             if (state is LevelPlanEditorMainState) {
-              return Text('title');
+              return Text(
+                  state.listOfPlanElements[state.selectedElementIndex!].type.type
+              );
             } else {
               return ErrorWidget(Exception("unexpected state: $state"));
             }
@@ -932,10 +966,129 @@ class _BottomSheet extends StatelessWidget {
 
         //mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          _WorkSpacePhotos(),
           const _DescriptionWorkspaceField(),
           _NumberOfWorkspacesField(),
           const _ActiveStatusAndButton(),
         ],
+      ),
+    );
+  }
+}
+
+class _WorkSpacePhotos extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+      builder: (context, state) {
+        if (state is LevelPlanEditorMainState) {
+          return Container(
+            height: 200,
+            child: state.selectedWorkspacePhotosIds.isNotEmpty
+                ? Scrollbar(
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.selectedWorkspacePhotosIds.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            if (index == 0) _UploadImagePanel(),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: AppImageProvider.getImageUrlFromImageId(
+                                      state.selectedWorkspacePhotosIds[index]),
+                                  httpHeaders: NetworkController().getAuthHeader(),
+                                  placeholder: (context, url) => const Center(),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error)),
+                            )
+                          ],
+                        );
+                        ;
+                      }),
+                )
+                : _UploadImagePanel(),
+          );
+        } else {
+          return ErrorWidget(Exception("unexpected state: $state"));
+        }
+      },
+    );
+  }
+}
+
+class _UploadImagePanel extends StatelessWidget {
+  //File? image;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 240,
+      height: 240,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          MaterialButton(
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(width: 1, color: appThemeData.primaryColor),
+                borderRadius: BorderRadius.circular(7.0)),
+            onPressed: () {
+              context.read<LevelPlanEditorBloc>().add(
+                  LevelPlanEditorAddImageToWorkspaceButtonEvent(
+                      ImageSource.gallery));
+            },
+            color: appThemeData.primaryColor,
+            child: Container(
+              width: 200,
+              height: 40,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Выбрать из галереи",
+                      style: appThemeData.textTheme.titleMedium!
+                          .copyWith(color: Colors.white, fontSize: 15),
+                    ),
+                    Icon(Icons.image)
+                  ],
+                ),
+              ),
+            ),
+          ),
+          MaterialButton(
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(width: 1, color: appThemeData.primaryColor),
+                borderRadius: BorderRadius.circular(7.0)),
+            onPressed: () {
+              context.read<LevelPlanEditorBloc>().add(
+                  LevelPlanEditorAddImageToWorkspaceButtonEvent(
+                      ImageSource.camera));
+            },
+            color: appThemeData.primaryColor,
+            child: Container(
+              width: 200,
+              height: 40,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Сделать фото",
+                      style: appThemeData.textTheme.titleMedium!
+                          .copyWith(color: Colors.white, fontSize: 15),
+                    ),
+                    Icon(Icons.add_a_photo)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -1332,14 +1485,9 @@ class _UploadBackgroundImageButton extends StatelessWidget {
                         BorderSide(width: 1, color: appThemeData.primaryColor),
                     borderRadius: BorderRadius.circular(7.0)),
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (contextB) {
-                        return BlocProvider.value(
-                          value: context.read<LevelPlanEditorBloc>(),
-                          child: const _UploadImageToBackgroundPopup(),
-                        );
-                      });
+                  context
+                      .read<LevelPlanEditorBloc>()
+                      .add(LevelPlanEditorChangeBackgroundButtonEvent());
                 },
                 color: appThemeData.primaryColor,
                 child: Padding(

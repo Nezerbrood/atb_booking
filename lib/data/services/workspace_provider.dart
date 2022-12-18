@@ -85,7 +85,9 @@ class WorkspaceProvider {
       throw Exception('Error create workspace');
     }
   }
-  Future<void> sendWorkspacesChangesByLevelId(List<LevelPlanElementData> listOfChangedWorkspaces) async {
+
+  Future<void> sendWorkspacesChangesByLevelId(
+      List<LevelPlanElementData> listOfChangedWorkspaces) async {
     var baseUrl = NetworkController().getUrl();
     Map<String, String> headers = {};
     var list = <dynamic>[];
@@ -109,6 +111,31 @@ class WorkspaceProvider {
     } else {
       print("response code: ${response.statusCode}");
       throw Exception('Error fetching level');
+    }
+  }
+
+  Future<void> addPhotoToWorkspaceByIds(int workspaceId, int photosId) async {
+    var baseUrl = NetworkController().getUrl();
+    Map<String, String> headers = {};
+    var token = await NetworkController().getAccessToken();
+    headers["Authorization"] = 'Bearer $token';
+    headers["Content-type"] = 'application/json; charset=utf-8';
+    headers["Accept"] = "application/json";
+    var fields = <String, dynamic>{};
+    fields['imageId'] = photosId;
+    fields['workspaceId'] = workspaceId;
+    var body = jsonEncode(fields);
+    var uri = Uri.http(baseUrl, '/api/workspacesPhoto');
+    final response = await http.post(uri, headers: headers, body: body);
+    if (response.statusCode == 201) {
+      print("successful create workspaces photo!");
+    } else if (response.statusCode == 401) {
+      /// Обновление access токена
+      await NetworkController().updateAccessToken();
+      return addPhotoToWorkspaceByIds(workspaceId, photosId);
+    } else {
+      print("response code: ${response.statusCode}");
+      throw Exception('Error create workspaces photo');
     }
   }
 }

@@ -60,7 +60,7 @@ class LevelPlanElementData {
   bool isActive;
   WorkspaceType type;
   int? levelId;
-  List<int>? photosIds;
+  late List<int> photosIds;
   int? levelNumber;
 
   LevelPlanElementData({
@@ -74,7 +74,9 @@ class LevelPlanElementData {
     required this.description,
     required this.isActive,
     required this.levelId,
-  });
+  }){
+    photosIds = [];
+  }
 
   Map<String, dynamic> toJson() {
     var json = <String, dynamic>{};

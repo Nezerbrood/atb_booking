@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:atb_booking/data/models/level_plan.dart';
 import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
+import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/level_plan_provider.dart';
 import 'package:atb_booking/data/services/office_provider.dart';
 import 'package:atb_booking/data/services/workspace_provider.dart';
@@ -11,7 +13,9 @@ import 'package:atb_booking/data/services/workspace_type_repository.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 
 part 'level_plan_editor_event.dart';
@@ -40,10 +44,11 @@ class LevelPlanEditorBloc
     2: _Size(width: 200, height: 200),
   };
   int levelNumber = 0;
-  int? backgroundImagePlanId;
+  int? backgroundImagePlanId = 1;
 
   /// это айди картинки этажа
   int? _selectedElementId;
+  List<int>? _selectedWorkspacePhotosIds;
   int? _levelId;
 
   Timer? _debounce;
@@ -56,20 +61,22 @@ class LevelPlanEditorBloc
     });
   }
 
-  LevelPlanEditorBloc() : super(LevelPlanEditorInitial()) {
 
-    ///
-    ///
-    /// удаляем этаж
-    on<LevelPlanEditorDeleteLevelEvent>((event,emit)async{
-      await LevelProvider().deleteLevel(_levelId!);
-      event.context.read<AdminOfficePageBloc>().add(OfficePageReloadEvent());///не знаю как нужно сделать
-    });
+
+  LevelPlanEditorBloc() : super(LevelPlanEditorInitial()) {
 
     on<LevelPlanEditorEvent>((event, emit) {
       // TODO: implement event handler
     });
+    ///
+    ///
+    /// удаляем этаж
+    on<LevelPlanEditorDeleteLevelEvent>((event, emit) async {
+      await LevelProvider().deleteLevel(_levelId!);
+      event.context.read<AdminOfficePageBloc>().add(OfficePageReloadEvent());
 
+      ///не знаю как нужно сделать
+    });
 
     ///
     ///
@@ -86,9 +93,9 @@ class LevelPlanEditorBloc
     ///
     /// меняем активный эелмент isSelect
     on<LevelPlanEditorElementTapEvent>((event, emit) {
-      if(_selectedElementId==event.id){
+      if (_selectedElementId == event.id) {
         _selectedElementId = null;
-      }else{
+      } else {
         _selectedElementId = event.id;
       }
       add(LevelPlanEditorForceUpdateEvent());
@@ -127,7 +134,7 @@ class LevelPlanEditorBloc
     /// Удаляем место
     on<LevelPlanEditorDeleteWorkspaceButtonPressEvent>((event, emit) async {
       try {
-        if(_selectedElementId==null){
+        if (_selectedElementId == null) {
           print("POPALSAYAA HAHAHAHA!!!");
         }
         int id = _selectedElementId!;
@@ -197,36 +204,43 @@ class LevelPlanEditorBloc
 
     ///
     ///
-    /// Принудительно обновляет состояние
+    /// обновляет состояние, основной эвент который вызываетяс другими, по требованию
     on<LevelPlanEditorForceUpdateEvent>((event, emit) {
       var listOfElem = <LevelPlanElementData>[];
       int? selectedIndex;
-      int tmp =0;
+      int tmp = 0;
       _mapOfPlanElements.entries.map((e) {
-          if(e.key==_selectedElementId) selectedIndex = tmp;
-          tmp++;
-          listOfElem.add(e.value);
+        if (e.key == _selectedElementId) selectedIndex = tmp;
+        tmp++;
+        listOfElem.add(e.value);
       }).toList();
-
+      //загружаем фотки
+      if (_selectedElementId != null) {
+        _selectedWorkspacePhotosIds =
+            _mapOfPlanElements[_selectedElementId]!.photosIds!;
+      } else {
+        _selectedWorkspacePhotosIds = [];
+      }
       emit(LevelPlanEditorMainState(
           listOfPlanElements: listOfElem,
           selectedElementIndex: selectedIndex,
-          levelNumber: levelNumber));
+          levelNumber: levelNumber,
+          levelPlanImageId: backgroundImagePlanId,
+          selectedWorkspacePhotosIds: _selectedWorkspacePhotosIds!));
     });
 
     ///
     ///
     /// Загружаем этаж с сервера
     on<LevelPlanEditorLoadWorkspacesFromServerEvent>((event, emit) async {
-      if(_levelId!=event.levelId){
+      if (_levelId != event.levelId) {
         emit(LevelPlanEditorLoadingState());
         _selectedElementId = null;
       }
       _levelId = event.levelId;
       try {
-        //emit(LevelPlanEditorLoadingState());
         var levelPlan = await LevelProvider().getPlanByLevelId(_levelId!);
-        backgroundImagePlanId = levelPlan.planId;
+        //backgroundImagePlanId = levelPlan.planId; todo remove comment
         levelNumber = levelPlan.number;
         _mapOfPlanElements.clear();
         print('ids of fetching workspaces:[');
@@ -241,14 +255,59 @@ class LevelPlanEditorBloc
 
     ///
     ///
+    /// Добавляем фотки к рабочему месту
+    on<LevelPlanEditorAddImageToWorkspaceButtonEvent>((event, emit) async {
+      try {
+        final imageFromPicker =
+            (await ImagePicker().pickImage(source: event.source));
+        if (imageFromPicker == null) return;
+        final imageFile = File(imageFromPicker.path);
+        try {
+          int idOfCreatedImage = await AppImageProvider.upload(imageFile);
+          await WorkspaceProvider()
+              .addPhotoToWorkspaceByIds(_selectedElementId!, idOfCreatedImage);
+        } catch (_) {
+          print(_);
+        }
+      } on PlatformException catch (e) {
+        print(e);
+      }
+      add(LevelPlanEditorLoadWorkspacesFromServerEvent(_levelId!));
+    });
+
+    ///
+    ///
+    /// Добавляем фотки на задник плана
+    on<LevelPlanEditorChangeBackgroundButtonEvent>((event, emit) async {
+      try {
+        final imageFromPicker =
+            (await ImagePicker().pickImage(source: ImageSource.gallery));
+        if (imageFromPicker == null) return;
+        final imageFile = File(imageFromPicker.path);
+        try {
+          int idOfCreatedImage = await AppImageProvider.upload(imageFile);
+          await LevelProvider()
+              .addImageToPlanByIds(_levelId!, idOfCreatedImage);
+        } catch (_) {
+          print(_);
+        }
+      } on PlatformException catch (e) {
+        print(e);
+      }
+      add(LevelPlanEditorLoadWorkspacesFromServerEvent(_levelId!));
+    });
+
+    ///
+    ///
     /// Загружаем воркплейсы на сервер
     on<LevelPlanEditorSendChangesToServerEvent>((event, emit) async {
       try {
         print("send ids:[");
         List<LevelPlanElementData> listOfChangedWorkspaces =
             _mapOfPlanElements.entries.map((e) {
-              print(e.value.id);
-              return e.value;}).toList();
+          print(e.value.id);
+          return e.value;
+        }).toList();
         print("]");
         await WorkspaceProvider()
             .sendWorkspacesChangesByLevelId(listOfChangedWorkspaces);
@@ -263,8 +322,6 @@ class LevelPlanEditorBloc
         add(LevelPlanEditorLoadWorkspacesFromServerEvent(_levelId!));
       }
     });
-
-
   }
 
   /// функция размещает елемент на плане,
@@ -285,6 +342,7 @@ class LevelPlanEditorBloc
     planElement.positionX = newPositionX;
     planElement.positionY = newPositionY;
   }
+
   //
   // void _changeSelectedElement(int id) {
   //   if (_selectedElementId == null) {

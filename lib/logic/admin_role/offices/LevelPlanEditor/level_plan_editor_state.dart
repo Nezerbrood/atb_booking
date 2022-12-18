@@ -9,7 +9,9 @@ class LevelPlanEditorMainState extends LevelPlanEditorState{
   final List<LevelPlanElementData> listOfPlanElements;
   final int levelNumber;
   final int? selectedElementIndex;
-  LevelPlanEditorMainState({required this.selectedElementIndex, required this.listOfPlanElements,required this.levelNumber});
+  final int? levelPlanImageId;
+  final List<int> selectedWorkspacePhotosIds;
+  LevelPlanEditorMainState({ required this.selectedElementIndex, required this.listOfPlanElements,required this.levelNumber, required this.levelPlanImageId,required this.selectedWorkspacePhotosIds});
 }
 class LevelPlanEditorLoadingState extends LevelPlanEditorState{
 

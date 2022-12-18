@@ -98,4 +98,24 @@ class LevelProvider {
     throw Exception('Error fetching level');
     }
   }
+  Future<void> addImageToPlanByIds(int levelId,int imageId) async {
+    var baseUrl = NetworkController().getUrl();
+    Map<String, String> headers = {};
+    var token = await NetworkController().getAccessToken();
+    headers["Authorization"] = 'Bearer $token';
+    headers["Content-type"] = 'application/json; charset=utf-8';
+    headers["Accept"] = "application/json";
+    var uri = Uri.http(baseUrl, '/api/officeLevels/${levelId}');
+    final response = await http.delete(uri, headers: headers,);
+    if (response.statusCode == 200) {
+      print("successful delete level");
+    } else if (response.statusCode == 401) {
+      /// Обновление access токена
+      await NetworkController().updateAccessToken();
+      return deleteLevel(levelId);
+    } else {
+      print("'Error delete level status code: ${response.statusCode}");
+      throw Exception('Error fetching level');
+    }
+  }
 }
