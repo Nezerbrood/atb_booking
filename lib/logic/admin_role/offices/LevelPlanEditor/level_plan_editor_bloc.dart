@@ -250,7 +250,7 @@ class LevelPlanEditorBloc
     on<LevelPlanEditorDeleteWorkspacePhotoEvent>((event,emit)async {
       try{
         event.imageId;
-        await WorkspaceProvider().deleteById(event.imageId);
+        await WorkspaceProvider().deletePhotoOfWorkspaceById(event.imageId);
       }catch(_){
         print(_);
       }
