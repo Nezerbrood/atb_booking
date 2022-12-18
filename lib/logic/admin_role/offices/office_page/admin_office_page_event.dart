@@ -30,8 +30,6 @@ class AdminOfficePageWorkRangeChangeEvent extends AdminOfficePageEvent{
 }
 
 class AdminOfficePageCreateNewLevelButtonPress extends AdminOfficePageEvent{
-  final BuildContext context;
-  AdminOfficePageCreateNewLevelButtonPress(this.context);
 }
 class AdminOfficeSaveChangesButtonEvent extends AdminOfficePageEvent{
 }

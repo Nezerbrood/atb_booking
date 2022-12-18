@@ -33,3 +33,13 @@ class AdminOfficePageDeleteErrorState extends AdminOfficePageLoadedState {
 }
 
 class AdminOfficePageErrorState extends AdminOfficePageState {}
+
+class AdminOfficePageSuccessCreateLevelState extends AdminOfficePageLoadedState{
+  final int levelId;
+  AdminOfficePageSuccessCreateLevelState(super.address, super.bookingRange, super.workTimeRange, super.isSaveButtonActive, super.levels, this.levelId);
+
+}
+class AdminOfficePageErrorCreateLevelState extends AdminOfficePageLoadedState {
+  AdminOfficePageErrorCreateLevelState(super.address, super.bookingRange,
+      super.workTimeRange, super.isSaveButtonActive, super.levels);
+}

@@ -13,18 +13,22 @@ class WorkspaceType {
         id = json['id'],
         type = json['type'],
         cachedNetworkImage = (json['image'] != null) ? CachedNetworkImage(
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                Container(),
             imageUrl: json['image']) : getCachedNetworkImage(json['id']);
 }
 
 var image1 = CachedNetworkImage(
 imageUrl: "https://cdn-icons-png.flaticon.com/512/198/198163.png",
-placeholder: (context, url) => Container(),
+  progressIndicatorBuilder: (context, url, downloadProgress) =>
+      Container(),
 errorWidget: (context, url, error) => const Icon(Icons.error),
 );
 
 var image2 = CachedNetworkImage(
   imageUrl: "http://clipart-library.com/img/1997756.png",
-  placeholder: (context, url) => Container(),
+  progressIndicatorBuilder: (context, url, downloadProgress) =>
+      Container(),
   errorWidget: (context, url, error) => const Icon(Icons.error),
 );
 CachedNetworkImage getCachedNetworkImage(int typeId) {

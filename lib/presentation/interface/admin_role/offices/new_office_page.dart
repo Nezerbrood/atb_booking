@@ -357,20 +357,12 @@ class _CreateButton extends StatelessWidget {
         //     })
         // );
         showDialog(
-            useRootNavigator: true,
+            useRootNavigator: false,
             context: context,
             builder: (context_) {
               return BlocProvider.value(
                 value: context.read<NewOfficePageBloc>(),
-                child: MultiBlocProvider(providers: [
-                  BlocProvider(
-                    create: (_) => AdminOfficePageBloc(),
-                  ),
-                  BlocProvider(
-                    create: (_) =>
-                        LevelPlanEditorBloc(),
-                  ),
-                ], child: const _CreateAlertDialog()),
+                child: const _CreateAlertDialog(),
               );
             });
         context
@@ -393,15 +385,12 @@ class _CreateAlertDialog extends StatelessWidget {
         listener: (_, state) {
           print("STATE: $state");
           if (state is NewOfficePageSuccessfulCreatedState)  {
-            context
-                .read<AdminOfficePageBloc>()
-                .add(OfficePageLoadEvent(state.officeId));
             Navigator.pop(context);
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context_) {
               return MultiBlocProvider(providers: [
                 BlocProvider<AdminOfficePageBloc>(
-                  create: (_) => AdminOfficePageBloc(),
+                  create: (_) => AdminOfficePageBloc()..add(OfficePageLoadEvent(state.officeId)),
                 ),
               ], child: const OfficePage());
             }));

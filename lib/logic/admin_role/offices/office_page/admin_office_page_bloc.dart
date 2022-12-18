@@ -87,16 +87,16 @@ class AdminOfficePageBloc
       try {
         int createdLevelId =
             await LevelProvider().createLevel(office!.id, number);
-
-        ///
-        ///
-        /// ну вот таквота))))))
-        /// извиняюсь //todo remove this shit
-        event.context
-            .read<LevelPlanEditorBloc>()
-            .add(LevelPlanEditorLoadWorkspacesFromServerEvent(createdLevelId));
-        add(OfficePageLoadEvent(office!.id));
+        emit(AdminOfficePageSuccessCreateLevelState(address!, bookingRange!,
+            workTimeRange!, isSaveButtonActive(), levels!, createdLevelId));
       } catch (_) {
+        AdminOfficePageErrorCreateLevelState(
+          address!,
+          bookingRange!,
+          workTimeRange!,
+          isSaveButtonActive(),
+          levels!,
+        );
         print(_);
       }
     });

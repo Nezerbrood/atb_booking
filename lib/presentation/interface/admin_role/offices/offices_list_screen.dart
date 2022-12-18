@@ -40,7 +40,6 @@ class AdminOfficesScreen extends StatelessWidget {
                   create: (context) =>
                       AdminOfficePageBloc() //context.read<AdminOfficePageBloc>(),
                   ),
-              //BlocProvider.value(value: context.read<LevelPlanEditorBloc>(),),
             ], child: const NewOfficePage());
           }));
         },
@@ -149,21 +148,15 @@ class OfficeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context
-            .read<AdminOfficePageBloc>()
-            .add(OfficePageLoadEvent(officeListItem.id));
         Navigator.of(context).push(MaterialPageRoute(builder: (cont) {
           return MultiBlocProvider(providers: [
             BlocProvider.value(
               value: context.read<AdminOfficesBloc>(),
             ),
-            BlocProvider.value(
-              value: context.read<AdminOfficePageBloc>(),
-            ),
-            BlocProvider.value(//todo delete this
-              value: context.read<LevelPlanEditorBloc>(),
-            ),
-          ], child: OfficePage());
+            BlocProvider<AdminOfficePageBloc>(
+                create: (_) => AdminOfficePageBloc()
+                  ..add(OfficePageLoadEvent(officeListItem.id)))
+          ], child: const OfficePage());
         }));
       },
       child: Card(

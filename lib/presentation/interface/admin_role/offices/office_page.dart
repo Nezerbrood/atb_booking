@@ -29,7 +29,7 @@ class OfficePage extends StatelessWidget {
             .add(AdminOfficePageUpdateFieldsEvent());
       },
       child: BlocBuilder<AdminOfficePageBloc, AdminOfficePageState>(
-        builder: (builderContext, state) {
+        builder: (context, state) {
           if (state is AdminOfficePageLoadedState) {
             return Scaffold(
               appBar: AppBar(
@@ -39,7 +39,7 @@ class OfficePage extends StatelessWidget {
                       onPressed: () {
                         showDialog(
                             useRootNavigator: false,
-                            context: builderContext,
+                            context: context,
                             builder: (_) {
                               return MultiBlocProvider(providers: [
                                 BlocProvider.value(
@@ -56,7 +56,7 @@ class OfficePage extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           "удалить",
-                          style: Theme.of(builderContext)
+                          style: Theme.of(context)
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
@@ -104,10 +104,11 @@ class OfficePage extends StatelessWidget {
             return const Center(
               child: Text("errorstate"),
             );
-          }
-          else if(state is AdminOfficePageInitial){
-            return Center(child: Text("initial state of office page"),);
-          }else {
+          } else if (state is AdminOfficePageInitial) {
+            return Center(
+              child: Text("initial state of office page"),
+            );
+          } else {
             throw Exception("unknown AdminOfficePageState $state");
           }
         },
@@ -403,6 +404,7 @@ class _LevelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (bContext) {
@@ -411,8 +413,8 @@ class _LevelCard extends StatelessWidget {
               BlocProvider.value(
                 value: context.read<AdminOfficePageBloc>(),
               ),
-              BlocProvider.value(
-                value: context.read<LevelPlanEditorBloc>()
+              BlocProvider<LevelPlanEditorBloc>(
+                create: (_) => LevelPlanEditorBloc()
                   ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(level.id)),
               ),
             ], child: const LevelEditorPage());
@@ -574,17 +576,51 @@ class _AddNewLevelButton extends StatelessWidget {
       onPressed: () {
         context
             .read<AdminOfficePageBloc>()
-            .add(AdminOfficePageCreateNewLevelButtonPress(context));
-        Navigator.of(context).push(MaterialPageRoute(builder: (Bcontext) {
-          return MultiBlocProvider(providers: [
-            BlocProvider.value(
-              value: context.read<AdminOfficePageBloc>(),
-            ),
-            BlocProvider.value(
-              value: context.read<LevelPlanEditorBloc>(),
-            ),
-          ], child: const LevelEditorPage());
-        }));
+            .add(AdminOfficePageCreateNewLevelButtonPress());
+        showDialog(
+          useRootNavigator: false,
+            context: context,
+            builder: (_) {
+              return BlocProvider.value(
+                value: context.read<AdminOfficePageBloc>(),
+                child: BlocConsumer<AdminOfficePageBloc, AdminOfficePageState>(
+                    builder: (context, state) {
+                  if (state is AdminOfficePageErrorCreateLevelState) {
+                    return const AlertDialog(
+                      content: Text("Ошибка при создании..."),
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                }, listener: (_, state) {
+                  if (state is AdminOfficePageSuccessCreateLevelState) {
+                    Navigator.pop(context);
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) {
+                      return MultiBlocProvider(providers: [
+                        BlocProvider.value(
+                          value: context.read<AdminOfficePageBloc>(),
+                        ),
+                        BlocProvider(
+                          create: (_) => LevelPlanEditorBloc()
+                            ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(
+                                state.levelId)),
+                        ),
+                      ], child: const LevelEditorPage());
+                    }));
+                  }
+                }),
+              );
+            });
+        // Navigator.of(context).push(MaterialPageRoute(builder: (Bcontext) {
+        //   return MultiBlocProvider(providers: [
+        //     BlocProvider.value(
+        //       value: context.read<AdminOfficePageBloc>(),
+        //     ),
+        //     BlocProvider(
+        //       create: (_)=>LevelPlanEditorBloc(),
+        //     ),
+        //   ], child: const LevelEditorPage());
+        // }));
       },
       color: appThemeData.primaryColor,
       child: Padding(
