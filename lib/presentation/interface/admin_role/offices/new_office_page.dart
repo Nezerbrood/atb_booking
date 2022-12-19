@@ -358,7 +358,7 @@ class _CreateButton extends StatelessWidget {
                 ],
                 child: AlertDialog(
                   content: BlocListener<NewOfficePageBloc, NewOfficePageState>(
-                    child: const CircularProgressIndicator(),
+                    child: const Center(child: CircularProgressIndicator()),
                     listener: (_, state) {
                       print("STATE: $state");
                       if (state is NewOfficePageSuccessfulCreatedState) {
