@@ -5,13 +5,13 @@ class User {
   int id;
   String login;
   String fullName;
-  CachedNetworkImage avatar;
+  int avatarImageId;
   String phone;
   String email;
   bool isFavorite;
   String role;
 
-  User(this.id, this.login, this.fullName, this.avatar, this.phone, this.email,
+  User(this.id, this.login, this.fullName, this.avatarImageId, this.phone, this.email,
       this.isFavorite,this.role);
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -19,15 +19,7 @@ class User {
         json["id"] as int,
         json["login"] as String,
         json["fullName"] as String,
-        CachedNetworkImage(
-            imageUrl: (json["avatar"] == null || json["avatar"] == '?')
-                ? "https://www.computerhope.com/jargon/b/black.jpg"
-                // : json["avatar"],
-                : "https://www.computerhope.com/jargon/b/black.jpg",
-            placeholder: (context, url) => Container(),
-            errorWidget: (context, url, error) => CachedNetworkImage(
-                imageUrl:
-                    "https://www.computerhope.com/jargon/b/black.jpg")),
+        json["imageId"] as int,
         json["phone"] as String,
         json["email"] as String,
         json["favorite"] as bool,
@@ -38,7 +30,7 @@ class User {
       "id": id,
       "login": login,
       "fullName": fullName,
-      "avatar": avatar,
+      "avatar": avatarImageId,
       "phone": phone,
       "email": email,
       "role": role,

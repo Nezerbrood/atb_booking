@@ -1,8 +1,11 @@
 import 'package:atb_booking/data/models/user.dart';
+import 'package:atb_booking/data/services/image_provider.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/user_role/feedback/feedback_screen.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -88,7 +91,22 @@ class PeopleCard extends StatelessWidget {
                     child: SizedBox(
                       width: 50,
                       height: 50,
-                      child: user.avatar,
+                      child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: AppImageProvider
+                              .getImageUrlFromImageId(user.avatarImageId),
+                          httpHeaders: NetworkController()
+                              .getAuthHeader(),
+                          progressIndicatorBuilder: (context,
+                              url, downloadProgress) =>
+                              Center(
+                                  child:
+                                  CircularProgressIndicator(
+                                      value:
+                                      downloadProgress
+                                          .progress)),
+                          errorWidget: (context, url, error) =>
+                              Container()),
                     ),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
@@ -98,24 +99,29 @@ class LevelProvider {
     throw Exception('Error fetching level');
     }
   }
-  Future<void> addImageToPlanByIds(int levelId,int imageId) async {
+  Future<void> addImageToPlanByIds(File file, int levelId) async {
+    //create multipart request for POST or PATCH method
     var baseUrl = NetworkController().getUrl();
-    Map<String, String> headers = {};
+    var uri = Uri.http(baseUrl, '/api/officeLevels/$levelId');
     var token = await NetworkController().getAccessToken();
-    headers["Authorization"] = 'Bearer $token';
-    headers["Content-type"] = 'application/json; charset=utf-8';
-    headers["Accept"] = "application/json";
-    var uri = Uri.http(baseUrl, '/api/officeLevels/${levelId}');
-    final response = await http.delete(uri, headers: headers,);
-    if (response.statusCode == 200) {
-      print("successful delete level");
+    var request = http.MultipartRequest(
+      "POST",
+      uri,
+    );
+    request.headers["Authorization"] = 'Bearer $token';
+    request.headers["Content-type"] = 'application/json; charset=utf-8';
+    request.headers["Accept"] = "application/json";
+    var pic = await http.MultipartFile.fromPath("image", file.path);
+    request.files.add(pic);
+    var response = await request.send();
+    if (response.statusCode == 201) {
+      print("success addImageToPlan");
     } else if (response.statusCode == 401) {
-      /// Обновление access токена
       await NetworkController().updateAccessToken();
-      return deleteLevel(levelId);
+      return addImageToPlanByIds(file, levelId);
     } else {
-      print("'Error delete level status code: ${response.statusCode}");
-      throw Exception('Error fetching level');
+      throw Exception("error addImageToPlan");
     }
+    //Get the response from the server
   }
-}
+  }

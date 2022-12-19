@@ -72,9 +72,7 @@ class LevelPlanEditorSendChangesToServerEvent extends LevelPlanEditorEvent{
 }
 
 class LevelPlanEditorDeleteLevelEvent extends LevelPlanEditorEvent{
-  final BuildContext context;
 
-  LevelPlanEditorDeleteLevelEvent(this.context);
 }
 class LevelPlanEditorAddImageToWorkspaceButtonEvent extends LevelPlanEditorEvent{
   final ImageSource source;

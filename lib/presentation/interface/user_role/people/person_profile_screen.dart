@@ -38,11 +38,22 @@ class PersonProfileScreen extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Image.network(user.avatar.imageUrl,
-                      alignment: Alignment.center,
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.fill),
+                  child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: AppImageProvider
+                          .getImageUrlFromImageId(user.avatarImageId,),
+                      httpHeaders: NetworkController()
+                          .getAuthHeader(),
+                      progressIndicatorBuilder: (context,
+                          url, downloadProgress) =>
+                          Center(
+                              child:
+                              CircularProgressIndicator(
+                                  value:
+                                  downloadProgress
+                                      .progress)),
+                      errorWidget: (context, url, error) =>
+                          Container()),
                 ),
                 Expanded(
                   child: Container(

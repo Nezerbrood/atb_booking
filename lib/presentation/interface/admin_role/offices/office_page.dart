@@ -21,97 +21,102 @@ class OfficePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        context
-            .read<AdminOfficePageBloc>()
-            .add(AdminOfficePageUpdateFieldsEvent());
-      },
-      child: BlocBuilder<AdminOfficePageBloc, AdminOfficePageState>(
-        builder: (context, state) {
-          if (state is AdminOfficePageLoadedState) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text("Офис"),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        showDialog(
-                            useRootNavigator: false,
-                            context: context,
-                            builder: (_) {
-                              return MultiBlocProvider(providers: [
-                                BlocProvider.value(
-                                  value: context.read<AdminOfficePageBloc>(),
-                                ),
-                                BlocProvider.value(
-                                  value: context.read<
-                                      AdminOfficesBloc>(), //context.read<AdminOfficePageBloc>(),
-                                ),
-                              ], child: const _DeleteConfirmDialog());
-                            });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "удалить",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.red,
-                                  fontSize: 20),
-                        ),
-                      ))
-                ],
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _OfficeAddress(
-                      state: state,
-                    ),
-                    _BookingRange(state: state),
-                    _WorkTimeRange(state: state),
-                    state.isSaveButtonActive
-                        ? const _SaveButton()
-                        : const SizedBox.shrink(),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: const [
-                          _StatisticsButton(),
-                          _BookingsButton()
-                        ],
-                      ),
-                    ),
-                    _LevelsList(state: state),
+    return WillPopScope(
+        onWillPop: () async {
+      context.read<AdminOfficesBloc>().add(AdminOfficesReloadEvent());
+      return true;},
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          context
+              .read<AdminOfficePageBloc>()
+              .add(AdminOfficePageUpdateFieldsEvent());
+        },
+        child: BlocBuilder<AdminOfficePageBloc, AdminOfficePageState>(
+          builder: (context, state) {
+            if (state is AdminOfficePageLoadedState) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text("Офис"),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          showDialog(
+                              useRootNavigator: false,
+                              context: context,
+                              builder: (_) {
+                                return MultiBlocProvider(providers: [
+                                  BlocProvider.value(
+                                    value: context.read<AdminOfficePageBloc>(),
+                                  ),
+                                  BlocProvider.value(
+                                    value: context.read<
+                                        AdminOfficesBloc>(), //context.read<AdminOfficePageBloc>(),
+                                  ),
+                                ], child: const _DeleteConfirmDialog());
+                              });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "удалить",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.red,
+                                    fontSize: 20),
+                          ),
+                        ))
                   ],
                 ),
-              ),
-            );
-          } else if (state is AdminOfficePageLoadingState) {
-            return Scaffold(
-              appBar: AppBar(title: const Text("Офис")),
-              body: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          } else if (state is AdminOfficePageErrorState) {
-            return const Center(
-              child: Text("errorstate"),
-            );
-          } else if (state is AdminOfficePageInitial) {
-            return Center(
-              child: Text("initial state of office page"),
-            );
-          } else {
-            throw Exception("unknown AdminOfficePageState $state");
-          }
-        },
+                body: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _OfficeAddress(
+                        state: state,
+                      ),
+                      _BookingRange(state: state),
+                      _WorkTimeRange(state: state),
+                      state.isSaveButtonActive
+                          ? const _SaveButton()
+                          : const SizedBox.shrink(),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: const [
+                            _StatisticsButton(),
+                            _BookingsButton()
+                          ],
+                        ),
+                      ),
+                      _LevelsList(state: state),
+                    ],
+                  ),
+                ),
+              );
+            } else if (state is AdminOfficePageLoadingState) {
+              return Scaffold(
+                appBar: AppBar(title: const Text("Офис")),
+                body: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else if (state is AdminOfficePageErrorState) {
+              return const Center(
+                child: Text("errorstate"),
+              );
+            } else if (state is AdminOfficePageInitial) {
+              return Center(
+                child: Text("initial state of office page"),
+              );
+            } else {
+              throw Exception("unknown AdminOfficePageState $state");
+            }
+          },
+        ),
       ),
     );
   }
@@ -407,18 +412,32 @@ class _LevelCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (bContext) {
-            print("LEVEL ID: ${level.id}");
-            return MultiBlocProvider(providers: [
-              BlocProvider.value(
-                value: context.read<AdminOfficePageBloc>(),
-              ),
-              BlocProvider<LevelPlanEditorBloc>(
-                create: (_) => LevelPlanEditorBloc()
-                  ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(level.id)),
-              ),
-            ], child: const LevelEditorPage());
-          }));
+          Navigator.of(context).push(
+
+              PageRouteBuilder(
+                pageBuilder: (_, animation, secondaryAnimation) => MultiBlocProvider(providers: [
+                  BlocProvider.value(
+                    value: context.read<AdminOfficePageBloc>(),
+                  ),
+                  BlocProvider<LevelPlanEditorBloc>(
+                    create: (_) => LevelPlanEditorBloc()
+                      ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(level.id)),
+                  ),
+                ], child: const LevelEditorPage()),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.ease;
+
+                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                  return SlideTransition(
+                    position: animation.drive(tween),
+                    child: child,
+                  );
+                },
+              )
+          );
         },
         child: ListTile(
           title: Text("${level.number} Этаж"),
@@ -597,18 +616,35 @@ class _AddNewLevelButton extends StatelessWidget {
                     if (state is AdminOfficePageSuccessCreateLevelState) {
                       Navigator.pop(context);
                       Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (_) {
-                        return MultiBlocProvider(providers: [
-                          BlocProvider.value(
-                            value: context.read<AdminOfficePageBloc>(),
-                          ),
-                          BlocProvider(
-                            create: (_) => LevelPlanEditorBloc()
-                              ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(
-                                  state.levelId)),
-                          ),
-                        ], child: const LevelEditorPage());
-                      }));
+                          .push(
+
+
+                          PageRouteBuilder(
+                            pageBuilder: (_, animation, secondaryAnimation) => MultiBlocProvider(providers: [
+                              BlocProvider.value(
+                                value: context.read<AdminOfficePageBloc>(),
+                              ),
+                              BlocProvider(
+                                create: (_) => LevelPlanEditorBloc()
+                                  ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(
+                                      state.levelId)),
+                              ),
+                            ], child: const LevelEditorPage()),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.ease;
+
+                              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                          )
+
+                    );
                     }
                   }),
                 );
@@ -643,90 +679,6 @@ class _AddNewLevelButton extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _AddLevelField extends StatelessWidget {
-  static TextEditingController? _levelFieldController;
-  final AdminOfficePageLoadedState state;
-
-  _AddLevelField({super.key, required this.state}) {
-    if (_levelFieldController == null) {
-      _levelFieldController =
-          TextEditingController(text: state.bookingRange.toString());
-    } else {
-      if (state.address != _levelFieldController!.text) {
-        _levelFieldController =
-            TextEditingController(text: state.bookingRange.toString());
-      }
-    }
-    _levelFieldController!.selection = TextSelection(
-        baseOffset: 0, extentOffset: _levelFieldController!.text.length);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            flex: 9,
-            child: Row(
-              children: [
-                Text("Дальность \nбронирования в днях",
-                    textAlign: TextAlign.right,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.black54,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w300)),
-                const SizedBox(
-                  width: 5,
-                ),
-                Container(
-                  height: 60,
-                  width: 0.3,
-                  color: Colors.black54,
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                onTap: () {
-                  print('tap');
-                  context
-                      .read<AdminOfficePageBloc>()
-                      .add(AdminOfficePageUpdateFieldsEvent());
-                },
-                onChanged: (form) {
-                  print("controller.text: ${_levelFieldController!.text}");
-                  context
-                      .read<AdminOfficePageBloc>()
-                      .add(AdminBookingRangeChangeEvent(int.parse(form)));
-                },
-                onSubmitted: (form) {
-                  context
-                      .read<AdminOfficePageBloc>()
-                      .add(AdminOfficePageUpdateFieldsEvent());
-                },
-                controller: _levelFieldController,
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(color: Colors.black, fontSize: 23),
-                //keyboardType: TextInputType.multiline,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

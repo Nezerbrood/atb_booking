@@ -28,12 +28,8 @@ class BookingScreen extends StatelessWidget {
         appBar: AppBar(
           title: Center(
               child: Text(
-            "Мои бронирования",
-            style: appThemeData.textTheme.displayLarge?.copyWith(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-                color: appThemeData.colorScheme.onSurface),
-          )),
+            "Мои бронирования"),
+          ),
         ),
         body: (state is BookingListLoadingState)
             ? const Padding(

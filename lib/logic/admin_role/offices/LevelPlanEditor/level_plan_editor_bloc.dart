@@ -44,7 +44,7 @@ class LevelPlanEditorBloc
     2: _Size(width: 200, height: 200),
   };
   int levelNumber = 0;
-  int? backgroundImagePlanId = 1;
+  int? backgroundImagePlanId;
 
   /// это айди картинки этажа
   int? _selectedElementId;
@@ -68,8 +68,6 @@ class LevelPlanEditorBloc
     /// удаляем этаж
     on<LevelPlanEditorDeleteLevelEvent>((event, emit) async {
       await LevelProvider().deleteLevel(_levelId!);
-      event.context.read<AdminOfficePageBloc>().add(OfficePageReloadEvent());
-
       ///не знаю как нужно сделать
     });
 
@@ -238,6 +236,7 @@ class LevelPlanEditorBloc
         //backgroundImagePlanId = levelPlan.planId; todo remove comment
         levelNumber = levelPlan.number;
         _mapOfPlanElements.clear();
+        backgroundImagePlanId = levelPlan.planId;
         print('ids of fetching workspaces:[');
         for (var elem in levelPlan.workspaces) {
           print(elem.id);
@@ -288,9 +287,8 @@ class LevelPlanEditorBloc
         if (imageFromPicker == null) return;
         final imageFile = File(imageFromPicker.path);
         try {
-          int idOfCreatedImage = await AppImageProvider.upload(imageFile);
           await LevelProvider()
-              .addImageToPlanByIds(_levelId!, idOfCreatedImage);
+              .addImageToPlanByIds(imageFile!, _levelId!);
         } catch (_) {
           print(_);
         }
@@ -373,7 +371,7 @@ class LevelPlanEditorBloc
           height: _getLastSize(type.id).height,
           numberOfWorkspaces: 1,
           type: type,
-          description: 'description type 1',
+          description: '',
           isActive: true,
           levelId: _levelId);
     } else if (type.id == 2) {
@@ -384,7 +382,7 @@ class LevelPlanEditorBloc
           height: _getLastSize(type.id).height,
           numberOfWorkspaces: 20,
           type: type,
-          description: 'description type 2',
+          description: '',
           isActive: true,
           levelId: _levelId);
     } else {

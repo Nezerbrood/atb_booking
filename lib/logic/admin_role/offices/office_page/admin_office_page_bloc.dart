@@ -47,19 +47,18 @@ class AdminOfficePageBloc
       }
     });
     on<OfficePageReloadEvent>((event, emit) async {
-      print("emit loading state");
-      emit(AdminOfficePageLoadingState());
+      print("reload office page");
       try {
-        print("emit loaded state");
         office = await OfficeProvider().getOfficeById(office!.id);
         levels = await OfficeRepository().getLevelsByOfficeId(office!.id);
         address = office!.address!;
         bookingRange = office!.maxBookingRangeInDays;
         workTimeRange = office!.workTimeRange;
+        print("emit loaded state after reload ");
         emit(AdminOfficePageLoadedState(address!, bookingRange!, workTimeRange!,
             isSaveButtonActive(), levels!));
       } catch (_) {
-        print(_);
+        print("emit error state after reload ");
         emit(AdminOfficePageErrorState());
       }
     });
@@ -99,6 +98,7 @@ class AdminOfficePageBloc
         );
         print(_);
       }
+      add(OfficePageReloadEvent());
     });
     on<AdminOfficeAddressChangeEvent>((event, emit) {
       address = event.address;

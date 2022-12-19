@@ -24,68 +24,74 @@ class LevelEditorPage extends StatelessWidget {
   @override
   Widget build(BuildContext pageContext) {
     SCALE_FACTOR = MediaQuery.of(pageContext).size.width / 1000.0;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Этаж"), //todo add level to string
-        actions: [
-          TextButton(
-              onPressed: () async {
-                bool? wasDelete = await showDialog<bool>(
-                    context: pageContext,
-                    builder: (context) {
-                      return const _DeleteLevelConfirmationPopup();
-                    });
-                print("was delete:$wasDelete");
-                if (wasDelete != null && wasDelete) {
-                  pageContext
-                      .read<LevelPlanEditorBloc>()
-                      .add(LevelPlanEditorDeleteLevelEvent(pageContext));
-                  try {
-                    Navigator.of(pageContext).pop();
-                  } catch (_) {}
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "удалить этаж",
-                  style: Theme.of(pageContext)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(
-                          decoration: TextDecoration.underline,
-                          color: Colors.red,
-                          fontSize: 20),
+    return WillPopScope(
+      onWillPop: () async {
+        pageContext.read<AdminOfficePageBloc>().add(OfficePageReloadEvent());
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Этаж"), //todo add level to string
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  bool? wasDelete = await showDialog<bool>(
+                      context: pageContext,
+                      builder: (context) {
+                        return const _DeleteLevelConfirmationPopup();
+                      });
+                  print("was delete:$wasDelete");
+                  if (wasDelete != null && wasDelete) {
+                    pageContext
+                        .read<LevelPlanEditorBloc>()
+                        .add(LevelPlanEditorDeleteLevelEvent());
+                    try {
+                      Navigator.of(pageContext).pop();
+                    } catch (_) {}
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "удалить этаж",
+                    style: Theme.of(pageContext)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(
+                            decoration: TextDecoration.underline,
+                            color: Colors.red,
+                            fontSize: 20),
+                  ),
+                ))
+          ],
+        ),
+        body: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+          builder: (context, state) {
+            if (state is LevelPlanEditorMainState) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const _HorizontalWorkspaceBar(),
+                    const _LevelPlanEditor(),
+                    const _TitleUnderPlan(),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          _DeleteWorkspaceButton(),
+                          _AddInfoButton()
+                        ]),
+                    _LevelNumberField(),
+                    const _UploadBackgroundImageButton()
+                  ],
                 ),
-              ))
-        ],
-      ),
-      body: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
-        builder: (context, state) {
-          if (state is LevelPlanEditorMainState) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const _HorizontalWorkspaceBar(),
-                  const _LevelPlanEditor(),
-                  const _TitleUnderPlan(),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        _DeleteWorkspaceButton(),
-                        _AddInfoButton()
-                      ]),
-                  _LevelNumberField(),
-                  const _UploadBackgroundImageButton()
-                ],
-              ),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -96,6 +102,7 @@ class _LevelPlanEditor extends StatelessWidget {
   static TransformationController _transformationController =
       TransformationController();
   static bool _visible = false;
+
   @override
   Widget build(BuildContext context) {
     bool _visible = true;
@@ -118,15 +125,20 @@ class _LevelPlanEditor extends StatelessWidget {
           ///
           ///
           if (state.levelPlanImageId != null) {
+            print("plan image id: ${state.levelPlanImageId}");
             var backgroundImage = Center(
               child: Container(
                 width: double.infinity,
                 //height:  double.infinity,
                 child: CachedNetworkImage(
                     fit: BoxFit.fitHeight,
-                    imageUrl: "https://i.ibb.co/82gPz00/Capture.png",
+                    imageUrl: AppImageProvider.getImageUrlFromImageId(
+                        state.levelPlanImageId!),
                     httpHeaders: NetworkController().getAuthHeader(),
-                    placeholder: (context, url) => const Center(),
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => Center(
+                            child: CircularProgressIndicator(
+                                value: downloadProgress.progress)),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error)),
               ),
@@ -773,8 +785,7 @@ class _AddInfoButton extends StatelessWidget {
                       context: context,
                       isScrollControlled: true,
                       builder: (_) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height * 0.75,
+                        return SingleChildScrollView(
                           child: Center(
                             child: BlocProvider.value(
                               value: context.read<LevelPlanEditorBloc>(),
@@ -953,29 +964,39 @@ class _BottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
-          builder: (context, state) {
-            if (state is LevelPlanEditorMainState) {
-              return Text(state
-                  .listOfPlanElements[state.selectedElementIndex!].type.type);
-            } else {
-              return ErrorWidget(Exception("unexpected state: $state"));
-            }
-          },
-        ),
-      ),
-      body: Wrap(
-        alignment: WrapAlignment.center,
+    return Container(
 
-        //mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          _WorkSpacePhotos(),
-          const _DescriptionWorkspaceField(),
-          _NumberOfWorkspacesField(),
-          const _ActiveStatusAndButton(),
-        ],
+      height: MediaQuery.of(context).size.height * 0.78,
+      child: Scaffold(
+        appBar: AppBar(
+          title: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+            builder: (context, state) {
+              if (state is LevelPlanEditorMainState) {
+                return Text(state
+                    .listOfPlanElements[state.selectedElementIndex!].type.type);
+              } else {
+                return ErrorWidget(Exception("unexpected state: $state"));
+              }
+            },
+          ),
+        ),
+        body:
+        Scrollbar(
+          thumbVisibility: true,
+          child: SingleChildScrollView(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+
+              //mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _WorkSpacePhotos(),
+                const _DescriptionWorkspaceField(),
+                _NumberOfWorkspacesField(),
+                const _ActiveStatusAndButton(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -1011,8 +1032,14 @@ class _WorkSpacePhotos extends StatelessWidget {
                                                   index]),
                                           httpHeaders: NetworkController()
                                               .getAuthHeader(),
-                                          placeholder: (context, url) =>
-                                              const Center(),
+                                          progressIndicatorBuilder: (context,
+                                                  url, downloadProgress) =>
+                                              Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress)),
                                           errorWidget: (context, url, error) =>
                                               const Icon(Icons.error)),
                                       IconButton(
@@ -1174,7 +1201,7 @@ class _DescriptionWorkspaceField extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .headlineSmall
-                        ?.copyWith(color: Colors.black, fontSize: 23),
+                        ?.copyWith(color: Colors.black, fontSize: 22),
                     maxLines: 4,
                     minLines: 2,
                     maxLength: 1000,

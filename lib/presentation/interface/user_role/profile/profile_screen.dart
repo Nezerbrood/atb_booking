@@ -1,3 +1,5 @@
+import 'package:atb_booking/data/services/image_provider.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
@@ -84,7 +86,22 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 35),
                   _UserTitle(
-                    avatar: state.userPerson.avatar,
+                    avatar: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: AppImageProvider
+                            .getImageUrlFromImageId(state.userPerson.avatarImageId,),
+                        httpHeaders: NetworkController()
+                            .getAuthHeader(),
+                        progressIndicatorBuilder: (context,
+                            url, downloadProgress) =>
+                            Center(
+                                child:
+                                CircularProgressIndicator(
+                                    value:
+                                    downloadProgress
+                                        .progress)),
+                        errorWidget: (context, url, error) =>
+                            Container()),
                     userName: state.userPerson.fullName,
                   ),
                   const SizedBox(height: 55),

@@ -144,50 +144,52 @@ class OfficeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-            PageRouteBuilder(
-              pageBuilder: (_, animation, secondaryAnimation) => MultiBlocProvider(providers: [
-                BlocProvider.value(
-                  value: context.read<AdminOfficesBloc>(),
-                ),
-                BlocProvider<AdminOfficePageBloc>(
-                    create: (_) => AdminOfficePageBloc()
-                      ..add(OfficePageLoadEvent(officeListItem.id)))
-              ], child: const OfficePage()),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                const begin = Offset(1.0, 0.0);
-                const end = Offset.zero;
-                const curve = Curves.ease;
+    return Card(
+      clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).push(
+                PageRouteBuilder(
+                  pageBuilder: (_, animation, secondaryAnimation) => MultiBlocProvider(providers: [
+                    BlocProvider.value(
+                      value: context.read<AdminOfficesBloc>(),
+                    ),
+                    BlocProvider<AdminOfficePageBloc>(
+                        create: (_) => AdminOfficePageBloc()
+                          ..add(OfficePageLoadEvent(officeListItem.id)))
+                  ], child: const OfficePage()),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(1.0, 0.0);
+                    const end = Offset.zero;
+                    const curve = Curves.ease;
 
-                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-                return SlideTransition(
-                  position: animation.drive(tween),
-                  child: child,
-                );
-              },
-            ));
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  },
+                )
+            );
 
-          //
-          //   MaterialPageRoute(builder: (cont) {
-          // return MultiBlocProvider(providers: [
-          //   BlocProvider.value(
-          //     value: context.read<AdminOfficesBloc>(),
-          //   ),
-          //   BlocProvider<AdminOfficePageBloc>(
-          //       create: (_) => AdminOfficePageBloc()
-          //         ..add(OfficePageLoadEvent(officeListItem.id)))
-          // ], child: const OfficePage());
-        //}));
-      },
-      child: Card(
+            //
+            //   MaterialPageRoute(builder: (cont) {
+            // return MultiBlocProvider(providers: [
+            //   BlocProvider.value(
+            //     value: context.read<AdminOfficesBloc>(),
+            //   ),
+            //   BlocProvider<AdminOfficePageBloc>(
+            //       create: (_) => AdminOfficePageBloc()
+            //         ..add(OfficePageLoadEvent(officeListItem.id)))
+            // ], child: const OfficePage());
+            //}));
+          },
           child: ListTile(
-        title: Text(officeListItem.address),
-        subtitle: Text("ID: ${officeListItem.id}"),
-      )),
-    );
+      title: Text(officeListItem.address),
+      subtitle: Text("ID: ${officeListItem.id}"),
+    ),
+        ));
   }
 }
 // Route _createRoute() {
