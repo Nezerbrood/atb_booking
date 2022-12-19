@@ -143,19 +143,17 @@ class _LevelPlanEditor extends StatelessWidget {
 
         ///
         ///
-        _LevelPlanEditorElementWidget? selectedElem;
+        _LevelPlanEditorSelectedElementWidget? selectedElem;
         for (int i = 0; i < state.listOfPlanElements.length; i++) {
           bool isSelect = i == state.selectedElementIndex;
           if (isSelect) {
-            selectedElem = _LevelPlanEditorElementWidget(
+            selectedElem = _LevelPlanEditorSelectedElementWidget(
                 data: state.listOfPlanElements[i],
-                isSelect: isSelect,
                 scaleInteractiveViewValue:
                     _transformationController.value.getMaxScaleOnAxis());
           } else {
-            elements.add(_LevelPlanEditorElementWidget(
+            elements.add(_LevelPlanEditorUnselectedElementWidget(
                 data: state.listOfPlanElements[i],
-                isSelect: isSelect,
                 scaleInteractiveViewValue:
                     _transformationController.value.getMaxScaleOnAxis()));
           }
@@ -187,14 +185,12 @@ class _LevelPlanEditor extends StatelessWidget {
   }
 }
 
-class _LevelPlanEditorElementWidget extends StatelessWidget {
+class _LevelPlanEditorSelectedElementWidget extends StatelessWidget {
   final LevelPlanElementData data;
-  final bool isSelect;
   final double scaleInteractiveViewValue;
   static const BLUE_PRINT_FRAME_WIDTH = 6.0;
-  const _LevelPlanEditorElementWidget(
+  const _LevelPlanEditorSelectedElementWidget(
       {required this.data,
-      required this.isSelect,
       required this.scaleInteractiveViewValue});
 
   @override
@@ -210,7 +206,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
         width: data.width * LevelEditorPage.SCALE_FACTOR + (cornerSize * 2),
         child: GestureDetector(
           onPanUpdate: (details) {
-            if (isSelect) {
+
               context.read<LevelPlanEditorBloc>().add(
                   LevelPlanEditorElementMoveEvent(
                       data.id!,
@@ -218,18 +214,13 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                           (details.delta.dy / LevelEditorPage.SCALE_FACTOR),
                       data.positionX +
                           (details.delta.dx / LevelEditorPage.SCALE_FACTOR)));
-            }
+
           },
           onTap: () {
-            if(isSelect){
+
             context
                 .read<LevelPlanEditorBloc>()
-                .add(LevelPlanEditorDeselectElementEvent());}else{
-              context
-                  .read<LevelPlanEditorBloc>()
-                  .add(LevelPlanEditorSelectElementEvent(data.id!));
-            }
-            
+                .add(LevelPlanEditorDeselectElementEvent());
           },
           child: Stack(children: [
             Positioned(
@@ -241,20 +232,16 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                 child: Card(
                   clipBehavior: Clip.antiAlias,
                   shape: RoundedRectangleBorder(
-                      side: !isSelect
-                          ? const BorderSide(width: 0, color: Colors.grey)
-                          : BorderSide(
+                      side: BorderSide(
                               width: 6 * LevelEditorPage.SCALE_FACTOR,
                               color: appThemeData.primaryColor),
                       borderRadius: BorderRadius.circular(
                           8 * LevelEditorPage.SCALE_FACTOR)),
                   shadowColor: Colors.black,
-                  elevation: isSelect ? 8 : 3,
+                  elevation:  8,
                   color: !data.isActive
-                      ? Colors.black12
-                      : isSelect
-                          ? const Color.fromARGB(255, 255, 231, 226)
-                          : const Color.fromARGB(255, 234, 255, 226),
+                      ? Colors.black12:
+                       const Color.fromARGB(255, 255, 231, 226),
                   child: SizedBox(
                     // width: data.width * LevelEditorPage.SCALE_FACTOR,
                     // height: data.height * LevelEditorPage.SCALE_FACTOR,
@@ -266,7 +253,6 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                 ),
               ),
             ),
-            if (isSelect)
               Stack(children: [
                 ///
                 ///
@@ -633,6 +619,71 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                       ),
                     ))
               ])
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+class _LevelPlanEditorUnselectedElementWidget extends StatelessWidget {
+  final LevelPlanElementData data;
+  final double scaleInteractiveViewValue;
+  static const BLUE_PRINT_FRAME_WIDTH = 6.0;
+  const _LevelPlanEditorUnselectedElementWidget(
+      {required this.data,
+        required this.scaleInteractiveViewValue});
+
+  @override
+  Widget build(BuildContext context) {
+    var cornerSize =
+        35 * LevelEditorPage.SCALE_FACTOR / scaleInteractiveViewValue;
+    return Positioned(
+      left: data.positionX * LevelEditorPage.SCALE_FACTOR - cornerSize,
+      top: data.positionY * LevelEditorPage.SCALE_FACTOR - cornerSize,
+      child: SizedBox(
+        //color: AtbAdditionalColors.debugTranslucent,
+        height: data.height * LevelEditorPage.SCALE_FACTOR + (cornerSize * 2),
+        width: data.width * LevelEditorPage.SCALE_FACTOR + (cornerSize * 2),
+        child: GestureDetector(
+          onTap: () {
+
+              context
+                  .read<LevelPlanEditorBloc>()
+                  .add(LevelPlanEditorSelectElementEvent(data.id!));
+
+
+          },
+          child: Stack(children: [
+            Positioned(
+              left: cornerSize,
+              top: cornerSize,
+              child: Container(
+                width: data.width * LevelEditorPage.SCALE_FACTOR,
+                height: data.height * LevelEditorPage.SCALE_FACTOR,
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                      side:
+                          const BorderSide(width: 0, color: Colors.grey),
+                      borderRadius: BorderRadius.circular(
+                          8 * LevelEditorPage.SCALE_FACTOR)),
+                  shadowColor: Colors.black,
+                  elevation: 3,
+                  color: !data.isActive
+                      ? Colors.black12
+                      : const Color.fromARGB(255, 234, 255, 226),
+                  child: SizedBox(
+                    // width: data.width * LevelEditorPage.SCALE_FACTOR,
+                    // height: data.height * LevelEditorPage.SCALE_FACTOR,
+                    child: Padding(
+                      padding: EdgeInsets.all(6 * LevelEditorPage.SCALE_FACTOR),
+                      child: Container(child: data.type.cachedNetworkImage),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ]),
         ),
       ),
