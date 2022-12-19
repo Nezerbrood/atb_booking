@@ -154,6 +154,7 @@ class NewBookingBloc extends Bloc<NewBookingEvent, NewBookingState> {
             .add(NewBookingSheetLoadEvent(selectedWorkspaceId!, selectedDate!));
         BookingListBloc().add(BookingListLoadEvent());
         setGuests([]);
+        NewBookingSheetBloc().add(NewBookingSheetAddingPeopleToBookingEvent(const []));
         ///обнуляем добавленных гостей для следуещей брони если эта успешна
       } catch (_) {
         NewBookingConfirmationPopupBloc()

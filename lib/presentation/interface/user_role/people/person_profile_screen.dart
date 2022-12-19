@@ -20,7 +20,7 @@ class PersonProfileScreen extends StatelessWidget {
     ScrollController scrollController = ScrollController();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Профиль сотрудника"),
+        title: const Text("Брони пользователя"),
         centerTitle: true,
       ),
       body: Column(
@@ -38,22 +38,29 @@ class PersonProfileScreen extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: AppImageProvider
-                          .getImageUrlFromImageId(user.avatarImageId,),
-                      httpHeaders: NetworkController()
-                          .getAuthHeader(),
-                      progressIndicatorBuilder: (context,
-                          url, downloadProgress) =>
-                          Center(
-                              child:
-                              CircularProgressIndicator(
-                                  value:
-                                  downloadProgress
-                                      .progress)),
-                      errorWidget: (context, url, error) =>
-                          Container()),
+                  child: ClipOval(
+                    child:
+                    Container(
+                      height: 90,
+                      width: 90,
+                      child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: AppImageProvider
+                              .getImageUrlFromImageId(user.avatarImageId,),
+                          httpHeaders: NetworkController()
+                              .getAuthHeader(),
+                          progressIndicatorBuilder: (context,
+                              url, downloadProgress) =>
+                              Center(
+                                  child:
+                                  CircularProgressIndicator(
+                                      value:
+                                      downloadProgress
+                                          .progress)),
+                          errorWidget: (context, url, error) =>
+                              Container()),
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: Container(
@@ -67,84 +74,15 @@ class PersonProfileScreen extends StatelessWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                  fontSize: 25,
-                                  color: appThemeData.colorScheme.primary),
+                              fontSize: 25,
+                              color: appThemeData.colorScheme.primary),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "Логин:",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(
-                                      color: Colors.black54, fontSize: 18),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                user.login,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    ?.copyWith(
-                                        color: appThemeData.colorScheme.primary,
-                                        fontSize: 18),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "email:",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(
-                                      color: Colors.black54, fontSize: 18),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                user.email,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    ?.copyWith(
-                                        color: appThemeData.colorScheme.primary,
-                                        fontSize: 20),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "Тел:",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(
-                                      color: Colors.black54, fontSize: 18),
-                            ),
-                            const SizedBox(width: 34),
-                            Expanded(
-                              child: Text(
-                                user.phone,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
-                                    ?.copyWith(
-                                        color: appThemeData.colorScheme.primary,
-                                        fontSize: 18),
-                              ),
-                            ),
-                          ],
-                        ),
+                        Text(
+                          user.email,
+                          style: appThemeData.textTheme.bodyLarge,),
+                        Text(
+                          user.phone,
+                        style: appThemeData.textTheme.bodyLarge,),
                       ],
                     ),
                   ),

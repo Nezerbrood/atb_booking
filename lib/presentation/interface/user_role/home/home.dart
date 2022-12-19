@@ -72,7 +72,6 @@ class _HomeState extends State<Home> {
       child: MaterialApp(
           theme: appThemeData,
           home: Scaffold(
-              resizeToAvoidBottomInset: false,
               body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 00),
                 child: Center(

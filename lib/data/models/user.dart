@@ -8,10 +8,11 @@ class User {
   int avatarImageId;
   String phone;
   String email;
+  String jobTitle;
   bool isFavorite;
   String role;
 
-  User(this.id, this.login, this.fullName, this.avatarImageId, this.phone, this.email,
+  User(this.id, this.login, this.fullName, this.avatarImageId, this.phone,this.jobTitle, this.email,
       this.isFavorite,this.role);
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class User {
         json["imageId"] as int,
         json["phone"] as String,
         json["email"] as String,
+        json["jobTitle"] as String,
         json["favorite"] as bool,
         json["role"] as String);
   }

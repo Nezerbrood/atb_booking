@@ -98,10 +98,11 @@ class SearchPeopleTextField extends StatelessWidget {
 
 class SearchResultList extends StatelessWidget {
   SearchResultList({super.key});
-  final ScrollController _scrollController = ScrollController();
+  static ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.maxScrollExtent ==
           _scrollController.position.pixels) {
@@ -109,49 +110,51 @@ class SearchResultList extends StatelessWidget {
       }
     });
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: BlocBuilder<PeopleBloc, PeopleState>(
-          builder: (context, state) {
-            if (state is PeopleLoadedState) {
-              if (state.formHasBeenChanged) {
-                _scrollController.jumpTo(0);
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: BlocBuilder<PeopleBloc, PeopleState>(
+            builder: (context, state) {
+              if (state is PeopleLoadedState) {
+                if (state.formHasBeenChanged) {
+                  _scrollController.jumpTo(0);
+                }
               }
-            }
 
-            if (state is PeopleEmptyState) {
-              return const Center(
-                child: Text("Ничего не найдено"),
-              );
-            }
-            if (state is PeopleInitialState) {
-              return const Center(
-                child: Text("Заполните поле"),
-              );
-            }
-
-            return ListView.builder(
-              controller: _scrollController,
-              shrinkWrap: true,
-              itemCount: state.users.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    PersonCard(state.users[index]),
-                    (state is PeopleLoadingState &&
-                            index == state.users.length - 1)
-                        ? Container(
-                            height: 150,
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ))
-                        : const SizedBox.shrink(),
-                  ],
+              if (state is PeopleEmptyState) {
+                return const Center(
+                  child: Text("Ничего не найдено"),
                 );
-              },
-            );
-          },
+              }
+              if (state is PeopleInitialState) {
+                return const Center(
+                  child: Text("Заполните поле"),
+                );
+              }
+
+              return ListView.builder(
+                controller: _scrollController,
+                shrinkWrap: false,
+                itemCount: state.users.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      PersonCard(state.users[index]),
+                      (state is PeopleLoadingState &&
+                              index == state.users.length - 1)
+                          ? Container(
+                              height: 150,
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ))
+                          : const SizedBox.shrink(),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

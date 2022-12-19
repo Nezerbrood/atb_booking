@@ -160,7 +160,7 @@ class UsersProvider {
     }
   }
 
-  Future<void> addFavoritesProvider(int favoriteId) async {
+  Future<void> addFavoritesProvider(int favoriteId) async   {
     int id = await SecurityStorage().getIdStorage();
     var uri = Uri.http(
       baseUrl,
