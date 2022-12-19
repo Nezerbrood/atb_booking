@@ -3,6 +3,7 @@ import 'package:atb_booking/data/services/city_provider.dart';
 import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
+import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/office_page.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
@@ -339,64 +340,59 @@ class _CreateButton extends StatelessWidget {
   const _CreateButton({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext mainContext) {
     return AtbElevatedButton(
       onPressed: () {
-        // Navigator.of(context).popUntil((route) {
-        //   return route.isFirst;
-        // });
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) {
-        //       return Scaffold(
-        //         appBar: AppBar(),
-        //         body: Container(
-        //           color: Colors.purple,
-        //         ),
-        //       );
-        //     })
-        // );
         showDialog(
-            useRootNavigator: false,
-            context: context,
-            builder: (context_) {
-              return BlocProvider.value(
-                value: context.read<NewOfficePageBloc>(),
-                child: const _CreateAlertDialog(),
+            useRootNavigator: true,
+            context: mainContext,
+            builder: (dialogContext) {
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: mainContext.read<AdminOfficesBloc>(),
+                  ),
+                  BlocProvider.value(
+                    value: mainContext.read<NewOfficePageBloc>(),
+                  )
+                ],
+                child: AlertDialog(
+                  content: BlocListener<NewOfficePageBloc, NewOfficePageState>(
+                    child: const CircularProgressIndicator(),
+                    listener: (_, state) {
+                      print("STATE: $state");
+                      if (state is NewOfficePageSuccessfulCreatedState) {
+                        var adminOfficesBloc = mainContext.read<AdminOfficesBloc>();
+                        Navigator.popUntil(_, (route) => route.isFirst);
+                        Navigator.popUntil(
+                            mainContext, (route) => route.isFirst);
+
+
+
+
+                        Navigator.push(mainContext,
+                            MaterialPageRoute(builder: (_) {
+                          return MultiBlocProvider(providers: [
+                            BlocProvider.value(
+                              value: adminOfficesBloc
+                            ),
+                            BlocProvider<AdminOfficePageBloc>(
+                              create: (_) => AdminOfficePageBloc()
+                                ..add(OfficePageLoadEvent(state.officeId)),
+                            ),
+                          ], child: const OfficePage());
+                        }));
+                      }
+                    },
+                  ),
+                ),
               );
             });
-        context
+        mainContext
             .read<NewOfficePageBloc>()
-            .add(NewOfficePageButtonPressEvent(context));
+            .add(NewOfficePageButtonPressEvent());
       },
       text: "Создать",
-    );
-  }
-}
-
-class _CreateAlertDialog extends StatelessWidget {
-  const _CreateAlertDialog({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      content: BlocListener<NewOfficePageBloc, NewOfficePageState>(
-        child: const CircularProgressIndicator(),
-        listener: (_, state) {
-          print("STATE: $state");
-          if (state is NewOfficePageSuccessfulCreatedState)  {
-            Navigator.pop(context);
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context_) {
-              return MultiBlocProvider(providers: [
-                BlocProvider<AdminOfficePageBloc>(
-                  create: (_) => AdminOfficePageBloc()..add(OfficePageLoadEvent(state.officeId)),
-                ),
-              ], child: const OfficePage());
-            }));
-          }
-        },
-      ),
     );
   }
 }

@@ -101,95 +101,89 @@ class _LevelPlanEditor extends StatelessWidget {
   const _LevelPlanEditor({Key? key}) : super(key: key);
   static TransformationController _transformationController =
       TransformationController();
-  static bool _visible = false;
 
   @override
   Widget build(BuildContext context) {
-    bool _visible = true;
-    return AnimatedOpacity(
-      opacity: _visible ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 500),
-      child: BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
-          builder: (context, state) {
-        if (state is LevelPlanEditorMainState) {
-          _transformationController =
-              TransformationController(_transformationController.value);
-          _transformationController.addListener(() {
-            context
-                .read<LevelPlanEditorBloc>()
-                .add(LevelPlanEditorForceUpdateEvent());
-          });
-          print("____________");
-          var elements = <Widget>[];
+    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
+        builder: (context, state) {
+      if (state is LevelPlanEditorMainState) {
+        _transformationController =
+            TransformationController(_transformationController.value);
+        _transformationController.addListener(() {
+          context
+              .read<LevelPlanEditorBloc>()
+              .add(LevelPlanEditorForceUpdateEvent());
+        });
+        print("____________");
+        var elements = <Widget>[];
 
-          ///
-          ///
-          if (state.levelPlanImageId != null) {
-            print("plan image id: ${state.levelPlanImageId}");
-            var backgroundImage = Center(
-              child: Container(
-                width: double.infinity,
-                //height:  double.infinity,
-                child: CachedNetworkImage(
-                    fit: BoxFit.fitHeight,
-                    imageUrl: AppImageProvider.getImageUrlFromImageId(
-                        state.levelPlanImageId!),
-                    httpHeaders: NetworkController().getAuthHeader(),
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Center(
-                            child: CircularProgressIndicator(
-                                value: downloadProgress.progress)),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error)),
-              ),
-            );
-            elements.add(backgroundImage);
-          }
-
-          ///
-          ///
-          _LevelPlanEditorElementWidget? selectedElem;
-          for (int i = 0; i < state.listOfPlanElements.length; i++) {
-            bool isSelect = i == state.selectedElementIndex;
-            if (isSelect) {
-              selectedElem = _LevelPlanEditorElementWidget(
-                  data: state.listOfPlanElements[i],
-                  isSelect: isSelect,
-                  scaleInteractiveViewValue:
-                      _transformationController.value.getMaxScaleOnAxis());
-            } else {
-              elements.add(_LevelPlanEditorElementWidget(
-                  data: state.listOfPlanElements[i],
-                  isSelect: isSelect,
-                  scaleInteractiveViewValue:
-                      _transformationController.value.getMaxScaleOnAxis()));
-            }
-          }
-          if (selectedElem != null) elements.add(selectedElem);
-
-          ///кидаем наверх плана выбранный
-          print("____________");
-          return InteractiveViewer(
-            minScale: 0.3,
-            maxScale: 2.5,
-            transformationController: _transformationController,
+        ///
+        ///
+        if (state.levelPlanImageId != null) {
+          print("plan image id: ${state.levelPlanImageId}");
+          var backgroundImage = Center(
             child: Container(
-                color: const Color.fromARGB(255, 232, 232, 232),
-                width: 1000.0 * LevelEditorPage.SCALE_FACTOR,
-                height: 1000.0 * LevelEditorPage.SCALE_FACTOR,
-                child: Stack(
-                  children: elements,
-                )),
+              width: double.infinity,
+              //height:  double.infinity,
+              child: CachedNetworkImage(
+                  fit: BoxFit.fitHeight,
+                  imageUrl: AppImageProvider.getImageUrlFromImageId(
+                      state.levelPlanImageId!),
+                  httpHeaders: NetworkController().getAuthHeader(),
+                  progressIndicatorBuilder:
+                      (context, url, downloadProgress) => Center(
+                          child: CircularProgressIndicator(
+                              value: downloadProgress.progress)),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error)),
+            ),
           );
-        } else if (state is LevelPlanEditorInitial) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          throw Exception('State: $state');
+          elements.add(backgroundImage);
         }
-      }),
-    );
+
+        ///
+        ///
+        _LevelPlanEditorElementWidget? selectedElem;
+        for (int i = 0; i < state.listOfPlanElements.length; i++) {
+          bool isSelect = i == state.selectedElementIndex;
+          if (isSelect) {
+            selectedElem = _LevelPlanEditorElementWidget(
+                data: state.listOfPlanElements[i],
+                isSelect: isSelect,
+                scaleInteractiveViewValue:
+                    _transformationController.value.getMaxScaleOnAxis());
+          } else {
+            elements.add(_LevelPlanEditorElementWidget(
+                data: state.listOfPlanElements[i],
+                isSelect: isSelect,
+                scaleInteractiveViewValue:
+                    _transformationController.value.getMaxScaleOnAxis()));
+          }
+        }
+        if (selectedElem != null) elements.add(selectedElem);
+
+        ///кидаем наверх плана выбранный
+        print("____________");
+        return InteractiveViewer(
+          minScale: 0.3,
+          maxScale: 2.5,
+          transformationController: _transformationController,
+          child: Container(
+              color: const Color.fromARGB(255, 232, 232, 232),
+              width: 1000.0 * LevelEditorPage.SCALE_FACTOR,
+              height: 1000.0 * LevelEditorPage.SCALE_FACTOR,
+              child: Stack(
+                children: elements,
+              )),
+        );
+      } else if (state is LevelPlanEditorInitial) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        throw Exception('State: $state');
+      }
+    });
   }
 }
 
@@ -197,7 +191,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
   final LevelPlanElementData data;
   final bool isSelect;
   final double scaleInteractiveViewValue;
-
+  static const BLUE_PRINT_FRAME_WIDTH = 6.0;
   const _LevelPlanEditorElementWidget(
       {required this.data,
       required this.isSelect,
@@ -207,11 +201,10 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var cornerSize =
         35 * LevelEditorPage.SCALE_FACTOR / scaleInteractiveViewValue;
-    var BLUE_PRINT_FRAME_WIDTH = 6.0;
     return Positioned(
       left: data.positionX * LevelEditorPage.SCALE_FACTOR - cornerSize,
       top: data.positionY * LevelEditorPage.SCALE_FACTOR - cornerSize,
-      child: Container(
+      child: SizedBox(
         //color: AtbAdditionalColors.debugTranslucent,
         height: data.height * LevelEditorPage.SCALE_FACTOR + (cornerSize * 2),
         width: data.width * LevelEditorPage.SCALE_FACTOR + (cornerSize * 2),
@@ -228,9 +221,15 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
             }
           },
           onTap: () {
+            if(isSelect){
             context
                 .read<LevelPlanEditorBloc>()
-                .add(LevelPlanEditorElementTapEvent(data.id!));
+                .add(LevelPlanEditorDeselectElementEvent());}else{
+              context
+                  .read<LevelPlanEditorBloc>()
+                  .add(LevelPlanEditorSelectElementEvent(data.id!));
+            }
+            
           },
           child: Stack(children: [
             Positioned(
@@ -240,7 +239,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
                 width: data.width * LevelEditorPage.SCALE_FACTOR,
                 height: data.height * LevelEditorPage.SCALE_FACTOR,
                 child: Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  clipBehavior: Clip.antiAlias,
                   shape: RoundedRectangleBorder(
                       side: !isSelect
                           ? const BorderSide(width: 0, color: Colors.grey)
@@ -780,7 +779,6 @@ class _AddInfoButton extends StatelessWidget {
                         BorderSide(width: 1, color: appThemeData.primaryColor),
                     borderRadius: BorderRadius.circular(7.0)),
                 onPressed: () {
-                  //todo push event and show alertdialog
                   showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,

@@ -22,12 +22,15 @@ class LevelPlanEditorElementChangeSizeEvent extends LevelPlanEditorEvent {
   LevelPlanEditorElementChangeSizeEvent(this.id, this.newWidth, this.newHeight);
 }
 
-class LevelPlanEditorElementTapEvent extends LevelPlanEditorEvent {
+class LevelPlanEditorSelectElementEvent extends LevelPlanEditorEvent {
   final int id;
 
-  LevelPlanEditorElementTapEvent(
+  LevelPlanEditorSelectElementEvent(
     this.id,
   );
+}
+
+class LevelPlanEditorDeselectElementEvent extends LevelPlanEditorEvent {
 }
 
 class LevelPlanEditorCreateElementEvent extends LevelPlanEditorEvent {

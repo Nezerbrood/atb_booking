@@ -26,7 +26,10 @@ class AdminOfficesScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (bcontext) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+              builder: (_) {
             return MultiBlocProvider(providers: [
               BlocProvider.value(
                 value: context.read<

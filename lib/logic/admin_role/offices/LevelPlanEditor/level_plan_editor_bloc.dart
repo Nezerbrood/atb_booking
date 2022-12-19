@@ -84,16 +84,15 @@ class LevelPlanEditorBloc
 
     ///
     ///
-    /// меняем активный эелмент isSelect
-    on<LevelPlanEditorElementTapEvent>((event, emit) {
-      if (_selectedElementId == event.id) {
-        _selectedElementId = null;
-      } else {
+    /// Изменяем выбранный элемент
+    on<LevelPlanEditorSelectElementEvent>((event, emit) {
         _selectedElementId = event.id;
-      }
       add(LevelPlanEditorForceUpdateEvent());
     });
-
+    on<LevelPlanEditorDeselectElementEvent>((event, emit) {
+      _selectedElementId = null;
+      add(LevelPlanEditorForceUpdateEvent());
+    });
     ///
     ///
     ///Добавляем по тапу новый воркплейс на план

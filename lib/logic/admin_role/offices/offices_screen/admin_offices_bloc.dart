@@ -29,6 +29,7 @@ class AdminOfficesBloc extends Bloc<AdminOfficesEvent, AdminOfficesState> {
       }
     });
     on<AdminOfficesReloadEvent>((event,emit)async{
+      if(selectedCity!=null){
       try {
         futureCityList = CityRepository().getAllCities();
         List<Office> offices = await OfficeRepository().getOfficesByCityId(selectedCity!.id);
@@ -37,7 +38,7 @@ class AdminOfficesBloc extends Bloc<AdminOfficesEvent, AdminOfficesState> {
         print(_);
         futureCityList = CityRepository().getAllCities();
         emit(AdminOfficesErrorState(futureCityList));
-      }
+      }}
     });
 
   }
