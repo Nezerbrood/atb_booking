@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:atb_booking/logic/admin_role/people/admin_people_bloc.dart';
+import 'package:atb_booking/logic/admin_role/people/people_page/admin_people_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/people/admin_person_card.dart';
 import 'package:flutter/material.dart';

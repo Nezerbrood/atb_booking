@@ -27,9 +27,9 @@ class NewOfficePageBloc extends Bloc<NewOfficePageEvent, NewOfficePageState> {
 
   DateTimeRange workTimeRange = DateTimeRange(
       start: DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, 8).toUtc(),
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, 10).toLocal(),
       end: DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, 20).toUtc());
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, 20).toLocal());
 
   NewOfficePageBloc()
       : super(NewOfficePageInitialState(CityRepository().getAllCities())) {

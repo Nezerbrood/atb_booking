@@ -263,6 +263,7 @@ class _BookingRange extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                 ),
+                textAlign:TextAlign.center ,
                 keyboardType: TextInputType.number,
                 onTap: () {
                   context
@@ -299,59 +300,62 @@ class _WorkTimeRange extends StatelessWidget {
   Widget build(BuildContext context) {
     var values =
         SfRangeValues(state.workTimeRange.start, state.workTimeRange.end);
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(30.0, 10, 30, 0),
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Text("Время работы офиса",
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.black54,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w300)),
-              ),
-              Container(
-                height: 0.3,
-                color: Colors.black54,
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(30.0, 10, 30, 0),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Text("Время работы офиса",
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          color: Colors.black54,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w300)),
+                ),
+                Container(
+                  height: 0.3,
+                  color: Colors.black54,
+                ),
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-          child: SfRangeSlider(
-              showTicks: true,
-              showDividers: true,
-              minorTicksPerInterval: 2,
-              values: values,
-              min: DateTime(DateTime.now().year, DateTime.now().month,
-                      DateTime.now().day, 0)
-                  .toUtc(),
-              max: DateTime(DateTime.now().year, DateTime.now().month,
-                      DateTime.now().day, 24)
-                  .toUtc(),
-              showLabels: true,
-              interval: 4,
-              stepDuration: const SliderStepDuration(minutes: 30),
-              dateIntervalType: DateIntervalType.hours,
-              //numberFormat: NumberFormat('\$'),
-              dateFormat: DateFormat.Hm(),
-              enableTooltip: true,
-              onChanged: (newValues) {
-                context
-                    .read<NewOfficePageBloc>()
-                    .add(NewOfficePageWorkTimeRangeChangeEvent(DateTimeRange(
-                      start: newValues.start,
-                      end: newValues.end,
-                    )));
-                //values = newValues;
-              }),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: SfRangeSlider(
+                showTicks: true,
+                showDividers: true,
+                minorTicksPerInterval: 2,
+                values: values,
+                min: DateTime(DateTime.now().year, DateTime.now().month,
+                        DateTime.now().day, 0).toLocal(),
+
+                max: DateTime(DateTime.now().year, DateTime.now().month,
+                        DateTime.now().day+1,0).toLocal(),
+
+                showLabels: true,
+                interval: 4,
+                stepDuration: const SliderStepDuration(minutes: 30),
+                dateIntervalType: DateIntervalType.hours,
+                //numberFormat: NumberFormat('\$'),
+                dateFormat: DateFormat.Hm(),
+                enableTooltip: true,
+                onChanged: (newValues) {
+                  context
+                      .read<NewOfficePageBloc>()
+                      .add(NewOfficePageWorkTimeRangeChangeEvent(DateTimeRange(
+                        start: newValues.start,
+                        end: newValues.end,
+                      )));
+                  //values = newValues;
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

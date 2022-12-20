@@ -23,6 +23,9 @@ class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
 
   // todo получаем айди из секьюрити
   BookingListBloc._internal() : super(BookingListLoadingState()) {
+    on<BookingListInitialEvent>((event, emit) async {
+      emit(BookingListLoadingState());
+    });
     on<BookingListLoadEvent>((event, emit) async {
       try {
         final currentUserId = await SecurityStorage().getIdStorage();

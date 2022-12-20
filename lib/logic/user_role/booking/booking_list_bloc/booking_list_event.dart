@@ -12,3 +12,6 @@ class BookingCardTapEvent extends BookingListEvent{
 
   BookingCardTapEvent(this.bookingId);
 }
+
+class BookingListInitialEvent extends BookingListEvent{
+}

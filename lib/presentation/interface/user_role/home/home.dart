@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<BookingListBloc>(
-          lazy: false,
+          lazy: true,
           create: (context) => BookingListBloc(),
         ),
         BlocProvider<BookingDetailsBloc>(

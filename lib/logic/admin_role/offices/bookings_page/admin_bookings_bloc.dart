@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:atb_booking/data/models/booking.dart';
 import 'package:atb_booking/data/services/booking_repository.dart';
-import 'package:atb_booking/logic/admin_role/people/admin_people_bloc.dart';
+import 'package:atb_booking/logic/admin_role/people/people_page/admin_people_bloc.dart';
 import 'package:atb_booking/logic/secure_storage_api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';

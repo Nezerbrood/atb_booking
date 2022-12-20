@@ -1,5 +1,6 @@
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
+import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
@@ -63,6 +64,7 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
+                BookingListBloc().add(BookingListInitialEvent());
                 Navigator.pushReplacement(context,  MaterialPageRoute(builder: (_) => const Auth()));
                 },
               icon: const Icon(Icons.logout, size: 28))

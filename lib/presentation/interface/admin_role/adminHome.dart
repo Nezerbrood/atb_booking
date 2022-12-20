@@ -1,5 +1,5 @@
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
-import 'package:atb_booking/logic/admin_role/people/admin_people_bloc.dart';
+import 'package:atb_booking/logic/admin_role/people/people_page/admin_people_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/feedback/feedback_screen.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/offices_list_screen.dart';
