@@ -42,7 +42,7 @@ class SearchPeopleTextField extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10),
       child: Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,9 +50,38 @@ class SearchPeopleTextField extends StatelessWidget {
             Expanded(
               flex: 20,
               child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Кого ищем?",
+                decoration: InputDecoration(
+                  hintText: "Введите имя",
+                  filled: true,
+                  fillColor: const Color.fromARGB(255, 238, 238, 238),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  suffixIcon: BlocBuilder<PeopleBloc, PeopleState>(
+                    builder: (context, state) {
+                      return IconButton(
+                          onPressed: () {
+                            context
+                                .read<PeopleBloc>()
+                                .add(PeopleIsFavoriteChangeEvent(_controller.text));
+                          },
+                          icon: Wrap(
+                            alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              const Text("Только\nизбранные",
+                                  textAlign: TextAlign.right),
+                              const SizedBox(width: 10),
+                              state.isFavoriteOn
+                                  ? Icon(Icons.star,)
+                                  : Icon(
+                                Icons.star_border,
+                              ),
+                            ],
+                          ));
+                    },
+                  ),
                 ),
                 textInputAction: TextInputAction.search,
                 controller: _controller,
@@ -62,33 +91,6 @@ class SearchPeopleTextField extends StatelessWidget {
                 },
               ),
             ),
-            Expanded(
-              flex: 12,
-              child: BlocBuilder<PeopleBloc, PeopleState>(
-                builder: (context, state) {
-                  return IconButton(
-                      onPressed: () {
-                        context
-                            .read<PeopleBloc>()
-                            .add(PeopleIsFavoriteChangeEvent(_controller.text));
-                      },
-                      icon: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          const Text("Только\nизбранные",
-                              textAlign: TextAlign.right),
-                          const SizedBox(width: 10),
-                          state.isFavoriteOn
-                              ? Icon(Icons.star, color: appThemeData.primaryColor)
-                              : Icon(
-                                  Icons.star_border,
-                                  color: appThemeData.primaryColor,
-                                ),
-                        ],
-                      ));
-                },
-              ),
-            )
           ],
         ),
       ),
@@ -117,18 +119,45 @@ class SearchResultList extends StatelessWidget {
             builder: (context, state) {
               if (state is PeopleLoadedState) {
                 if (state.formHasBeenChanged) {
-                  _scrollController.jumpTo(0);
+                  if (_scrollController.hasClients) {
+                    _scrollController.jumpTo(0);
+                  }
                 }
               }
 
               if (state is PeopleEmptyState) {
-                return const Center(
-                  child: Text("Ничего не найдено"),
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Ничего не найдено"
+                          ,
+                          style: appThemeData.textTheme.headlineMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               }
               if (state is PeopleInitialState) {
-                return const Center(
-                  child: Text("Заполните поле"),
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Введите имя человека в строку поиска выше",
+                          style: appThemeData.textTheme.headlineMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               }
 
@@ -144,7 +173,7 @@ class SearchResultList extends StatelessWidget {
                               index == state.users.length - 1)
                           ? Container(
                               height: 150,
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
                               child: const Center(
                                 child: CircularProgressIndicator(),
                               ))

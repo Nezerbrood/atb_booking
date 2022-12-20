@@ -1,6 +1,5 @@
 import 'package:atb_booking/data/models/city.dart';
 import 'package:atb_booking/data/services/city_provider.dart';
-import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
@@ -78,7 +77,7 @@ class _CityField extends StatelessWidget {
   /// -> -> ->
   final TextEditingController cityInputController;
 
-  const _CityField({super.key, required this.cityInputController});
+  const _CityField({required this.cityInputController});
 
   @override
   Widget build(BuildContext context) {
@@ -88,13 +87,22 @@ class _CityField extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
           child: TypeAheadFormField(
+
             textFieldConfiguration: TextFieldConfiguration(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Выберите город...",
-              ),
               controller: cityInputController,
+              textInputAction: TextInputAction.search,
+              decoration: const InputDecoration(
+                hintText: "Выберите город...",
+                filled: true,
+                fillColor: Color.fromARGB(255, 238, 238, 238),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                suffixIcon: Icon(Icons.search),
+              ),
             ),
+
             suggestionsCallback: (pattern) {
               // при нажатии на поле
 
@@ -116,10 +124,9 @@ class _CityField extends StatelessWidget {
               context
                   .read<NewOfficePageBloc>()
                   .add(NewOfficePageCitySelectedEvent(suggestion));
-              //todo _selectedCity = suggestion;
             },
             validator: (value) =>
-                value!.isEmpty ? 'Please select a city' : null,
+                value!.isEmpty ? 'Введите город' : null,
             //onSaved: (value) => this._selectedCity = value,
           ),
         );
@@ -132,7 +139,7 @@ class _OfficeAddress extends StatelessWidget {
   static TextEditingController? _officeAddressController;
   final NewOfficePageLoadedState state;
 
-  _OfficeAddress({super.key, required this.state}) {
+  _OfficeAddress({ required this.state}) {
     if (_officeAddressController == null) {
       _officeAddressController = TextEditingController(text: state.address);
     } else {
@@ -155,17 +162,20 @@ class _OfficeAddress extends StatelessWidget {
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: Colors.black54,
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.w300)),
-          ),
-          Container(
-            height: 0.3,
-            color: Colors.black54,
           ),
           SizedBox(
             width: double.infinity,
             child: TextField(
-              decoration: const InputDecoration(hintText: 'Введите адресс'),
+              decoration: const InputDecoration(
+                filled: true,
+                fillColor: Color.fromARGB(255, 238, 238, 238),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+              ),
               keyboardType: TextInputType.streetAddress,
               onTap: () {
                 context
@@ -198,7 +208,7 @@ class _BookingRange extends StatelessWidget {
   static TextEditingController? _bookingRangeController;
   final NewOfficePageLoadedState state;
 
-  _BookingRange({super.key, required this.state}) {
+  _BookingRange({required this.state}) {
     if (_bookingRangeController == null) {
       _bookingRangeController =
           TextEditingController(text: state.bookingRange.toString());
@@ -227,7 +237,7 @@ class _BookingRange extends StatelessWidget {
                     textAlign: TextAlign.right,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: Colors.black54,
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.w300)),
                 const SizedBox(
                   width: 5,
@@ -245,6 +255,14 @@ class _BookingRange extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 10),
               child: TextField(
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 238, 238, 238),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 onTap: () {
                   context
@@ -275,7 +293,7 @@ class _BookingRange extends StatelessWidget {
 class _WorkTimeRange extends StatelessWidget {
   final NewOfficePageLoadedState state;
 
-  _WorkTimeRange({super.key, required this.state});
+  _WorkTimeRange({required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -310,10 +328,12 @@ class _WorkTimeRange extends StatelessWidget {
               showDividers: true,
               minorTicksPerInterval: 2,
               values: values,
-              max: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day, 24),
               min: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day, 0),
+                      DateTime.now().day, 0)
+                  .toUtc(),
+              max: DateTime(DateTime.now().year, DateTime.now().month,
+                      DateTime.now().day, 24)
+                  .toUtc(),
               showLabels: true,
               interval: 4,
               stepDuration: const SliderStepDuration(minutes: 30),
@@ -362,20 +382,15 @@ class _CreateButton extends StatelessWidget {
                     listener: (_, state) {
                       print("STATE: $state");
                       if (state is NewOfficePageSuccessfulCreatedState) {
-                        var adminOfficesBloc = mainContext.read<AdminOfficesBloc>();
+                        var adminOfficesBloc =
+                            mainContext.read<AdminOfficesBloc>();
                         Navigator.popUntil(_, (route) => route.isFirst);
                         Navigator.popUntil(
                             mainContext, (route) => route.isFirst);
-
-
-
-
                         Navigator.push(mainContext,
                             MaterialPageRoute(builder: (_) {
                           return MultiBlocProvider(providers: [
-                            BlocProvider.value(
-                              value: adminOfficesBloc
-                            ),
+                            BlocProvider.value(value: adminOfficesBloc),
                             BlocProvider<AdminOfficePageBloc>(
                               create: (_) => AdminOfficePageBloc()
                                 ..add(OfficePageLoadEvent(state.officeId)),

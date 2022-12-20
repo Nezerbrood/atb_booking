@@ -1,6 +1,8 @@
 import 'package:atb_booking/logic/auth_bloc/auth_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
+import 'package:atb_booking/presentation/interface/admin_role/adminHome.dart';
+import 'package:atb_booking/presentation/interface/user_role/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants/styles.dart';
@@ -86,15 +88,15 @@ class __FormWidgetState extends State<_FormWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
+      listener: (_, state) {
         if (state is AuthUserSuccessState) {
           BookingListBloc().add(BookingListLoadEvent());
           ProfileBloc().add(ProfileLoadEvent());
 
           Navigator.of(context)
-              .pushReplacementNamed('/home');
+              .pushReplacement(MaterialPageRoute(builder: (_) => const Home()));
         } else if (state is AuthAdminSuccessState) {
-          Navigator.of(context).pushReplacementNamed('/adminHome');
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminHome()));
         }
       },
       builder: (context, state) {
@@ -111,8 +113,13 @@ class __FormWidgetState extends State<_FormWidget> {
                     controller: _loginTextController,
                     obscureText: false,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Логин',
+                      hintText: "Логин",
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 238, 238, 238),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
                     ),
                     textInputAction: TextInputAction.next,
                   ),
@@ -121,8 +128,13 @@ class __FormWidgetState extends State<_FormWidget> {
                     obscureText: true,
                     controller: _passwordTextController,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Пароль',
+                      hintText: "пароль",
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 238, 238, 238),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),

@@ -1,5 +1,6 @@
 import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
+import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/data/services/workspace_type_repository.dart';
 import 'package:atb_booking/logic/user_role/booking/locked_plan_bloc/locked_plan_bloc.dart';
@@ -42,7 +43,7 @@ class LockedPlanWidget extends StatelessWidget {
                 height: double.infinity,
                 child: CachedNetworkImage(
                     fit: BoxFit.fitHeight,
-                    imageUrl: "https://i.ibb.co/82gPz00/Capture.png",
+                    imageUrl: AppImageProvider.getImageUrlFromImageId(state.levelPlanImageId!),
                     httpHeaders: NetworkController().getAuthHeader(),
                     placeholder: (context, url) => const Center(),
                     errorWidget: (context, url, error) =>
@@ -119,7 +120,6 @@ class _LevelPlanElementWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cornerSize = 35 * LockedPlanWidget.SCALE_FACTOR / scaleInteractiveViewValue;
-    var BLUE_PRINT_FRAME_WIDTH = 6.0;
     return Positioned(
       left: data.positionX * LockedPlanWidget.SCALE_FACTOR - cornerSize,
       top: data.positionY * LockedPlanWidget.SCALE_FACTOR - cornerSize,
@@ -147,7 +147,7 @@ class _LevelPlanElementWidget extends StatelessWidget {
                 shadowColor: Colors.black,
                 elevation: isSelect ? 8 : 3,
                 color: !data.isActive
-                    ? Colors.black12
+                    ? const Color.fromARGB(255, 255, 231, 226)
                     : isSelect
                     ? const Color.fromARGB(255, 255, 231, 226)
                     : const Color.fromARGB(255, 234, 255, 226),

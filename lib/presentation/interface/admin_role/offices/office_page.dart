@@ -1,5 +1,4 @@
 import 'package:atb_booking/data/models/level_plan.dart';
-import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/booking_stats/admin_booking_stats_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/bookings_page/admin_bookings_bloc.dart';
@@ -127,7 +126,7 @@ class _OfficeAddress extends StatelessWidget {
       TextEditingController();
   final AdminOfficePageLoadedState state;
 
-  _OfficeAddress({super.key, required this.state}) {}
+  _OfficeAddress({required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -140,20 +139,27 @@ class _OfficeAddress extends StatelessWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            child: Text("Адрес",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Colors.black54,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w300)),
-          ),
-          Container(
-            height: 0.3,
-            color: Colors.black54,
+            child: Padding(
+              padding: const EdgeInsets.only(left:8.0),
+              child: Text("Адрес",
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Colors.black54,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300)),
+            ),
           ),
           SizedBox(
             width: double.infinity,
             child: TextField(
+              decoration: const InputDecoration(
+                filled: true,
+                fillColor: Color.fromARGB(255, 238, 238, 238),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+              ),
               keyboardType: TextInputType.streetAddress,
               onTap: () {
                 context
@@ -169,7 +175,7 @@ class _OfficeAddress extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall
-                  ?.copyWith(color: Colors.black, fontSize: 23),
+                  ?.copyWith(color: Colors.black, fontSize: 20),
               maxLines: 4,
               minLines: 1,
               maxLength: 1000,
@@ -186,7 +192,7 @@ class _BookingRange extends StatelessWidget {
   static TextEditingController? _bookingRangeController;
   final AdminOfficePageLoadedState state;
 
-  _BookingRange({super.key, required this.state}) {
+  _BookingRange({required this.state}) {
     if (_bookingRangeController == null) {
       _bookingRangeController =
           TextEditingController(text: state.bookingRange.toString());
@@ -215,7 +221,7 @@ class _BookingRange extends StatelessWidget {
                     textAlign: TextAlign.right,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: Colors.black54,
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.w300)),
                 const SizedBox(
                   width: 5,
@@ -229,10 +235,19 @@ class _BookingRange extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 5,
             child: Padding(
-              padding: const EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 20),
               child: TextField(
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 238, 238, 238),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 onTap: () {
                   print('tap');
@@ -255,7 +270,7 @@ class _BookingRange extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: Colors.black, fontSize: 23),
+                    ?.copyWith(color: Colors.black, fontSize: 22),
                 //keyboardType: TextInputType.multiline,
               ),
             ),
@@ -269,7 +284,7 @@ class _BookingRange extends StatelessWidget {
 class _WorkTimeRange extends StatelessWidget {
   final AdminOfficePageLoadedState state;
 
-  const _WorkTimeRange({super.key, required this.state});
+  const _WorkTimeRange({required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +302,7 @@ class _WorkTimeRange extends StatelessWidget {
                     textAlign: TextAlign.left,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: Colors.black54,
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.w300)),
               ),
               Container(
@@ -584,7 +599,7 @@ class _BookingsButton extends StatelessWidget {
 class _AddNewLevelButton extends StatelessWidget {
   final AdminOfficePageLoadedState state;
 
-  const _AddNewLevelButton({super.key, required this.state});
+  const _AddNewLevelButton({required this.state});
 
   @override
   Widget build(BuildContext context) {

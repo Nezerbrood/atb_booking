@@ -32,7 +32,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       await SecurityStorage().clearValueStorage();
       
     });
-    emit(ProfileLoadingState());
+    //emit(ProfileLoadingState());
     add(ProfileLoadEvent());
   }
 }

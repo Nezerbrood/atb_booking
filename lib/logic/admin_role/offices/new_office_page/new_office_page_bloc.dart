@@ -4,8 +4,6 @@ import 'package:atb_booking/data/models/city.dart';
 import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/data/services/city_repository.dart';
 import 'package:atb_booking/data/services/office_provider.dart';
-import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
-import 'package:atb_booking/presentation/interface/admin_role/offices/office_page.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,9 +27,9 @@ class NewOfficePageBloc extends Bloc<NewOfficePageEvent, NewOfficePageState> {
 
   DateTimeRange workTimeRange = DateTimeRange(
       start: DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, 8),
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, 8).toUtc(),
       end: DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, 20));
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, 20).toUtc());
 
   NewOfficePageBloc()
       : super(NewOfficePageInitialState(CityRepository().getAllCities())) {
@@ -39,7 +37,7 @@ class NewOfficePageBloc extends Bloc<NewOfficePageEvent, NewOfficePageState> {
     on<NewOfficePageWorkTimeRangeChangeEvent>((event, emit) {
       workTimeRange = event.newWorkTimeRange;
       emit(NewOfficePageLoadedState(futureCityList, address, bookingRange,
-          workTimeRange!, buttonIsActive()));
+          workTimeRange, buttonIsActive()));
     });
 
     ///
@@ -56,7 +54,7 @@ class NewOfficePageBloc extends Bloc<NewOfficePageEvent, NewOfficePageState> {
         );
         int createdOfficeId = await OfficeProvider().createOffice(office);
         emit(NewOfficePageSuccessfulCreatedState(futureCityList, address,
-            bookingRange, workTimeRange!, buttonIsActive(), createdOfficeId));
+            bookingRange, workTimeRange, buttonIsActive(), createdOfficeId));
       } catch (_) {
         emit(NewOfficePageErrorCreatedState(futureCityList, address,
             bookingRange, workTimeRange, buttonIsActive()));
@@ -69,21 +67,21 @@ class NewOfficePageBloc extends Bloc<NewOfficePageEvent, NewOfficePageState> {
     on<NewOfficePageCitySelectedEvent>((event, emit) {
       selectedCity = event.selectedCity;
       emit(NewOfficePageLoadedState(futureCityList, address, bookingRange,
-          workTimeRange!, buttonIsActive()));
+          workTimeRange, buttonIsActive()));
     });
     on<NewOfficePageUpdateFieldsEvent>((event, emit) {
       emit(NewOfficePageLoadedState(futureCityList, address, bookingRange,
-          workTimeRange!, buttonIsActive()));
+          workTimeRange, buttonIsActive()));
     });
     on<NewOfficeBookingRangeChangeEvent>((event, emit) {
       bookingRange = event.newRange;
       emit(NewOfficePageLoadedState(futureCityList, address, bookingRange,
-          workTimeRange!, buttonIsActive()));
+          workTimeRange, buttonIsActive()));
     });
     on<NewOfficePageAddressChangeEvent>((event, emit) {
       address = event.newAddress;
       emit(NewOfficePageLoadedState(futureCityList, address, bookingRange,
-          workTimeRange!, buttonIsActive()));
+          workTimeRange, buttonIsActive()));
     });
   }
 }

@@ -102,10 +102,17 @@ class _CityField extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
             child: TypeAheadFormField(
+
               textFieldConfiguration: TextFieldConfiguration(
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Выберите город...",
+                  hintText: "Выберите город",
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 238, 238, 238),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  suffixIcon: Icon(Icons.search),
                 ),
                 controller: _cityInputController,
               ),
@@ -156,8 +163,13 @@ class _OfficeField extends StatelessWidget {
             return TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Выберите офис...",
+                  hintText: "Выберите офис",
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 238, 238, 238),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
                 ),
                 controller: _officeInputController,
               ),
@@ -215,19 +227,17 @@ class _LevelField extends StatelessWidget {
                         .add(NewBookingLevelFormEvent(level));
                   }
                 },
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    hintStyle: appThemeData.textTheme.titleMedium,
-                    suffixIconColor: Colors.red,
-                    iconColor: appThemeData.primaryColor,
-                    labelText: "Этаж",
-                    hintText: "Select an Level",
-                    //filled: true,
+                dropdownDecoratorProps: const DropDownDecoratorProps(
+                  dropdownSearchDecoration:InputDecoration(
+                  hintText: "Введите имя...",
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 238, 238, 238),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                 ),
-                //items: List.generate(50, (i) => i),//snapshot.data!,
-                //items: snapshot.data!,
+                ),
                 asyncItems: (state).getFutureLevelList,
                 //asyncItems: getFutureLevelList,
                 itemAsString: (LevelListItem level) {
@@ -235,10 +245,13 @@ class _LevelField extends StatelessWidget {
                 },
                 dropdownBuilder: (BuildContext context, LevelListItem? level) {
                   if (level != null) {
-                    return Text(
-                      "${level.number} Этаж",
-                      style: appThemeData.textTheme.titleMedium,
-                    );
+                    return
+                      Text(
+                        "${level.number} Этаж",
+                        style: appThemeData.textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.w500
+                        ),
+                      );
                   } else {
                     return const SizedBox.shrink();
                   }
@@ -247,8 +260,6 @@ class _LevelField extends StatelessWidget {
                   //showSearchBox: true,
                   fit: FlexFit.loose,
                   constraints: BoxConstraints.tightFor(
-                    width: 300,
-                    height: 120,
                   ),
                 ),
               ),

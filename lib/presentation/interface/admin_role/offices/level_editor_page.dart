@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
@@ -9,14 +7,10 @@ import 'package:atb_booking/data/services/workspace_type_repository.dart';
 import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
-import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-
-//double SCALE_FACTOR = 0.5;
 
 class LevelEditorPage extends StatelessWidget {
   const LevelEditorPage({Key? key}) : super(key: key);
@@ -237,7 +231,7 @@ class _LevelPlanEditorSelectedElementWidget extends StatelessWidget {
                   shadowColor: Colors.black,
                   elevation: 8,
                   color: !data.isActive
-                      ? Colors.black12
+                      ? const Color.fromARGB(255, 169, 169, 169)
                       : const Color.fromARGB(255, 255, 231, 226),
                   child: SizedBox(
                     // width: data.width * LevelEditorPage.SCALE_FACTOR,
@@ -626,7 +620,7 @@ class _LevelPlanEditorSelectedElementWidget extends StatelessWidget {
 class _LevelPlanEditorUnselectedElementWidget extends StatelessWidget {
   final LevelPlanElementData data;
   final double scaleInteractiveViewValue;
-  static const BLUE_PRINT_FRAME_WIDTH = 6.0;
+  //static const BLUE_PRINT_FRAME_WIDTH = 6.0;
 
   const _LevelPlanEditorUnselectedElementWidget(
       {required this.data, required this.scaleInteractiveViewValue});
@@ -664,7 +658,7 @@ class _LevelPlanEditorUnselectedElementWidget extends StatelessWidget {
                   shadowColor: Colors.black,
                   elevation: 3,
                   color: !data.isActive
-                      ? Colors.black12
+                      ? const Color.fromARGB(255, 169, 169, 169)
                       : const Color.fromARGB(255, 234, 255, 226),
                   child: SizedBox(
                     // width: data.width * LevelEditorPage.SCALE_FACTOR,
@@ -764,7 +758,7 @@ class _DeleteWorkspaceButton extends StatelessWidget {
               child: MaterialButton(
                 shape: RoundedRectangleBorder(
                     side:
-                        BorderSide(width: 1, color: appThemeData.primaryColor),
+                        BorderSide(width: 0, color: appThemeData.primaryColor),
                     borderRadius: BorderRadius.circular(7.0)),
                 onPressed: () {
                   showDialog(
@@ -866,30 +860,6 @@ class _AddInfoButton extends StatelessWidget {
     );
   }
 }
-
-class _SaveButton extends StatelessWidget {
-  const _SaveButton({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LevelPlanEditorBloc, LevelPlanEditorState>(
-      builder: (context, state) {
-        if (state is LevelPlanEditorMainState) {
-          return Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: AtbElevatedButton(
-              onPressed: () {},
-              text: 'Сохранить изменения',
-            ),
-          );
-        } else {
-          throw Exception("unexpected state: $state");
-        }
-      },
-    );
-  }
-}
-
 class _TitleUnderPlan extends StatelessWidget {
   const _TitleUnderPlan({Key? key}) : super(key: key);
 
@@ -1060,6 +1030,7 @@ class _WorkSpacePhotos extends StatelessWidget {
             height: 200,
             child: state.selectedWorkspacePhotosIds.isNotEmpty
                 ? Scrollbar(
+              thumbVisibility: true,
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: state.selectedWorkspacePhotosIds.length,
@@ -1072,24 +1043,43 @@ class _WorkSpacePhotos extends StatelessWidget {
                                 child: Stack(
                                     alignment: Alignment.topRight,
                                     children: [
-                                      CachedNetworkImage(
-                                          fit: BoxFit.cover,
-                                          imageUrl: AppImageProvider
-                                              .getImageUrlFromImageId(state
-                                                      .selectedWorkspacePhotosIds[
-                                                  index]),
-                                          httpHeaders: NetworkController()
-                                              .getAuthHeader(),
-                                          progressIndicatorBuilder: (context,
-                                                  url, downloadProgress) =>
-                                              Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress)),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error)),
+                                       Card(
+                                        child: CachedNetworkImage(
+                                            fit: BoxFit.contain,
+                                            imageUrl: AppImageProvider
+                                                .getImageUrlFromImageId(state
+                                                        .selectedWorkspacePhotosIds[
+                                                    index]),
+                                            httpHeaders: NetworkController()
+                                                .getAuthHeader(),
+                                            progressIndicatorBuilder: (context,
+                                                    url, downloadProgress) =>
+                                                Container(
+                                                  width: 100,
+                                                  child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                              value:
+                                                                  downloadProgress
+                                                                      .progress)),
+                                                ),
+                                            errorWidget: (context, url, error) =>
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      color: const Color.fromARGB(
+                                                          255, 225, 225, 225),
+                                                      border: Border.all(color: Colors.white),
+                                                      borderRadius: const BorderRadius.all(
+                                                          Radius.circular(5))),
+                                                  width: 100,
+                                                  child: Center(child: Icon(Icons.error)),
+                                                ),),
+                                        clipBehavior: Clip.antiAlias,
+                                         shape: RoundedRectangleBorder(
+                                             side: BorderSide(
+                                                 width: 0, color: appThemeData.colorScheme.tertiary),
+                                             borderRadius: BorderRadius.circular(3.0)),
+                                      ),
                                       IconButton(
                                           onPressed: () {
                                             context.read<LevelPlanEditorBloc>().add(
@@ -1112,7 +1102,6 @@ class _WorkSpacePhotos extends StatelessWidget {
                               )
                             ],
                           );
-                          ;
                         }),
                   )
                 : _UploadImagePanel(),
@@ -1417,7 +1406,7 @@ class _ActiveStatusAndButton extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
                         side: BorderSide(
-                            width: 1, color: appThemeData.primaryColor),
+                            width: 0, color: appThemeData.primaryColor),
                         borderRadius: BorderRadius.circular(7.0)),
                     onPressed: () {
                       if (workspace.isActive) {
@@ -1638,20 +1627,6 @@ class _UploadBackgroundImageButton extends StatelessWidget {
             throw Exception("Unexpected state: $state");
           }
         },
-      ),
-    );
-  }
-}
-
-class _UploadImageToBackgroundPopup extends StatelessWidget {
-  const _UploadImageToBackgroundPopup({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      content: Container(
-        width: 100,
-        height: 100,
       ),
     );
   }

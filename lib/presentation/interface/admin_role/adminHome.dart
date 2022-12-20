@@ -1,7 +1,4 @@
-import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
-import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
-import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/people/admin_people_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/feedback/feedback_screen.dart';
@@ -56,7 +53,6 @@ class _HomeState extends State<AdminHome> {
             // )
           ],
           child: Scaffold(
-              resizeToAvoidBottomInset: false,
               body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 00),
                 child: Center(

@@ -125,7 +125,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       MaterialButton(
                         shape: RoundedRectangleBorder(
                             side: BorderSide(
-                                width: 1, color: appThemeData.primaryColor),
+                                width: 0, color: appThemeData.primaryColor),
                             borderRadius: BorderRadius.circular(7.0)),
                         onPressed: () {
                           showDialog(
@@ -176,7 +176,7 @@ class BookingDetailsScreen extends StatelessWidget {
                         MaterialButton(
                           shape: RoundedRectangleBorder(
                               side: BorderSide(
-                                  width: 1, color: appThemeData.primaryColor),
+                                  width: 0, color: appThemeData.primaryColor),
                               borderRadius: BorderRadius.circular(7.0)),
                           onPressed: () {
                             showDialog(

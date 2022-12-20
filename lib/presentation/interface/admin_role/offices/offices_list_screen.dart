@@ -1,10 +1,10 @@
 import 'package:atb_booking/data/models/city.dart';
 import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/data/services/city_provider.dart';
-import 'package:atb_booking/logic/admin_role/offices/LevelPlanEditor/level_plan_editor_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
+import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/new_office_page.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/office_page.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class AdminOfficesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Офисы")),
+      appBar: AppBar(title: Center(child: const Text("Офисы"))),
       body: Column(
         children: [
           const _CityField(),
@@ -26,10 +26,7 @@ class AdminOfficesScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-              builder: (_) {
+          Navigator.push(context, MaterialPageRoute(builder: (_) {
             return MultiBlocProvider(providers: [
               BlocProvider.value(
                 value: context.read<
@@ -69,9 +66,16 @@ class _CityField extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
           child: TypeAheadFormField(
             textFieldConfiguration: TextFieldConfiguration(
+              textInputAction: TextInputAction.search,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Выберите город...",
+                hintText: "Выберите город...",
+                filled: true,
+                fillColor: Color.fromARGB(255, 238, 238, 238),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                suffixIcon: Icon(Icons.search),
               ),
               controller: _cityInputController,
             ),
@@ -112,25 +116,54 @@ class _OfficesList extends StatelessWidget {
     return BlocBuilder<AdminOfficesBloc, AdminOfficesState>(
       builder: (context, state) {
         if (state is AdminOfficesLoadedState) {
+          if (state.offices.isNotEmpty) {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: ListView.builder(
+                  shrinkWrap: false,
+                  itemCount: state.offices.length,
+                  itemBuilder: (context, index) {
+                    return OfficeCard(
+                      officeListItem: (state).offices[index],
+                    );
+                  },
+                ),
+              ),
+            );
+          } else {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "В этом городе пока нет офисов",
+                      style: appThemeData.textTheme.headlineMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        } else if (state is AdminOfficesLoadingState) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is AdminOfficesInitial) {
           return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: ListView.builder(
-                shrinkWrap: false,
-                itemCount: state.offices.length,
-                itemBuilder: (context, index) {
-                  return OfficeCard(
-                    officeListItem: (state).offices[index],
-                  );
-                },
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Чтобы добавить офис используйте кнопку ниже",
+                  style: appThemeData.textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
-          );
-        } else if (state is AdminOfficesLoadingState) {
-          return const Center(child: CircularProgressIndicator(),);
-        } else if (state is AdminOfficesInitial) {
-          return const Center(
-            child: Text("Выберите город"),
           );
         } else {
           throw Exception("Unknown AdminOfficesBloc state: $state");
@@ -148,33 +181,34 @@ class OfficeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      clipBehavior: Clip.antiAlias,
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: () {
-            Navigator.of(context).push(
-                PageRouteBuilder(
-                  pageBuilder: (_, animation, secondaryAnimation) => MultiBlocProvider(providers: [
-                    BlocProvider.value(
-                      value: context.read<AdminOfficesBloc>(),
-                    ),
-                    BlocProvider<AdminOfficePageBloc>(
-                        create: (_) => AdminOfficePageBloc()
-                          ..add(OfficePageLoadEvent(officeListItem.id)))
-                  ], child: const OfficePage()),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    const begin = Offset(1.0, 0.0);
-                    const end = Offset.zero;
-                    const curve = Curves.ease;
+            Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (_, animation, secondaryAnimation) =>
+                  MultiBlocProvider(providers: [
+                BlocProvider.value(
+                  value: context.read<AdminOfficesBloc>(),
+                ),
+                BlocProvider<AdminOfficePageBloc>(
+                    create: (_) => AdminOfficePageBloc()
+                      ..add(OfficePageLoadEvent(officeListItem.id)))
+              ], child: const OfficePage()),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.ease;
 
-                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
 
-                    return SlideTransition(
-                      position: animation.drive(tween),
-                      child: child,
-                    );
-                  },
-                )
-            );
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              },
+            ));
 
             //
             //   MaterialPageRoute(builder: (cont) {
@@ -189,9 +223,9 @@ class OfficeCard extends StatelessWidget {
             //}));
           },
           child: ListTile(
-      title: Text(officeListItem.address),
-      subtitle: Text("ID: ${officeListItem.id}"),
-    ),
+            title: Text(officeListItem.address),
+            subtitle: Text("ID: ${officeListItem.id}"),
+          ),
         ));
   }
 }

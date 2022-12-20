@@ -44,8 +44,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
             selectedWorkspace == null
                 ? _defaultTitle
                 : selectedWorkspace!.type.type,
-            null//todo replace to imageid
-            //levelPlan!.plan,
+              levelPlan!.planId
           ));
         } else {
           selectedWorkspace = event.workspace;
@@ -59,8 +58,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
             selectedWorkspace == null
                 ? _defaultTitle
                 : workspaceTypes![selectedWorkspace!.type.id]!.type,
-            null//todo replace to imageid
-            //levelPlan!.plan,
+              levelPlan!.planId
           ));
         }
       } catch (_) {}
@@ -80,8 +78,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
           selectedWorkspace == null
               ? _defaultTitle
               : selectedWorkspace!.type.type,
-          null
-          //levelPlan!.plan,
+            levelPlan!.planId
         ));
       } catch (_) {
         emit(PlanErrorState(selectedDate));

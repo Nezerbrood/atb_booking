@@ -30,7 +30,7 @@ class AdminPersonCard extends StatelessWidget {
               clipBehavior: Clip.antiAliasWithSaveLayer,
               shape: RoundedRectangleBorder(
                   side: BorderSide(
-                      width: 1, color: appThemeData.colorScheme.tertiary),
+                      width: 0, color: appThemeData.colorScheme.tertiary),
                   borderRadius: BorderRadius.circular(12.0)),
               child: Row(
                 children: <Widget>[

@@ -33,12 +33,11 @@ class LockedPlanBloc extends Bloc<LockedPlanEvent, LockedPlanState> {
         Level levelPlan = await levelPlanRepository.getPlanByLevelId(event.levelId);
         selectedWorkspaceId = event.workspaceId;
         emit(LockedPlanLoadedState(
-          levelPlan!.workspaces,
+          levelPlan.workspaces,
           workspaceTypes!,
           HEIGHT,
           WIDTH,
-          selectedWorkspaceId!,
-          null//todo replace
+          selectedWorkspaceId!, levelPlan.planId
         ));
       } catch (_) {
         emit(LockedPlanErrorState());

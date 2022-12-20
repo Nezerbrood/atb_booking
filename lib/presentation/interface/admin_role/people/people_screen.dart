@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:atb_booking/logic/admin_role/people/admin_people_bloc.dart';
+import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/people/admin_person_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,17 +12,19 @@ class AdminPeopleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(children: [
-        _PeopleSearchField(),
-        _PeopleSearchResultList(),
-      ],),
+      appBar: AppBar(title: Center(child: Text("Люди"),),),
+      body: Column(
+        children: [
+          _PeopleSearchField(),
+          const _PeopleSearchResultList(),
+        ],
+      ),
     );
   }
 }
 
 class _PeopleSearchField extends StatelessWidget {
-  final _controller = TextEditingController();
+  static final _controller = TextEditingController();
   Timer? _debounce;
 
   @override
@@ -34,17 +37,23 @@ class _PeopleSearchField extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
       child: Row(
         children: [
           Expanded(
             flex: 2,
             child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Кого ищем?",
-              ),
               textInputAction: TextInputAction.search,
+              decoration: const InputDecoration(
+                hintText: "Введите имя...",
+                filled: true,
+                fillColor: Color.fromARGB(255, 238, 238, 238),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                suffixIcon: Icon(Icons.search),
+              ),
               controller: _controller,
               onChanged: (pattern) {
                 // при добавлении или стирании в поле
@@ -59,8 +68,9 @@ class _PeopleSearchField extends StatelessWidget {
 }
 
 class _PeopleSearchResultList extends StatelessWidget {
-  _PeopleSearchResultList({super.key});
-  final ScrollController _scrollController = ScrollController();
+  const _PeopleSearchResultList();
+
+  static final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,49 +82,74 @@ class _PeopleSearchResultList extends StatelessWidget {
     });
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: BlocBuilder<AdminPeopleBloc, AdminPeopleState>(
-          builder: (context, state) {
-            if (state is AdminPeopleLoadedState) {
-              if (state.formHasBeenChanged) {
+            builder: (context, state) {
+          if (state is AdminPeopleLoadedState) {
+            if (state.formHasBeenChanged) {
+              if (_scrollController.hasClients) {
                 _scrollController.jumpTo(0);
               }
             }
+          }
 
-            if (state is AdminPeopleEmptyState) {
-              return const Center(
-                child: Text("Ничего не найдено"),
-              );
-            }
-            if (state is AdminPeopleInitialState) {
-              return const Center(
-                child: Text("Заполните поле"),
-              );
-            }
-
-            return ListView.builder(
-              controller: _scrollController,
-              shrinkWrap: true,
-              itemCount: state.users.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    AdminPersonCard(state.users[index]),
-                    (state is AdminPeopleLoadingState &&
-                        index == state.users.length - 1)
-                        ? Container(
-                        height: 150,
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ))
-                        : const SizedBox.shrink(),
-                  ],
-                );
-              },
+          if (state is AdminPeopleInitialState) {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Введите имя человека в строку поиска выше",
+                      style: appThemeData.textTheme.headlineMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
             );
-          },
-        ),
+          }
+
+          if (state.users.isNotEmpty) {
+            return ListView.builder(
+                //controller: _scrollController,
+                shrinkWrap: false,
+                itemCount: state.users.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      AdminPersonCard(state.users[index]),
+                      (state is AdminPeopleLoadingState &&
+                              index == state.users.length - 1)
+                          ? Container(
+                              height: 150,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ))
+                          : const SizedBox.shrink(),
+                    ],
+                  );
+                });
+          } else {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Ничего не найдено",
+                      style: appThemeData.textTheme.headlineMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        }),
       ),
     );
   }

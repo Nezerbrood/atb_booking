@@ -34,7 +34,7 @@ class PlanWorkplaceSelectedState extends PlanState {
   final List<LevelPlanElementData> workspaces;
   final LevelPlanElementData? selectedWorkspace;
   final Map<int,WorkspaceType> workspaceTypes;
-  final String? levelPlanImageId;
+  final int? levelPlanImageId;
   PlanWorkplaceSelectedState(DateTime selectedDate, this.workspaces,this.workspaceTypes, this.height, this.width, this.selectedWorkspace, this.title, this.levelPlanImageId)
   : super(selectedDate);
 }

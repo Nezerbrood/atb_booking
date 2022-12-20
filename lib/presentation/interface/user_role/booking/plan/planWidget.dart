@@ -1,5 +1,6 @@
 import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
+import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/data/services/workspace_type_repository.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/plan_bloc/plan_bloc.dart';
@@ -8,9 +9,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-
-import 'plan_element.dart';
-
 class PlanWidget extends StatelessWidget {
   static TransformationController _transformationController =
       TransformationController();
@@ -27,9 +25,6 @@ class PlanWidget extends StatelessWidget {
           _transformationController =
               TransformationController(_transformationController.value);
           _transformationController.addListener(() {
-            // context
-            //     .read<LevelPlanEditorBloc>()
-            //     .add(LevelPlanEditorForceUpdateEvent());
           });
           print("____________");
           var elements = <Widget>[];
@@ -44,7 +39,7 @@ class PlanWidget extends StatelessWidget {
                 height: double.infinity,
                 child: CachedNetworkImage(
                     fit: BoxFit.fitHeight,
-                    imageUrl: "https://i.ibb.co/82gPz00/Capture.png",
+                    imageUrl: AppImageProvider.getImageUrlFromImageId(state.levelPlanImageId!),
                     httpHeaders: NetworkController().getAuthHeader(),
                     placeholder: (context, url) => const Center(),
                     errorWidget: (context, url, error) =>
@@ -105,7 +100,7 @@ class PlanWidget extends StatelessWidget {
                 //height:  double.infinity,
                 child: CachedNetworkImage(
                     fit: BoxFit.fitHeight,
-                    imageUrl: "https://i.ibb.co/82gPz00/Capture.png",
+                    imageUrl: AppImageProvider.getImageUrlFromImageId(state.levelPlanImageId!),
                     httpHeaders: NetworkController().getAuthHeader(),
                     placeholder: (context, url) => const Center(),
                     errorWidget: (context, url, error) =>
@@ -149,14 +144,9 @@ class PlanWidget extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: appThemeData.colorScheme.tertiary,
-                      borderRadius: BorderRadius.circular(10).copyWith(),
-                    ),
-                    child: _DatePickerWidget(
-                      onChanged: (DateTime dateTime) {},
-                    )),
+                child: _DatePickerWidget(
+                    onChanged: (DateTime dateTime) {},
+                  ),
               )
             ],
           );
@@ -207,7 +197,7 @@ class _LevelPlanElementWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cornerSize = 35 * PlanWidget.SCALE_FACTOR / scaleInteractiveViewValue;
-    var BLUE_PRINT_FRAME_WIDTH = 6.0;
+    //var BLUE_PRINT_FRAME_WIDTH = 6.0;
     return Positioned(
       left: data.positionX * PlanWidget.SCALE_FACTOR - cornerSize,
       top: data.positionY * PlanWidget.SCALE_FACTOR - cornerSize,
@@ -239,7 +229,7 @@ class _LevelPlanElementWidget extends StatelessWidget {
                   shadowColor: Colors.black,
                   elevation: isSelect ? 8 : 3,
                   color: !data.isActive
-                      ? Colors.black12
+                      ? const Color.fromARGB(255, 136, 136, 136)
                       : isSelect
                           ? const Color.fromARGB(255, 255, 231, 226)
                           : const Color.fromARGB(255, 234, 255, 226),
@@ -273,7 +263,6 @@ class _DatePickerWidget extends StatefulWidget {
 
 class _DatePickerWidgetState extends State<_DatePickerWidget> {
   DateTime? _selectedDate;
-  static String _defaultText = "Выберите дату";
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -287,14 +276,19 @@ class _DatePickerWidgetState extends State<_DatePickerWidget> {
       BuildContext context,
       ) {
     if (_selectedDate != null) {
-      _defaultText = "Выберите дату";
       _textEditingController.text =
           (DateFormat.yMMMMd("ru_RU").format(_selectedDate!)).toString();
     }
     return TextField(
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: _defaultText,
+      decoration: const InputDecoration(
+        hintText: "Выберите офис",
+        filled: true,
+        fillColor: Color.fromARGB(255, 238, 238, 238),
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        suffixIcon: Icon(Icons.calendar_month),
       ),
       focusNode: AlwaysDisabledFocusNode(),
       controller: _textEditingController,
@@ -307,6 +301,7 @@ class _DatePickerWidgetState extends State<_DatePickerWidget> {
                   primary: Theme.of(context).primaryColor,
                   // header background color
                   onPrimary: Colors.white,
+
                   // header text color
                   onSurface: Theme.of(context).primaryColor, // body text color
                 ),

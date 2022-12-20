@@ -35,7 +35,7 @@ class PersonCard extends StatelessWidget {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           shape: RoundedRectangleBorder(
               side: BorderSide(
-                  width: 1, color: appThemeData.colorScheme.tertiary),
+                  width: 0, color: appThemeData.colorScheme.tertiary),
               borderRadius: BorderRadius.circular(12.0)),
           child: Row(
             children: <Widget>[
@@ -47,7 +47,9 @@ class PersonCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: ClipOval(
-                        child: Container(
+                        child: SizedBox(
+                          width: 50,
+                          height: 50,
                           child: CachedNetworkImage(
                               fit: BoxFit.cover,
                               imageUrl: AppImageProvider
@@ -64,8 +66,6 @@ class PersonCard extends StatelessWidget {
                                               .progress)),
                               errorWidget: (context, url, error) =>
                                   Container()),
-                          width: 50,
-                          height: 50,
                         ),
                       ),
                     ),

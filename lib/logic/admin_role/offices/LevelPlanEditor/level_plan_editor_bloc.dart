@@ -1,16 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:atb_booking/data/models/level_plan.dart';
 import 'package:atb_booking/data/models/workspace.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
-import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/level_plan_provider.dart';
-import 'package:atb_booking/data/services/office_provider.dart';
 import 'package:atb_booking/data/services/workspace_provider.dart';
 import 'package:atb_booking/data/services/workspace_type_repository.dart';
-import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -26,15 +22,6 @@ const _HEIGHT = 1000.0;
 const _WIDTH = 1000.0;
 
 /// Все координаты относительно этих значений.class
-
-class _IdGenerator {
-  static int _lastId = 0;
-
-  static int getId() {
-    _lastId++;
-    return _lastId;
-  }
-}
 
 class LevelPlanEditorBloc
     extends Bloc<LevelPlanEditorEvent, LevelPlanEditorState> {
@@ -209,7 +196,7 @@ class LevelPlanEditorBloc
       //загружаем фотки
       if (_selectedElementId != null) {
         _selectedWorkspacePhotosIds =
-            _mapOfPlanElements[_selectedElementId]!.photosIds!;
+            _mapOfPlanElements[_selectedElementId]!.photosIds;
       } else {
         _selectedWorkspacePhotosIds = [];
       }
@@ -245,6 +232,7 @@ class LevelPlanEditorBloc
         add(LevelPlanEditorForceUpdateEvent());
       } catch (_) {}
     });
+
     on<LevelPlanEditorDeleteWorkspacePhotoEvent>((event,emit)async {
       try{
         event.imageId;
@@ -287,7 +275,7 @@ class LevelPlanEditorBloc
         final imageFile = File(imageFromPicker.path);
         try {
           await LevelProvider()
-              .addImageToPlanByIds(imageFile!, _levelId!);
+              .addImageToPlanByIds(imageFile, _levelId!);
         } catch (_) {
           print(_);
         }
@@ -361,7 +349,6 @@ class LevelPlanEditorBloc
   /// метод вовращает айди созданого элемента
   LevelPlanElementData _createNewElement(
       WorkspaceType type, mapOfTypes, int levelId) {
-    int id = _IdGenerator.getId();
     if (type.id == 1) {
       return LevelPlanElementData(
           positionX: 50,

@@ -109,13 +109,16 @@ class OfficeProvider {
     headers["Accept"] = "application/json";
 
     var body = jsonEncode(office.toJson());
-
     var uri = Uri.http(baseUrl, '/api/offices');
     final response = await http.post(uri, headers: headers, body: body);
     if (response.statusCode == 201) {
       var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       int id = jsonResponse['id'];
       print("successful create office");
+      print("_________________");
+      print("Создание офиса ${office.address} с временем работы:");
+      print("start: ${office.workTimeRange.start.toLocal().toIso8601String()}");
+      print("end: ${office.workTimeRange.end.toLocal().toIso8601String()}");
       return id;
     } else if (response.statusCode == 401) {
       /// Обновление access токена
