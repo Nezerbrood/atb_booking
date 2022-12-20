@@ -191,8 +191,11 @@ class BookingDetailsScreen extends StatelessWidget {
                           onPressed: () {
                             showDialog(
                                 context: context,
-                                builder: (context) {
-                                  return const BookingAddedPeopleWidget();
+                                builder: (_) {
+                                  return BlocProvider.value(
+                                    value: context.read<BookingDetailsBloc>(),
+                                    child: const BookingAddedPeopleWidget(),
+                                  );
                                 });
                           },
                           color: appThemeData.primaryColor,
@@ -432,7 +435,6 @@ class BookingDetailsScreen extends StatelessWidget {
                             horizontal: 30.0, vertical: 30),
                         child: AtbElevatedButton(
                           onPressed: () {
-
                             showDialog(
                               useRootNavigator: false,
                               context: context,

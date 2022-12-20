@@ -65,9 +65,6 @@ class AdminPersonCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    user.isFavorite
-                        ? Icon(Icons.star, color: appThemeData.primaryColor)
-                        : const SizedBox.shrink()
                   ],
                 ),
               ),
@@ -79,11 +76,6 @@ class AdminPersonCard extends StatelessWidget {
                   user.email,
                   style: appThemeData.textTheme.titleSmall,
                 ),
-                trailing: GestureDetector(
-                    onTap: () {
-                      _showSimpleDialog(context, user);
-                    },
-                    child: const Icon(Icons.more_vert, color: Colors.black)),
                 dense: true,
                 minLeadingWidth: 100,
               ))

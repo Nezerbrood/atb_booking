@@ -1,3 +1,4 @@
+import 'package:atb_booking/data/services/booking_api_provider.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../../../../data/services/workspace_type_repository.dart';
 import '../../../../logic/secure_storage_api.dart';
 
 part 'booking_list_event.dart';
+
 part 'booking_list_state.dart';
 
 class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
@@ -21,6 +23,9 @@ class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
     return _singleton;
   }
 
+  bool isHolder = true;
+  bool isGuest = false;
+
   // todo получаем айди из секьюрити
   BookingListBloc._internal() : super(BookingListLoadingState()) {
     on<BookingListInitialEvent>((event, emit) async {
@@ -29,8 +34,9 @@ class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
     on<BookingListLoadEvent>((event, emit) async {
       try {
         final currentUserId = await SecurityStorage().getIdStorage();
-        final List<Booking> bookingList =
-            await BookingRepository().getBookingsByUserId(currentUserId);
+        final List<Booking> bookingList = await BookingProvider()
+            .getBookingsByUserId(currentUserId,
+                isHolder: isHolder, isGuest: isGuest);
         final Map<int, WorkspaceType> mapOfTypes =
             await WorkspaceTypeRepository().getMapOfTypes();
         initializeDateFormatting();
@@ -45,8 +51,7 @@ class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
       }
     });
     on<BookingCardTapEvent>((event, emit) async {
-      try {
-      } catch (_) {}
+      try {} catch (_) {}
     });
     add(BookingListLoadEvent());
   }

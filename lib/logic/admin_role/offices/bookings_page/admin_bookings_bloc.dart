@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:atb_booking/data/models/booking.dart';
+import 'package:atb_booking/data/services/booking_api_provider.dart';
 import 'package:atb_booking/data/services/booking_repository.dart';
 import 'package:atb_booking/logic/admin_role/people/people_page/admin_people_bloc.dart';
 import 'package:atb_booking/logic/secure_storage_api.dart';
@@ -23,8 +24,7 @@ class AdminBookingsBloc extends Bloc<AdminBookingsEvent, AdminBookingsState> {
       emit(AdminBookingsLoadingState(_selectedDateTimeRange, _loadedBookings));
       try {
         var id = await SecurityStorage().getIdStorage();
-        _loadedBookings = await BookingRepository()
-            .getBookingsByUserId(id); //TODO REPLACE TO GETBOOKINGBYRANGE!
+        //_loadedBookings = await BookingProvider.getBookingsByUserId(id); //TODO REPLACE TO GETBOOKINGBYRANGE!
         emit(AdminBookingsLoadedState(_selectedDateTimeRange, _loadedBookings));
       } catch (_) {
         emit(AdminBookingsErrorState(_selectedDateTimeRange));
