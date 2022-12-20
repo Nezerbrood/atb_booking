@@ -41,16 +41,6 @@ class _HomeState extends State<AdminHome> {
             BlocProvider<AdminPeopleBloc>(
               create: (context) => AdminPeopleBloc(),
             ),
-            // BlocProvider<AdminOfficePageBloc>(
-            //   create: (context) => AdminOfficePageBloc(),
-            // ),
-            // BlocProvider<NewOfficePageBloc>(
-            //               create: (context){
-            //                 return NewOfficePageBloc();},
-            //             ),
-            // BlocProvider<LevelPlanEditorBloc>(
-            //   create: (context)=>LevelPlanEditorBloc(),
-            // )
           ],
           child: Scaffold(
               body: Padding(

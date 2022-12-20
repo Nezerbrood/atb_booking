@@ -84,7 +84,7 @@ class OfficeProvider {
     headers["Accept"] = "application/json";
 
     var body = jsonEncode(office.toJson());
-
+    print(body);
     var uri = Uri.http(baseUrl, '/api/offices/${office.id}');
     final response = await http.put(uri, headers: headers, body: body);
     if (response.statusCode == 200) {
@@ -94,7 +94,8 @@ class OfficeProvider {
       await NetworkController().updateAccessToken();
       return changeOffice(office);
     } else {
-      //print(json.decode(utf8.decode(response.bodyBytes)));
+      var responseDecodedBody = json.decode(utf8.decode(response.bodyBytes));
+      print(responseDecodedBody);
       print("'Error editing office, status code: ${response.statusCode}");
       throw Exception('Error editing office');
     }

@@ -113,22 +113,21 @@ class _BookingList extends StatelessWidget {
     return BlocBuilder<AdminPersonBookingListBloc, AdminPersonBookingListState>(
       builder: (context, state) {
         if (state is AdminPersonBookingListLoadedState) {
-          return Container(
-            child: ListView.builder(
-              itemCount: state.bookingList.length,
-              itemBuilder: (context, index) {
-                final item = state.bookingList[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const BookingDetailsScreen()));
-                  },
-                  child: getBookingCard(
-                    state.bookingList[index],
-                  ),
-                );
-              },
-            ),
+          if(state.bookingList.isEmpty){return const Center(child: CircularProgressIndicator(),);}
+          return ListView.builder(
+            itemCount: state.bookingList.length,
+            itemBuilder: (context, index) {
+              final item = state.bookingList[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const BookingDetailsScreen()));
+                },
+                child: getBookingCard(
+                  state.bookingList[index],
+                ),
+              );
+            },
           );
         } else {
           return const SizedBox.shrink();

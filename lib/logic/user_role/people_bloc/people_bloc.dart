@@ -1,12 +1,11 @@
 import 'package:atb_booking/data/services/users_provider.dart';
-import 'package:atb_booking/logic/secure_storage_api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import 'package:atb_booking/data/models/user.dart';
-import 'package:atb_booking/data/services/users_repository.dart';
 
 part 'people_event.dart';
+
 part 'people_state.dart';
 
 class PeopleBloc extends Bloc<PeopleEvent, PeopleState> {
@@ -28,7 +27,8 @@ class PeopleBloc extends Bloc<PeopleEvent, PeopleState> {
         loadedUsers = [];
       }
 
-      var users = await UsersProvider().fetchUsersByName(page, 10, event.form, isFavoriteOn);
+      var users = await UsersProvider()
+          .fetchUsersByName(page, 10, event.form, isFavoriteOn);
       loadedUsers.addAll(users);
       emit(PeopleLoadedState(
           isFavoriteOn, loadedUsers, event.formHasBeenChanged));

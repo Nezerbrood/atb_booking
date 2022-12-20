@@ -114,7 +114,6 @@ class LevelPlanEditorBloc
     on<LevelPlanEditorDeleteWorkspaceButtonPressEvent>((event, emit) async {
       try {
         if (_selectedElementId == null) {
-          print("POPALSAYAA HAHAHAHA!!!");
         }
         int id = _selectedElementId!;
         _selectedElementId = null;
@@ -125,7 +124,6 @@ class LevelPlanEditorBloc
         print(_);
       }
     });
-
     ///
     ///
     ///Изменяем номер этажа
