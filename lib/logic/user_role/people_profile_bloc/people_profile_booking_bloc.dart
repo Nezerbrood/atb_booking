@@ -46,7 +46,6 @@ class PeopleProfileBookingBloc
     on<PeopleProfileBookingCardTapEvent>((event, emit) async {
       try {
         bool deleteButtonIsActive = await SecurityStorage().getIdStorage()==currentUserId;
-        BookingDetailsBloc().add(BookingDetailsLoadEvent(event.bookingId,deleteButtonIsActive));
       } catch (_) {}
     });
   }

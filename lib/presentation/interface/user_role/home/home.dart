@@ -1,12 +1,9 @@
-import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_delete_confirmation_bloc.dart';
-import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/locked_plan_bloc/locked_plan_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/new_booking_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/new_booking_sheet_bloc/new_booking_confirmation_popup_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/new_booking_sheet_bloc/new_booking_sheet_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/plan_bloc/plan_bloc.dart';
-import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/logic/user_role/people_profile_bloc/people_profile_booking_bloc.dart';
 import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
@@ -44,14 +41,9 @@ class _HomeState extends State<Home> {
           lazy: true,
           create: (context) => BookingListBloc(),
         ),
-        BlocProvider<BookingDetailsBloc>(
-          create: (context) => BookingDetailsBloc(),
-        ),
         BlocProvider<NewBookingConfirmationPopupBloc>(
           create: (context) => NewBookingConfirmationPopupBloc(),
         ),
-        BlocProvider<BookingDeleteConfirmationBloc>(
-            create: (context) => BookingDeleteConfirmationBloc()),
         BlocProvider<PlanBloc>(
           create: (context) => PlanBloc(),
         ),

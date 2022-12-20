@@ -2,7 +2,6 @@ import 'package:atb_booking/data/models/booking.dart';
 import 'package:atb_booking/data/models/user.dart';
 import 'package:atb_booking/data/services/booking_repository.dart';
 import 'package:atb_booking/data/services/users_provider.dart';
-import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_delete_confirmation_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/locked_plan_bloc/locked_plan_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -14,39 +13,30 @@ part 'booking_details_state.dart';
 
 class BookingDetailsBloc
     extends Bloc<BookingDetailsEvent, BookingDetailsState> {
-  static final BookingDetailsBloc _singleton = BookingDetailsBloc._internal();
-
-  factory BookingDetailsBloc() {
-    return _singleton;
-  }
   bool deleteButtonIsActive = true;
   Booking? booking;
-
   // todo получаем айди из секьюрити
-  BookingDetailsBloc._internal() : super(BookingDetailsInitialState()) {
+  BookingDetailsBloc(int bookingId, this.deleteButtonIsActive) : super(BookingDetailsLoadingState()) {
     on<BookingDetailsLoadEvent>((event, emit) async {
       try {
-        deleteButtonIsActive = event.deleteButtonIsActive;
+        deleteButtonIsActive = deleteButtonIsActive;
         emit(BookingDetailsLoadingState());
-        booking = await BookingRepository().getBookingById(event.bookingId);
+        booking = await BookingRepository().getBookingById(bookingId);
         LockedPlanBloc().add(LockedPlanLoadEvent(booking!.levelId,booking!.workspace.id));
-        emit(BookingDetailsLoadedState(booking!,event.deleteButtonIsActive));
+        emit(BookingDetailsLoadedState(booking!,deleteButtonIsActive));
       } catch (_) {
         emit(BookingDetailsErrorState());
       }
     });
     on<BookingDetailsDeleteEvent>((event, emit) async {
       try {
-        BookingDeleteConfirmationBloc()
-            .add(BookingDeleteConfirmationLoadEvent());
+
         await BookingRepository().deleteBooking(booking!.id);
         BookingListBloc().add(BookingListLoadEvent());
-        BookingDeleteConfirmationBloc()
-            .add(BookingDeleteConfirmationSuccessEvent());
+
         emit(BookingDetailsDeletedState(booking!));
       } catch (_) {
-        BookingDeleteConfirmationBloc()
-            .add(BookingDeleteConfirmationErrorEvent());
+          print(_);
       }
     });
     on<BookingDetailsToFavoriteEvent>((event, emit) async {
@@ -68,6 +58,7 @@ class BookingDetailsBloc
       }
       emit(BookingDetailsLoadedState(booking!,deleteButtonIsActive));
     });
+    add(BookingDetailsLoadEvent());
   }
 
 }

@@ -17,10 +17,7 @@ class BookingDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BookingDetailsBloc, BookingDetailsState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+    return BlocBuilder<BookingDetailsBloc, BookingDetailsState>(
       builder: (context, state) {
         if (state is BookingDetailsLoadedState) {
           getPhotoSize() {
@@ -53,13 +50,17 @@ class BookingDetailsScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                child:
-                                CachedNetworkImage(
+                                child: CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  imageUrl: AppImageProvider.getImageUrlFromImageId(state.booking.workspace.photosIds[index]),
-                                  httpHeaders: NetworkController().getAuthHeader(),
+                                  imageUrl:
+                                      AppImageProvider.getImageUrlFromImageId(
+                                          state.booking.workspace
+                                              .photosIds[index]),
+                                  httpHeaders:
+                                      NetworkController().getAuthHeader(),
                                   placeholder: (context, url) => const Center(),
-                                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
                                 onTap: () {
                                   showDialog(
@@ -81,31 +82,39 @@ class BookingDetailsScreen extends StatelessWidget {
                                             maxScale: 2.0,
                                             minScale: 0.1,
                                             child: AlertDialog(
-                                              //clipBehavior: Clip.none,
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  0.0))),
-                                              insetPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 200),
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 10),
-                                              content:
-                                              CachedNetworkImage(
-                                                fit: BoxFit.cover,
-                                                imageUrl: AppImageProvider.getImageUrlFromImageId(state.booking.workspace
-                                                    .photosIds[index]),
-                                                httpHeaders: NetworkController().getAuthHeader(),
-                                                placeholder: (context, url) => const Center(),
-                                                errorWidget: (context, url, error) => const Icon(Icons.error),
-                                              )
-                                            ),
+                                                //clipBehavior: Clip.none,
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    0.0))),
+                                                insetPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 200),
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 10),
+                                                content: CachedNetworkImage(
+                                                  fit: BoxFit.cover,
+                                                  imageUrl: AppImageProvider
+                                                      .getImageUrlFromImageId(
+                                                          state
+                                                                  .booking
+                                                                  .workspace
+                                                                  .photosIds[
+                                                              index]),
+                                                  httpHeaders:
+                                                      NetworkController()
+                                                          .getAuthHeader(),
+                                                  placeholder: (context, url) =>
+                                                      const Center(),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      const Icon(Icons.error),
+                                                )),
                                           ),
                                         );
                                       });
@@ -144,7 +153,8 @@ class BookingDetailsScreen extends StatelessWidget {
                                     clipBehavior: Clip.none,
                                     content: SizedBox(
                                         width: double.infinity,
-                                        height: MediaQuery.of(context).size.width,
+                                        height:
+                                            MediaQuery.of(context).size.width,
                                         child: BlocProvider.value(
                                           value: LockedPlanBloc(),
                                           child: const LockedPlanWidget(),
@@ -416,25 +426,28 @@ class BookingDetailsScreen extends StatelessWidget {
                   ///
                   ///
                   /// КНОПКА ОТМЕНЫ
-                  (state.buttonIsShow)
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30.0, vertical: 30),
-                          child: AtbElevatedButton(
-                            onPressed: () {
-                              BookingDetailsBloc()
-                                  .add(BookingDetailsDeleteEvent());
-                              showDialog(
-                                useRootNavigator: false,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return const BookingDeleteConfirmationPopup();
-                                },
-                              );
-                            },
-                            text: "Отменить",
-                          ))
-                      : const SizedBox.shrink(),
+                  if (state.buttonIsShow)
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30.0, vertical: 30),
+                        child: AtbElevatedButton(
+                          onPressed: () {
+
+                            showDialog(
+                              useRootNavigator: false,
+                              context: context,
+                              builder: (_) {
+                                return BlocProvider.value(
+                                  value: context.read<BookingDetailsBloc>(),
+                                  child: const BookingDeleteDialog(),
+                                );
+                              },
+                            );
+                          },
+                          text: "Отменить",
+                        ))
+                  else
+                    const SizedBox.shrink(),
                 ],
               ),
             ),
@@ -477,19 +490,25 @@ class BookingDetailsScreen extends StatelessWidget {
                                 child: ListView.builder(
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
-                                    itemCount:
-                                        state.booking.workspace.photosIds.length,
+                                    itemCount: state
+                                        .booking.workspace.photosIds.length,
                                     //state.workspace.photos.length,
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
                                         behavior: HitTestBehavior.translucent,
                                         child: CachedNetworkImage(
                                           fit: BoxFit.cover,
-                                          imageUrl: AppImageProvider.getImageUrlFromImageId(state.booking.workspace
-                                              .photosIds[index]),
-                                          httpHeaders: NetworkController().getAuthHeader(),
-                                          placeholder: (context, url) => const Center(),
-                                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                                          imageUrl: AppImageProvider
+                                              .getImageUrlFromImageId(state
+                                                  .booking
+                                                  .workspace
+                                                  .photosIds[index]),
+                                          httpHeaders: NetworkController()
+                                              .getAuthHeader(),
+                                          placeholder: (context, url) =>
+                                              const Center(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
                                         ),
                                         onTap: () {
                                           showDialog(
@@ -512,36 +531,42 @@ class BookingDetailsScreen extends StatelessWidget {
                                                     maxScale: 2.0,
                                                     minScale: 0.1,
                                                     child: AlertDialog(
-                                                      //clipBehavior: Clip.none,
-                                                      shape: const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          0.0))),
-                                                      insetPadding:
-                                                          const EdgeInsets
-                                                                  .symmetric(
-                                                              horizontal: 10,
-                                                              vertical: 200),
-                                                      contentPadding:
-                                                          const EdgeInsets
-                                                                  .symmetric(
-                                                              horizontal: 10,
-                                                              vertical: 10),
-                                                      content:
-                                                      CachedNetworkImage(
-                                                        fit: BoxFit.cover,
-                                                        imageUrl: AppImageProvider.getImageUrlFromImageId( state
-                                                            .booking
-                                                            .workspace
-                                                            .photosIds[index]
-                                                            ),
-                                                        httpHeaders: NetworkController().getAuthHeader(),
-                                                        placeholder: (context, url) => const Center(),
-                                                        errorWidget: (context, url, error) => const Icon(Icons.error),
-                                                      )
-                                                    ),
+                                                        //clipBehavior: Clip.none,
+                                                        shape: const RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        0.0))),
+                                                        insetPadding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 200),
+                                                        contentPadding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 10),
+                                                        content:
+                                                            CachedNetworkImage(
+                                                          fit: BoxFit.cover,
+                                                          imageUrl: AppImageProvider
+                                                              .getImageUrlFromImageId(state
+                                                                      .booking
+                                                                      .workspace
+                                                                      .photosIds[
+                                                                  index]),
+                                                          httpHeaders:
+                                                              NetworkController()
+                                                                  .getAuthHeader(),
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              const Center(),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              const Icon(
+                                                                  Icons.error),
+                                                        )),
                                                   ),
                                                 );
                                               });
@@ -775,7 +800,7 @@ class BookingDetailsScreen extends StatelessWidget {
             ),
           );
         } else {
-          throw Exception("State exception");
+          throw Exception("unexpected state: $state");
         }
       },
     );

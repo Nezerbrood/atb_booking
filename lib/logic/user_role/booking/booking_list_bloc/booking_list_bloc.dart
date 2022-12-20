@@ -46,7 +46,6 @@ class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
     });
     on<BookingCardTapEvent>((event, emit) async {
       try {
-        BookingDetailsBloc().add(BookingDetailsLoadEvent(event.bookingId,true));
       } catch (_) {}
     });
     add(BookingListLoadEvent());

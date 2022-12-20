@@ -15,7 +15,7 @@ class BookingAddedPeopleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: BookingDetailsBloc(), //todo replace to context read
+      value: context.read<BookingDetailsBloc>(), //todo replace to context read
       child: BlocBuilder<BookingDetailsBloc, BookingDetailsState>(
           builder: (context, state) {
         if (state is BookingDetailsLoadedState) {

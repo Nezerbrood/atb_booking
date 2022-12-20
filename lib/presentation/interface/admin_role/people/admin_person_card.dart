@@ -22,7 +22,7 @@ class AdminPersonCard extends StatelessWidget {
       onTap: () async {
         await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => BlocProvider<AdminPersonBookingListBloc>(
+            builder: (context) => BlocProvider(
               create: (context) => AdminPersonBookingListBloc(user),
               child: AdminPersonBookingListPage(),
             ),
