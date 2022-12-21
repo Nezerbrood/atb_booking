@@ -26,14 +26,24 @@ class NetworkController {
     headers["Authorization"] = 'Bearer $token';
     return headers;
   }
+
   /// Метод обновления access токена
   Future<void> updateAccessToken() async {
+    /// Получение Access токена
+    String accessToken = await NetworkController().getAccessToken();
+
     /// Получение Refresh токена
     String refreshToken = await SecurityStorage().getRefreshTokenStorage();
 
+    /// Создаем header
+    Map<String, String> headers = {};
+    headers["Authorization"] = 'Bearer $accessToken';
+    headers["Content-type"] = 'application/json; charset=utf-8';
+    headers["Accept"] = "application/json";
+
     /// Сам запрос
     var uri = Uri.http(_baseUrl, '/api/auth/access-token/$refreshToken');
-    var response = await http.post(uri, headers: {});
+    var response = await http.post(uri, headers: headers);
 
     /// Проверка
     if (response.statusCode == 200) {

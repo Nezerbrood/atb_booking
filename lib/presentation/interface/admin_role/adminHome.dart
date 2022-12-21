@@ -1,3 +1,4 @@
+import 'package:atb_booking/logic/admin_role/feedback/admin_feedback_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
 import 'package:atb_booking/logic/admin_role/people/people_page/admin_people_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
@@ -20,7 +21,7 @@ class _HomeState extends State<AdminHome> {
   static final List<Widget> _widgetOptions = <Widget>[
     const AdminOfficesScreen(),
     const AdminPeopleScreen(),
-    const AdminFeedbackScreen(),
+     AdminFeedbackScreen(),
     const AdminProfileScreen(),
   ];
 
@@ -40,6 +41,9 @@ class _HomeState extends State<AdminHome> {
             ),
             BlocProvider<AdminPeopleBloc>(
               create: (context) => AdminPeopleBloc(),
+            ),
+            BlocProvider<AdminFeedbackBloc>(
+              create: (context) => AdminFeedbackBloc(),
             ),
           ],
           child: Scaffold(
