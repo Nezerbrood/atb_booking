@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdminFeedbackScreen extends StatelessWidget {
-  AdminFeedbackScreen({Key? key}) : super(key: key);
+  const AdminFeedbackScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class AdminFeedbackScreen extends StatelessWidget {
             style: appThemeData.textTheme.headlineSmall
                 ?.copyWith(color: Colors.black, fontSize: 23),
           ),
-          _DropdownButtonType(),
+          const _DropdownButtonType(),
           const SizedBox(height: 30),
           _ResultList(),
         ]),
@@ -33,7 +33,7 @@ class AdminFeedbackScreen extends StatelessWidget {
 }
 
 class _DropdownButtonType extends StatelessWidget {
-  _DropdownButtonType({super.key});
+  const _DropdownButtonType();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class _DropdownButtonType extends StatelessWidget {
                         style: BorderStyle.solid,
                         color: appThemeData.colorScheme.primary,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                     ),
                   ),
                 ),
@@ -92,7 +92,7 @@ class _DropdownButtonType extends StatelessWidget {
                         style: BorderStyle.solid,
                         color: appThemeData.colorScheme.primary,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                     ),
                   ),
                 ),
@@ -132,7 +132,7 @@ class _DropdownButtonType extends StatelessWidget {
                         style: BorderStyle.solid,
                         color: appThemeData.colorScheme.primary,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                     ),
                   ),
                 ),
@@ -236,7 +236,7 @@ class _ResultList extends StatelessWidget {
                               index == state.feedbackListItems.length - 1)
                           ? Container(
                               height: 150,
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
                               child: const Center(
                                 child: CircularProgressIndicator(),
                               ))

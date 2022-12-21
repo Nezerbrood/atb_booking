@@ -31,7 +31,8 @@ class UsersProvider {
 
     /// Проверка ответа
     if (response.statusCode == 200) {
-      User persons = User.fromJson(dataJson);
+      User persons = User.  fromJson(dataJson);
+      print(json.decode(utf8.decode(response.bodyBytes)));
       return persons;
     } else if (response.statusCode == 401) {
       /// Обновление access токена

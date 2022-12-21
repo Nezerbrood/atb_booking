@@ -26,7 +26,7 @@ class AddingPeopleWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
               child: SearchBar(),
             ),
             Expanded(
@@ -35,7 +35,7 @@ class AddingPeopleWidget extends StatelessWidget {
                   children: [
                     Stack(children: [
                       SearchResultPeopleList(),
-                      HorizontalPeopleAddedList(),
+                      const HorizontalPeopleAddedList(),
                     ]),
                     BlocConsumer<AddingPeopleToBookingBloc,
                         AddingPeopleToBookingState>(
@@ -110,8 +110,13 @@ class SearchBar extends StatelessWidget {
 
     return TextField(
       decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: "Кого ищем?",
+        hintText: "Введите имя...",
+        filled: true,
+        fillColor: const Color.fromARGB(255, 238, 238, 238),
+        border: const OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
         suffixIcon:
             BlocConsumer<AddingPeopleToBookingBloc, AddingPeopleToBookingState>(
           buildWhen: (context, state) {
@@ -126,7 +131,7 @@ class SearchBar extends StatelessWidget {
                 children: [
                   Text(
                     "только\nизбранные",
-                    style: appThemeData.textTheme.bodyLarge,
+                    style: appThemeData.textTheme.bodySmall,
                   ),
                   IconButton(
                     isSelected: state.isFavoriteOn,
@@ -362,7 +367,7 @@ class AddingPeoplePersonCard extends StatelessWidget {
                         children: [
                           Container(
                             clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                             ),
                             child: SizedBox(
@@ -431,7 +436,7 @@ class AddingPeoplePersonCard extends StatelessWidget {
                 title:
                 Text(user.fullName),
                 subtitle:
-                Text(user.email),
+                Text(user.email,style: appThemeData.textTheme.bodySmall,),
               ),
             ),
           ],
@@ -492,7 +497,7 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
                       Text('Убрать из избранного',
                           style: appThemeData.textTheme.titleMedium),
                     ] else ...[
-                      Icon(
+                      const Icon(
                         Icons.star_border,
                       ),
                       const SizedBox(width: 10),

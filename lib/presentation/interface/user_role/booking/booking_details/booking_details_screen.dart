@@ -1,4 +1,4 @@
-import 'package:atb_booking/data/authController.dart';
+
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
@@ -31,162 +31,108 @@ class BookingDetailsScreen extends StatelessWidget {
             appBar: AppBar(
               title: Text("Бронь №${state.booking.id}"),
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ///
-                  ///
-                  /// Фотографии рабочего места.
-                  SizedBox(
-                    height: getPhotoSize(), //getSize(),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Center(
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: state.booking.workspace.photosIds.length,
-                            //state.workspace.photos.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl:
-                                      AppImageProvider.getImageUrlFromImageId(
-                                          state.booking.workspace
-                                              .photosIds[index]),
-                                  httpHeaders:
-                                      NetworkController().getAuthHeader(),
-                                  placeholder: (context, url) => const Center(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                ),
-                                onTap: () {
-                                  showDialog(
-                                      useRootNavigator: false,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return GestureDetector(
-                                          behavior: HitTestBehavior.translucent,
-                                          onTap: () {
-                                            int count = 0;
-                                            Navigator.popUntil(context,
-                                                (route) {
-                                              return count++ == 1;
-                                            });
-                                          },
-                                          child: InteractiveViewer(
-                                            transformationController:
-                                                TransformationController(),
-                                            maxScale: 2.0,
-                                            minScale: 0.1,
-                                            child: AlertDialog(
-                                                //clipBehavior: Clip.none,
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    0.0))),
-                                                insetPadding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 200),
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 10),
-                                                content: CachedNetworkImage(
-                                                  fit: BoxFit.cover,
-                                                  imageUrl: AppImageProvider
-                                                      .getImageUrlFromImageId(
-                                                          state
-                                                                  .booking
-                                                                  .workspace
-                                                                  .photosIds[
-                                                              index]),
-                                                  httpHeaders:
-                                                      NetworkController()
-                                                          .getAuthHeader(),
-                                                  placeholder: (context, url) =>
-                                                      const Center(),
-                                                  errorWidget: (context, url,
-                                                          error) =>
-                                                      const Icon(Icons.error),
-                                                )),
-                                          ),
-                                        );
-                                      });
-                                },
-                              );
-                            }),
-                      ),
-                    ),
-                  ),
-
-                  ///
-                  ///
-                  /// Кнопки показа карты и людей
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                width: 0, color: appThemeData.primaryColor),
-                            borderRadius: BorderRadius.circular(7.0)),
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (_) {
-                                return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(00.0)),
-                                    insetPadding: const EdgeInsets.symmetric(
-                                        horizontal: 00, vertical: 00),
-                                    titlePadding: const EdgeInsets.symmetric(
-                                        horizontal: 00, vertical: 00),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 00, vertical: 00),
-                                    clipBehavior: Clip.none,
-                                    content: SizedBox(
-                                        width: double.infinity,
-                                        height:
-                                            MediaQuery.of(context).size.width,
-                                        child: BlocProvider.value(
-                                          value: LockedPlanBloc(),
-                                          child: const LockedPlanWidget(),
-                                        )));
-                              });
-                        },
-                        color: appThemeData.primaryColor,
-                        child: Container(
-                          height: 50,
-                          child: Row(
-                            children: [
-                              Text(
-                                (state.booking.guests != null &&
-                                        state.booking.guests!.isNotEmpty)
-                                    ? "Показать\nна плане"
-                                    : "Показать на плане",
-                                style: appThemeData.textTheme.titleMedium!
-                                    .copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Icon(Icons.place)
-                            ],
-                          ),
+            body: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ///
+                    ///
+                    /// Фотографии рабочего места.
+                    SizedBox(
+                      height: getPhotoSize(), //getSize(),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Center(
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: state.booking.workspace.photosIds.length,
+                              //state.workspace.photos.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    imageUrl:
+                                        AppImageProvider.getImageUrlFromImageId(
+                                            state.booking.workspace
+                                                .photosIds[index]),
+                                    httpHeaders:
+                                        NetworkController().getAuthHeader(),
+                                    placeholder: (context, url) => const Center(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                  onTap: () {
+                                    showDialog(
+                                        useRootNavigator: false,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return GestureDetector(
+                                            behavior: HitTestBehavior.translucent,
+                                            onTap: () {
+                                              int count = 0;
+                                              Navigator.popUntil(context,
+                                                  (route) {
+                                                return count++ == 1;
+                                              });
+                                            },
+                                            child: InteractiveViewer(
+                                              transformationController:
+                                                  TransformationController(),
+                                              maxScale: 2.0,
+                                              minScale: 0.1,
+                                              child: AlertDialog(
+                                                  //clipBehavior: Clip.none,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      0.0))),
+                                                  insetPadding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 200),
+                                                  contentPadding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 10),
+                                                  content: CachedNetworkImage(
+                                                    fit: BoxFit.cover,
+                                                    imageUrl: AppImageProvider
+                                                        .getImageUrlFromImageId(
+                                                            state
+                                                                    .booking
+                                                                    .workspace
+                                                                    .photosIds[
+                                                                index]),
+                                                    httpHeaders:
+                                                        NetworkController()
+                                                            .getAuthHeader(),
+                                                    placeholder: (context, url) =>
+                                                        const Center(),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        const Icon(Icons.error),
+                                                  )),
+                                            ),
+                                          );
+                                        });
+                                  },
+                                );
+                              }),
                         ),
                       ),
-                      if (state.booking.guests != null &&
-                          state.booking.guests!.isNotEmpty)
+                    ),
+
+                    ///
+                    ///
+                    /// Кнопки показа карты и людей
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
                         MaterialButton(
                           shape: RoundedRectangleBorder(
                               side: BorderSide(
@@ -196,298 +142,373 @@ class BookingDetailsScreen extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (_) {
-                                  return BlocProvider.value(
-                                    value: context.read<BookingDetailsBloc>(),
-                                    child: const BookingAddedPeopleWidget(),
-                                  );
+                                  return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(00.0)),
+                                      insetPadding: const EdgeInsets.symmetric(
+                                          horizontal: 00, vertical: 00),
+                                      titlePadding: const EdgeInsets.symmetric(
+                                          horizontal: 00, vertical: 00),
+                                      contentPadding: const EdgeInsets.symmetric(
+                                          horizontal: 00, vertical: 00),
+                                      clipBehavior: Clip.none,
+                                      content: SizedBox(
+                                          width: double.infinity,
+                                          height:
+                                              MediaQuery.of(context).size.width,
+                                          child: BlocProvider.value(
+                                            value: LockedPlanBloc(),
+                                            child: const LockedPlanWidget(),
+                                          )));
                                 });
                           },
                           color: appThemeData.primaryColor,
                           child: Container(
                             height: 50,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  "Гости",
+                                  (state.booking.guests != null &&
+                                          state.booking.guests!.isNotEmpty)
+                                      ? "Показать\nна плане"
+                                      : "Показать на плане",
                                   style: appThemeData.textTheme.titleMedium!
                                       .copyWith(
                                     color: Colors.white,
                                   ),
-                                  textAlign: TextAlign.end,
                                 ),
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                const Icon(Icons.people),
-                                Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20))),
-                                  child: Center(
-                                      child: Text(
-                                    state.booking.guests!.length.toString(),
-                                    style: appThemeData.textTheme.titleMedium!
-                                        .copyWith(
-                                            color: appThemeData.primaryColor),
-                                  )),
-                                )
+                                const Icon(Icons.place)
                               ],
                             ),
                           ),
-                        )
-                    ],
-                  ),
-                  ///
-                  ///
-                  ///
-                  /// Бронирующий
-                  if(state.booking.holderId==AuthController.currentUserId)Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 5),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text("Бронирующий",
-                              textAlign: TextAlign.left,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                  color: Colors.black54,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w300)),
                         ),
-                        Container(
-                          height: 0.3,
-                          color: Colors.black54,
-                        ),
-                        AddedPeopleCard(user: state.holderUser)
-                       //Expanded(child: PeopleCard(user))
+                        if (state.booking.guests != null &&
+                            state.booking.guests!.isNotEmpty)
+                          MaterialButton(
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    width: 0, color: appThemeData.primaryColor),
+                                borderRadius: BorderRadius.circular(7.0)),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return BlocProvider.value(
+                                      value: context.read<BookingDetailsBloc>(),
+                                      child: const BookingAddedPeopleWidget(),
+                                    );
+                                  });
+                            },
+                            color: appThemeData.primaryColor,
+                            child: Container(
+                              height: 50,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "Гости",
+                                    style: appThemeData.textTheme.titleMedium!
+                                        .copyWith(
+                                      color: Colors.white,
+                                    ),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Icon(Icons.people),
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(color: Colors.white),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(20))),
+                                    child: Center(
+                                        child: Text(
+                                      state.booking.guests!.length.toString(),
+                                      style: appThemeData.textTheme.titleMedium!
+                                          .copyWith(
+                                              color: appThemeData.primaryColor),
+                                    )),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
                       ],
                     ),
-                  ),
 
-                  ///
-                  ///
-                  /// Описание рабочего места
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 5),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text("Описание",
-                              textAlign: TextAlign.left,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                      color: Colors.black54,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w300)),
-                        ),
-                        Container(
-                          height: 0.3,
-                          color: Colors.black54,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(state.booking.workspace.description,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                      color: Colors.black, fontSize: 23)),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  ///
-                  ///
-                  ///Название и этаж
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 5),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text("Место",
-                              textAlign: TextAlign.left,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                      color: Colors.black54,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w300)),
-                        ),
-                        Container(
-                          height: 0.3,
-                          color: Colors.black54,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                              "${state.booking.workspace.type.type} ${state.booking.workspace.level} Этаж",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                      color: Colors.black, fontSize: 23)),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  ///
-                  ///
-                  /// ОФИС
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 5),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text("Офис",
-                              textAlign: TextAlign.left,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                      color: Colors.black54,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w300)),
-                        ),
-                        Container(
-                          height: 0.3,
-                          color: Colors.black54,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                              '${state.booking.cityName}. ${state.booking.officeAddress}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                      color: Colors.black, fontSize: 24)),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  ///
-                  ///
-                  /// ДАТА
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 5),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text("Дата",
-                              textAlign: TextAlign.left,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                      color: Colors.black54,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w300)),
-                        ),
-                        Container(
-                          height: 0.3,
-                          color: Colors.black54,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            DateFormat.yMMMMd("ru_RU").format(
-                                state.booking.reservationInterval.start),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(color: Colors.black, fontSize: 24),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  ///
-                  ///
-                  /// ВРЕМЯ
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 5),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text("Время",
-                              textAlign: TextAlign.left,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                      color: Colors.black54,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w300)),
-                        ),
-                        Container(
-                          height: 0.3,
-                          color: Colors.black54,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            "c ${DateFormat('HH:mm').format(state.booking.reservationInterval.start)} до ${DateFormat('HH:mm').format(state.booking.reservationInterval.end)}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(color: Colors.black, fontSize: 24),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  ///
-                  ///
-                  /// КНОПКА ОТМЕНЫ
-                  if (state.buttonIsShow)
-                    Padding(
+                    ///
+                    ///
+                    ///
+                    /// Бронирующий
+                    if (state.holderUser.id != state.currentUserId)
+                      Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 30.0, vertical: 30),
-                        child: AtbElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                              useRootNavigator: false,
-                              context: context,
-                              builder: (_) {
-                                return BlocProvider.value(
-                                  value: context.read<BookingDetailsBloc>(),
-                                  child: const BookingDeleteDialog(),
-                                );
-                              },
-                            );
-                          },
-                          text: "Отменить",
-                        ))
-                  else
-                    const SizedBox.shrink(),
-                ],
+                            horizontal: 30.0, vertical: 5),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: Text("Бронирующий",
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(
+                                          color: Colors.black54,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w300)),
+                            ),
+                            Container(
+                              height: 0.3,
+                              color: Colors.black54,
+                            ),
+                            AddedPeopleCard(user: state.holderUser)
+                            //Expanded(child: PeopleCard(user))
+                          ],
+                        ),
+                      ),
+
+                    ///
+                    ///
+                    /// Описание рабочего места
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0, vertical: 5),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Container(
+                              child: Text("Описание",
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(
+                                          color: Colors.black54,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w300)),
+                            ),
+                          ),
+                          Container(
+                            decoration: const ShapeDecoration(
+                              color: Color.fromARGB(255, 243, 243, 243),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0)),
+                              ),
+                            ),
+                            width: double.infinity,
+                            child: Text(state.booking.workspace.description,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                        color: Colors.black, fontSize: 23)),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    ///
+                    ///
+                    ///Название и этаж
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0, vertical: 5),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: Text("Место",
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                    color: Colors.black54,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w300)),
+                          ),
+                          Container(
+                            decoration: const ShapeDecoration(
+                              color: Color.fromARGB(255, 243, 243, 243),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0)),
+                              ),
+                            ),
+                            width: double.infinity,
+                            child: Text(
+                                "${state.booking.workspace.type.type} ${state.booking.workspace.level} Этаж",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                        color: Colors.black, fontSize: 23)),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    ///
+                    ///
+                    /// ОФИС
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0, vertical: 5),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text("Офис",
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                        color: Colors.black54,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w300)),
+                          ),
+                          Container(
+                            decoration: const ShapeDecoration(
+                              color: Color.fromARGB(255, 243, 243, 243),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0)),
+                              ),
+                            ),
+                            width: double.infinity,
+                            child: Text(
+                                '${state.booking.cityName}. ${state.booking.officeAddress}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                        color: Colors.black, fontSize: 24)),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    ///
+                    ///
+                    /// ДАТА
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0, vertical: 5),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text("Дата",
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                        color: Colors.black54,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w300)),
+                          ),
+                          Container(
+                            decoration: const ShapeDecoration(
+                              color: Color.fromARGB(255, 243, 243, 243),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0)),
+                              ),
+                            ),
+                            width: double.infinity,
+                            child: Text(
+                              DateFormat.yMMMMd("ru_RU").format(
+                                  state.booking.reservationInterval.start),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(color: Colors.black, fontSize: 24),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    ///
+                    ///
+                    /// ВРЕМЯ
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0, vertical: 5),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text("Время",
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                        color: Colors.black54,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w300)),
+                          ),
+                          Container(
+                            decoration: const ShapeDecoration(
+                              color: Color.fromARGB(255, 243, 243, 243),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0)),
+                              ),
+                            ),
+                            width: double.infinity,
+                            child: Text(
+                              "c ${DateFormat('HH:mm').format(state.booking.reservationInterval.start)} до ${DateFormat('HH:mm').format(state.booking.reservationInterval.end)}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(color: Colors.black, fontSize: 24),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    ///
+                    ///
+                    /// КНОПКА ОТМЕНЫ
+                    if (state.buttonIsShow)
+                      Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 30),
+                          child: AtbElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                useRootNavigator: false,
+                                context: context,
+                                builder: (_) {
+                                  return BlocProvider.value(
+                                    value: context.read<BookingDetailsBloc>(),
+                                    child: const BookingDeleteDialog(),
+                                  );
+                                },
+                              );
+                            },
+                            text: "Отменить",
+                          ))
+                    else
+                      const SizedBox.shrink(),
+                  ],
+                ),
               ),
             ),
           );

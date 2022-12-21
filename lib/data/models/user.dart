@@ -1,6 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-
 class User {
   int id;
   String login;
@@ -22,8 +19,8 @@ class User {
         json["fullName"] as String,
         json["imageId"] as int,
         json["phone"] as String,
-        json["email"] as String,
         json["jobTitle"] as String,
+        json["email"] as String,
         json["favorite"] as bool,
         json["role"] as String);
   }

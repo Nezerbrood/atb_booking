@@ -2,6 +2,7 @@ import 'package:atb_booking/data/models/user.dart';
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
+import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/user_role/feedback/feedback_screen.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
@@ -23,13 +24,16 @@ class BookingAddedPeopleWidget extends StatelessWidget {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
-            insetPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 50),
-            titlePadding: EdgeInsets.symmetric(horizontal: 20,vertical:00),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10,vertical:00),
+            insetPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+            titlePadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 00),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 00),
             clipBehavior: Clip.none,
-            content:SizedBox(
+            content: SizedBox(
               height: 600,
-              width:  500,
+              width: 500,
               child: Padding(
                 padding: EdgeInsets.zero,
                 child: Stack(
@@ -51,7 +55,11 @@ class BookingAddedPeopleWidget extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: AtbElevatedButton(onPressed:(){ (Navigator.of(context).pop());}, text: "Назад"),
+                      child: AtbElevatedButton(
+                          onPressed: () {
+                            (Navigator.of(context).pop());
+                          },
+                          text: "Назад"),
                     )
                   ],
                 ),
@@ -93,24 +101,18 @@ class AddedPeopleCard extends StatelessWidget {
                       height: 50,
                       child: CachedNetworkImage(
                           fit: BoxFit.cover,
-                          imageUrl: AppImageProvider
-                              .getImageUrlFromImageId(user.avatarImageId),
-                          httpHeaders: NetworkController()
-                              .getAuthHeader(),
-                          progressIndicatorBuilder: (context,
-                              url, downloadProgress) =>
-                              Center(
-                                  child:
-                                  CircularProgressIndicator(
-                                      value:
-                                      downloadProgress
-                                          .progress)),
-                          errorWidget: (context, url, error) =>
-                              Container()),
+                          imageUrl: AppImageProvider.getImageUrlFromImageId(
+                              user.avatarImageId),
+                          httpHeaders: NetworkController().getAuthHeader(),
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Center(
+                                  child: CircularProgressIndicator(
+                                      value: downloadProgress.progress)),
+                          errorWidget: (context, url, error) => Container()),
                     ),
                   ),
                 ),
-                user.isFavorite
+                (user.isFavorite)
                     ? Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
@@ -128,7 +130,10 @@ class AddedPeopleCard extends StatelessWidget {
                   },
                   icon: const Icon(Icons.more_vert)),
               title: Text(user.fullName),
-              subtitle: Text(user.email),
+              subtitle: Text(
+                user.email,
+                style: appThemeData.textTheme.bodySmall,
+              ),
             ),
           ),
         ],
@@ -153,7 +158,15 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
               SimpleDialogOption(
                 onPressed: () async {
                   Navigator.pop(context);
-                  await _feedbackTransition(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => BlocProvider<FeedbackBloc>(
+                              create: (context) => FeedbackBloc(),
+                              child: const FeedBackScreen(),
+                            )),
+                  );
+                  (context);
                 },
                 child: Row(
                   children: [
@@ -166,14 +179,12 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
               ),
               SimpleDialogOption(
                 onPressed: () {
-                  // TODO сделать пользователя избранным
                   if (!user.isFavorite) {
                     contextDialog
                         .read<BookingDetailsBloc>()
                         .add(BookingDetailsToFavoriteEvent(user));
                     Navigator.pop(context);
                   } else {
-                    // TODO удалить из избранных
                     contextDialog
                         .read<BookingDetailsBloc>()
                         .add(BookingDetailsRemoveFromFavoriteEvent(user));
@@ -188,7 +199,7 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
                       Text('Убрать из избранного',
                           style: appThemeData.textTheme.titleMedium),
                     ] else ...[
-                      Icon(
+                      const Icon(
                         Icons.star_border,
                       ),
                       const SizedBox(width: 10),
@@ -202,11 +213,4 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
           ),
         );
       });
-}
-
-Future<void> _feedbackTransition(BuildContext context) async {
-  await Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const FeedBackScreen()),
-  );
 }

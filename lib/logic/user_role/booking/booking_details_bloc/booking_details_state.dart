@@ -10,8 +10,8 @@ class BookingDetailsLoadedState extends BookingDetailsState {
   final Booking booking;
   bool buttonIsShow = true;
   final User holderUser;
-
-  BookingDetailsLoadedState(this.booking,this.buttonIsShow,this.holderUser);
+  int currentUserId;
+  BookingDetailsLoadedState(this.booking,this.buttonIsShow,this.holderUser,this.currentUserId);
 }
 class BookingDetailsDeletedState extends BookingDetailsState {
   final Booking booking;
