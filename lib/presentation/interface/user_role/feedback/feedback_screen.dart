@@ -3,7 +3,6 @@ import 'package:atb_booking/data/models/level_plan.dart';
 import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/data/services/city_repository.dart';
 import 'package:atb_booking/data/services/office_provider.dart';
-import 'package:atb_booking/data/services/office_repository.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/presentation/interface/user_role/booking/plan/plan_widget_for_feedback.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
@@ -420,11 +419,11 @@ class _Button extends StatelessWidget {
 
     await showDialog(
         context: popupContext,
-        builder: (context) {
+        builder: (_) {
           return BlocProvider<FeedbackBloc>.value(
             value: popupContext.read<FeedbackBloc>(),
             child: BlocBuilder<FeedbackBloc, FeedbackState>(
-              buildWhen: (previous, current) => current is FeedbackPopupState,
+              // buildWhen: (previous, current) => current is FeedbackPopupState,
               builder: (popupContext, state) {
                 if (state is FeedbackPopupLoadingState) {
                   return const AlertDialog(

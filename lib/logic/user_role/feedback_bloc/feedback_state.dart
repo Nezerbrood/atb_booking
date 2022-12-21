@@ -46,8 +46,14 @@ class FeedbackMainState extends FeedbackState {
 
 abstract class FeedbackPopupState extends FeedbackState {}
 
-class FeedbackSuccessState extends FeedbackPopupState {}
+class FeedbackSuccessState extends FeedbackMainState {
+  FeedbackSuccessState(super.typeFieldVisible, super.cityFieldVisible, super.officeFieldVisible, super.levelFieldVisible, super.workplaceFieldVisible, super.messageFieldVisible, super.buttonVisible, super.selectedType, super.selectedCityId, super.selectedOffice, super.selectedLevelId, super.levelPlanImageId, super.listOfPlanElements, super.selectedElementIndex, super.message);
+}
 
-class FeedbackPopupLoadingState extends FeedbackPopupState {}
+class FeedbackPopupLoadingState extends FeedbackMainState {
+  FeedbackPopupLoadingState(super.typeFieldVisible, super.cityFieldVisible, super.officeFieldVisible, super.levelFieldVisible, super.workplaceFieldVisible, super.messageFieldVisible, super.buttonVisible, super.selectedType, super.selectedCityId, super.selectedOffice, super.selectedLevelId, super.levelPlanImageId, super.listOfPlanElements, super.selectedElementIndex, super.message);
+}
 
-class FeedbackPopupErrorState extends FeedbackPopupState {}
+class FeedbackPopupErrorState extends FeedbackMainState {
+  FeedbackPopupErrorState(super.typeFieldVisible, super.cityFieldVisible, super.officeFieldVisible, super.levelFieldVisible, super.workplaceFieldVisible, super.messageFieldVisible, super.buttonVisible, super.selectedType, super.selectedCityId, super.selectedOffice, super.selectedLevelId, super.levelPlanImageId, super.listOfPlanElements, super.selectedElementIndex, super.message);
+}

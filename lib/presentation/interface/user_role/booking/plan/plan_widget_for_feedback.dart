@@ -17,7 +17,7 @@ class FeedbackLevelPlan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SCALE_FACTOR = MediaQuery.of(context).size.width / 1000.0;
+    SCALE_FACTOR = MediaQuery.of(context).size.width / 1200.0;
     return BlocBuilder<FeedbackBloc, FeedbackState>(builder: (context, state) {
       if (state is FeedbackMainState) {
         _transformationController =
@@ -52,7 +52,7 @@ class FeedbackLevelPlan extends StatelessWidget {
         for (int i = 0; i < state.listOfPlanElements!.length; i++) {
           bool isSelect = i == state.selectedElementIndex;
           print("isSelect: $isSelect");
-                    if (isSelect) {
+          if (isSelect) {
             selectedElem = _LevelPlanEditorElementWidget(
                 data: state.listOfPlanElements![i],
                 isSelect: isSelect,
@@ -107,7 +107,7 @@ class _LevelPlanEditorElementWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var cornerSize =
         35 * FeedbackLevelPlan.SCALE_FACTOR / scaleInteractiveViewValue;
-    var BLUE_PRINT_FRAME_WIDTH = 6.0;
+    // var BLUE_PRINT_FRAME_WIDTH = 6.0;
     return Positioned(
       left: data.positionX * FeedbackLevelPlan.SCALE_FACTOR - cornerSize,
       top: data.positionY * FeedbackLevelPlan.SCALE_FACTOR - cornerSize,

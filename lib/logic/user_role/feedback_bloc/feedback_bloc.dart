@@ -2,12 +2,8 @@ import 'package:atb_booking/data/models/city.dart';
 import 'package:atb_booking/data/models/level_plan.dart';
 import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/data/models/workspace.dart';
-import 'package:atb_booking/data/services/city_repository.dart';
 import 'package:atb_booking/data/services/feedback_provider.dart';
 import 'package:atb_booking/data/services/level_plan_provider.dart';
-import 'package:atb_booking/data/services/office_repository.dart';
-import 'package:atb_booking/data/services/workspace_provider.dart';
-import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/plan_bloc/plan_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -273,12 +269,54 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
         }
 
         try {
-          emit(FeedbackPopupLoadingState());
+          emit(FeedbackPopupLoadingState(typeFieldVisible!,
+              cityFieldVisible!,
+              officeFieldVisible!,
+              levelFieldVisible!,
+              workplaceFieldVisible!,
+              messageFieldVisible!,
+              buttonVisible!,
+              selectedType,
+              selectedCity,
+              selectedOffice,
+              selectedLevel,
+              levelImageId,
+              listOfPlanElements,
+              selectedElementIndex,
+              message));
           await FeedbackProvider().createFeedbackMessage(
               message, feedbackTypeId, officeId, workplaceId, guiltyId);
-          emit(FeedbackSuccessState());
+          emit(FeedbackSuccessState(typeFieldVisible!,
+              cityFieldVisible!,
+              officeFieldVisible!,
+              levelFieldVisible!,
+              workplaceFieldVisible!,
+              messageFieldVisible!,
+              buttonVisible!,
+              selectedType,
+              selectedCity,
+              selectedOffice,
+              selectedLevel,
+              levelImageId,
+              listOfPlanElements,
+              selectedElementIndex,
+              message));
         } catch (e) {
-          emit(FeedbackPopupErrorState());
+          emit(FeedbackPopupErrorState(typeFieldVisible!,
+              cityFieldVisible!,
+              officeFieldVisible!,
+              levelFieldVisible!,
+              workplaceFieldVisible!,
+              messageFieldVisible!,
+              buttonVisible!,
+              selectedType,
+              selectedCity,
+              selectedOffice,
+              selectedLevel,
+              levelImageId,
+              listOfPlanElements,
+              selectedElementIndex,
+              message));
         }
       });
     });
@@ -385,12 +423,54 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
       }
 
       try {
-        emit(FeedbackPopupLoadingState());
+        emit(FeedbackPopupLoadingState(typeFieldVisible!,
+            cityFieldVisible!,
+            officeFieldVisible!,
+            levelFieldVisible!,
+            workplaceFieldVisible!,
+            messageFieldVisible!,
+            buttonVisible!,
+            selectedType,
+            selectedCity,
+            selectedOffice,
+            selectedLevel,
+            levelImageId,
+            listOfPlanElements,
+            selectedElementIndex,
+            message));
         await FeedbackProvider().createFeedbackMessage(
             message, feedbackTypeId, officeId, workplaceId, guiltyId);
-        emit(FeedbackSuccessState());
+        emit(FeedbackSuccessState(typeFieldVisible!,
+            cityFieldVisible!,
+            officeFieldVisible!,
+            levelFieldVisible!,
+            workplaceFieldVisible!,
+            messageFieldVisible!,
+            buttonVisible!,
+            selectedType,
+            selectedCity,
+            selectedOffice,
+            selectedLevel,
+            levelImageId,
+            listOfPlanElements,
+            selectedElementIndex,
+            message));
       } catch (e) {
-        emit(FeedbackPopupErrorState());
+        emit(FeedbackPopupErrorState(typeFieldVisible!,
+            cityFieldVisible!,
+            officeFieldVisible!,
+            levelFieldVisible!,
+            workplaceFieldVisible!,
+            messageFieldVisible!,
+            buttonVisible!,
+            selectedType,
+            selectedCity,
+            selectedOffice,
+            selectedLevel,
+            levelImageId,
+            listOfPlanElements,
+            selectedElementIndex,
+            message));
       }
     });
   }
