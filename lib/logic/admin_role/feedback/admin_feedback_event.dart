@@ -12,3 +12,9 @@ class AdminFeedbackLoadEvent extends AdminFeedbackEvent {
   AdminFeedbackLoadEvent(this.formHasBeenChanged);
 }
 class AdminFeedbackLoadNextPageEvent extends AdminFeedbackEvent {}
+
+class AdminFeedbackDeleteItemEvent extends AdminFeedbackEvent {
+  final FeedbackItem feedbackItem;
+  AdminFeedbackDeleteItemEvent(this.feedbackItem);
+
+}

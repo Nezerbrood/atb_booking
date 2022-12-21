@@ -10,8 +10,8 @@ class NetworkController {
   factory NetworkController() {
     return _singleton;
   }
-  final _baseUrl = "45.67.58.123:8080";
-  //final _baseUrl = "85.192.32.12:8080";
+  // final _baseUrl = "45.67.58.123:8080";
+  final _baseUrl = "85.192.32.12:8080";
   String getUrl() => _baseUrl;
 
 
