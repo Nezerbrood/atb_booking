@@ -2,6 +2,7 @@ import 'package:atb_booking/data/models/booking.dart';
 import 'package:atb_booking/data/models/user.dart';
 import 'package:atb_booking/data/services/booking_repository.dart';
 import 'package:atb_booking/data/services/users_provider.dart';
+import 'package:atb_booking/data/services/users_repository.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/locked_plan_bloc/locked_plan_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -15,6 +16,7 @@ class BookingDetailsBloc
     extends Bloc<BookingDetailsEvent, BookingDetailsState> {
   bool deleteButtonIsActive = true;
   Booking? booking;
+  User? holder;
   // todo получаем айди из секьюрити
   BookingDetailsBloc(int bookingId, this.deleteButtonIsActive) : super(BookingDetailsLoadingState()) {
     on<BookingDetailsLoadEvent>((event, emit) async {
@@ -22,8 +24,9 @@ class BookingDetailsBloc
         deleteButtonIsActive = deleteButtonIsActive;
         emit(BookingDetailsLoadingState());
         booking = await BookingRepository().getBookingById(bookingId);
+        holder = await UsersProvider().fetchUserById(booking!.holderId);
         LockedPlanBloc().add(LockedPlanLoadEvent(booking!.levelId,booking!.workspace.id));
-        emit(BookingDetailsLoadedState(booking!,deleteButtonIsActive));
+        emit(BookingDetailsLoadedState(booking!,deleteButtonIsActive,holder!));
       } catch (_) {
         emit(BookingDetailsErrorState());
       }
@@ -46,7 +49,7 @@ class BookingDetailsBloc
         }catch(_){
           event.user.isFavorite = false;
         }
-        emit(BookingDetailsLoadedState(booking!,deleteButtonIsActive));
+        emit(BookingDetailsLoadedState(booking!,deleteButtonIsActive,holder!));
     });
     on<BookingDetailsRemoveFromFavoriteEvent>((event, emit) async {
       event.user.isFavorite = false;
@@ -56,7 +59,7 @@ class BookingDetailsBloc
       }catch(_){
         event.user.isFavorite = true;
       }
-      emit(BookingDetailsLoadedState(booking!,deleteButtonIsActive));
+      emit(BookingDetailsLoadedState(booking!,deleteButtonIsActive,holder!));
     });
     add(BookingDetailsLoadEvent());
   }

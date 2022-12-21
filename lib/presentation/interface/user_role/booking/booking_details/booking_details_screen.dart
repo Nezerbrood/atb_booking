@@ -246,7 +246,7 @@ class BookingDetailsScreen extends StatelessWidget {
                   ///
                   ///
                   /// Бронирующий
-                  if(state.booking.holderId!=AuthController.currentUserId)Padding(
+                  if(state.booking.holderId==AuthController.currentUserId)Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30.0, vertical: 5),
                     child: Column(
@@ -267,15 +267,8 @@ class BookingDetailsScreen extends StatelessWidget {
                           height: 0.3,
                           color: Colors.black54,
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(state.booking.workspace.description,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                  color: Colors.black, fontSize: 23)),
-                        ),
+                        AddedPeopleCard(user: state.holderUser)
+                       //Expanded(child: PeopleCard(user))
                       ],
                     ),
                   ),

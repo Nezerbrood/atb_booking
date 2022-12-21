@@ -42,7 +42,7 @@ class BookingAddedPeopleWidget extends StatelessWidget {
                           shrinkWrap: false,
                           itemCount: users!.length,
                           itemBuilder: (context, index) {
-                            return PeopleCard(
+                            return AddedPeopleCard(
                               user: users[index],
                             );
                           },
@@ -66,10 +66,10 @@ class BookingAddedPeopleWidget extends StatelessWidget {
   }
 }
 
-class PeopleCard extends StatelessWidget {
+class AddedPeopleCard extends StatelessWidget {
   final User user;
 
-  const PeopleCard({super.key, required this.user});
+  const AddedPeopleCard({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

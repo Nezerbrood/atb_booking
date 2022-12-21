@@ -70,7 +70,8 @@ class SearchPeopleTextField extends StatelessWidget {
                             alignment: WrapAlignment.center,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              const Text("Только\nизбранные",
+                              Text("Только\nизбранные",
+                                  style: Theme.of(context).textTheme.titleSmall,
                                   textAlign: TextAlign.right),
                               const SizedBox(width: 10),
                               state.isFavoriteOn

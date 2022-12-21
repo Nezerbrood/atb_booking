@@ -126,7 +126,7 @@ class SearchBar extends StatelessWidget {
                 children: [
                   Text(
                     "только\nизбранные",
-                    style: appThemeData.textTheme.titleSmall,
+                    style: appThemeData.textTheme.bodyLarge,
                   ),
                   IconButton(
                     isSelected: state.isFavoriteOn,
