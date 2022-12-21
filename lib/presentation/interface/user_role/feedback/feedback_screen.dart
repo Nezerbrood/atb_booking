@@ -1,6 +1,10 @@
 import 'package:atb_booking/data/models/city.dart';
+import 'package:atb_booking/data/models/level_plan.dart';
 import 'package:atb_booking/data/models/office.dart';
+import 'package:atb_booking/data/services/city_repository.dart';
+import 'package:atb_booking/data/services/office_provider.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
+import 'package:atb_booking/presentation/interface/user_role/booking/plan/plan_widget_for_feedback.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,13 +17,14 @@ class FeedBackScreen extends StatelessWidget {
       TextEditingController();
   static final TextEditingController officeInputController =
       TextEditingController();
+  static final TextEditingController levelInputController =
+      TextEditingController();
   static final TextEditingController messageInputController =
       TextEditingController();
   const FeedBackScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    print('context A: $context');
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -30,29 +35,53 @@ class FeedBackScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Center(
           child: Container(
-            padding: const EdgeInsets.only(top: 45, left: 30, right: 30),
+            padding: const EdgeInsets.only(top: 5),
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  /// Инпут тип сообщения
                   _TypeField(),
+
+                  /// Инпут города
+                  _CityField(),
 
                   /// Инпут Город и Офис
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 0, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         /// Инпут Города
-                        Expanded(flex: 10, child: _CityField()),
+                        Expanded(flex: 13, child: _OfficeField()),
                         const SizedBox(width: 10),
 
                         ///Инпут Офиса
-                        Expanded(flex: 13, child: _OfficeField()),
+                        Expanded(flex: 10, child: _LevelField()),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 45),
+                  const SizedBox(height: 15),
+
+                  /// Карта
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                    child: BlocConsumer<FeedbackBloc, FeedbackState>(
+                        listener: (context, state) {},
+                        buildWhen: (previous, current) =>
+                            (current is FeedbackMainState),
+                        builder: (context, state) {
+                          if (state is FeedbackMainState) {
+                            if (state.workplaceFieldVisible) {
+                              return const FeedbackLevelPlan();
+                            } else {
+                              return const Center();
+                            }
+                          } else {
+                            throw Exception("Bad state: $state");
+                          }
+                        }),
+                  ),
 
                   /// Поля для сообщения
                   const _MessageField(),
@@ -71,67 +100,75 @@ class FeedBackScreen extends StatelessWidget {
 
 class _TypeField extends StatelessWidget {
   _TypeField();
+  Future<List<String>> getFutureTypeList(String? str) async {
+    List<String> type = ["Отзыв", "Жалоба"];
+    return type;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FeedbackBloc, FeedbackState>(
-        buildWhen: (previous, current) => (current is FeedbackInputFieldsState),
-        builder: (context, state) {
-          print('context B: $context');
-          if (state is FeedbackInputFieldsState) {
-            if (state.isInitialState) {
-              FeedBackScreen.typeInputController.clear();
-              FeedBackScreen.cityInputController.clear();
-              FeedBackScreen.officeInputController.clear();
-              FeedBackScreen.messageInputController.clear();
-            }
-            if (state.typeFieldVisible) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: TypeAheadFormField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall
-                        ?.copyWith(color: Colors.black, fontSize: 20),
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Выберите тип обращения...",
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: BlocBuilder<FeedbackBloc, FeedbackState>(
+          buildWhen: (previous, current) => (current is FeedbackMainState),
+          builder: (context, state) {
+            if (state is FeedbackMainState) {
+              if (state.isInitialState) {
+                FeedBackScreen.typeInputController.clear();
+                FeedBackScreen.cityInputController.clear();
+                FeedBackScreen.officeInputController.clear();
+                FeedBackScreen.levelInputController.clear();
+                FeedBackScreen.messageInputController.clear();
+              }
+              if (state.typeFieldVisible) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: TypeAheadFormField(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(color: Colors.black, fontSize: 20),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Выберите тип обращения...",
+                      ),
+                      controller: FeedBackScreen.typeInputController,
                     ),
-                    controller: FeedBackScreen.typeInputController,
-                  ),
-                  // После каждого ввода буквы в textField
-                  suggestionsCallback: (pattern) {
-                    return (state).futureTypeList;
-                  },
-                  itemBuilder: (context, String suggestion) {
-                    return ListTile(
-                      title: Text(suggestion),
-                    );
-                  },
-                  transitionBuilder: (context, suggestionsBox, controller) {
-                    return suggestionsBox;
-                  },
-                  onSuggestionSelected: (String suggestion) {
-                    FeedBackScreen.cityInputController.clear();
-                    FeedBackScreen.officeInputController.clear();
+                    // После каждого ввода буквы в textField
+                    suggestionsCallback: (pattern) {
+                      return getFutureTypeList('');
+                    },
+                    itemBuilder: (context, String suggestion) {
+                      return ListTile(
+                        title: Text(suggestion),
+                      );
+                    },
+                    transitionBuilder: (context, suggestionsBox, controller) {
+                      return suggestionsBox;
+                    },
+                    onSuggestionSelected: (String suggestion) {
+                      FeedBackScreen.cityInputController.clear();
+                      FeedBackScreen.officeInputController.clear();
+                      FeedBackScreen.levelInputController.clear();
 
-                    FeedBackScreen.typeInputController.text = suggestion;
-                    context
-                        .read<FeedbackBloc>()
-                        .add(FeedbackTypeFormEvent(suggestion));
-                  },
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please select a type' : null,
-                ),
-              );
+                      FeedBackScreen.typeInputController.text = suggestion;
+                      context
+                          .read<FeedbackBloc>()
+                          .add(FeedbackTypeFormEvent(suggestion));
+                    },
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please select a type' : null,
+                  ),
+                );
+              } else {
+                return Container();
+              }
             } else {
-              return Container();
+              throw Exception("Bad state: $state");
             }
-          } else {
-            throw Exception("Bad state: $state");
-          }
-        });
+          }),
+    );
   }
 }
 
@@ -140,15 +177,15 @@ class _CityField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FeedbackBloc, FeedbackState>(
-        listener: (context, state) {},
-        buildWhen: (previous, current) => (current is FeedbackInputFieldsState),
-        builder: (context, state) {
-          if (state is FeedbackInputFieldsState) {
-            if (state.cityFieldVisible) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                child: TypeAheadFormField(
+    return Padding(
+      padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
+      child: BlocConsumer<FeedbackBloc, FeedbackState>(
+          listener: (context, state) {},
+          buildWhen: (previous, current) => (current is FeedbackMainState),
+          builder: (context, state) {
+            if (state is FeedbackMainState) {
+              if (state.cityFieldVisible) {
+                return TypeAheadFormField(
                   textFieldConfiguration: TextFieldConfiguration(
                     style: Theme.of(context)
                         .textTheme
@@ -161,7 +198,7 @@ class _CityField extends StatelessWidget {
                     controller: FeedBackScreen.cityInputController,
                   ),
                   suggestionsCallback: (pattern) {
-                    return (state).futureCityList!;
+                    return CityRepository().getAllCities();
                   },
                   itemBuilder: (context, City suggestion) {
                     return ListTile(
@@ -173,6 +210,8 @@ class _CityField extends StatelessWidget {
                   },
                   onSuggestionSelected: (City suggestion) {
                     FeedBackScreen.officeInputController.clear();
+                    FeedBackScreen.levelInputController.clear();
+
                     FeedBackScreen.cityInputController.text = suggestion.name;
                     context
                         .read<FeedbackBloc>()
@@ -180,16 +219,16 @@ class _CityField extends StatelessWidget {
                   },
                   validator: (value) =>
                       value!.isEmpty ? 'Please select a city' : null,
-                ),
-              );
+                );
+              } else {
+                FeedBackScreen.cityInputController.clear();
+                return const Center();
+              }
             } else {
-              FeedBackScreen.cityInputController.clear();
-              return const Center();
+              throw Exception("Bad state: $state");
             }
-          } else {
-            throw Exception("Bad state: $state");
-          }
-        });
+          }),
+    );
   }
 }
 
@@ -200,9 +239,9 @@ class _OfficeField extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<FeedbackBloc, FeedbackState>(
       listener: (context, state) {},
-      buildWhen: (previous, current) => (current is FeedbackInputFieldsState),
+      buildWhen: (previous, current) => (current is FeedbackMainState),
       builder: (context, state) {
-        if (state is FeedbackInputFieldsState) {
+        if (state is FeedbackMainState) {
           if (state.officeFieldVisible) {
             return TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
@@ -217,7 +256,8 @@ class _OfficeField extends StatelessWidget {
                 controller: FeedBackScreen.officeInputController,
               ),
               suggestionsCallback: (pattern) {
-                return (state).futureOfficeList!;
+                return OfficeProvider()
+                    .getOfficesByCityId(state.selectedCityId!.id);
               },
               itemBuilder: (context, Office suggestion) {
                 return ListTile(
@@ -228,6 +268,8 @@ class _OfficeField extends StatelessWidget {
                 return suggestionsBox;
               },
               onSuggestionSelected: (Office suggestion) {
+                FeedBackScreen.levelInputController.clear();
+
                 FeedBackScreen.officeInputController.text = suggestion.address;
                 context
                     .read<FeedbackBloc>()
@@ -238,6 +280,64 @@ class _OfficeField extends StatelessWidget {
             );
           } else {
             FeedBackScreen.officeInputController.clear();
+            FeedBackScreen.levelInputController.clear();
+            return const Center();
+          }
+        } else {
+          throw Exception("Bad state: $state");
+        }
+      },
+    );
+  }
+}
+
+class _LevelField extends StatelessWidget {
+  _LevelField({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<FeedbackBloc, FeedbackState>(
+      listener: (context, state) {},
+      buildWhen: (previous, current) => (current is FeedbackMainState),
+      builder: (context, state) {
+        if (state is FeedbackMainState) {
+          if (state.levelFieldVisible) {
+            return TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: Colors.black, fontSize: 20),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Выберите этаж...",
+                ),
+                controller: FeedBackScreen.levelInputController,
+              ),
+              suggestionsCallback: (pattern) {
+                return OfficeProvider()
+                    .getLevelsByOfficeId(state.selectedOffice!.id);
+              },
+              itemBuilder: (context, LevelListItem suggestion) {
+                return ListTile(
+                  title: Text(suggestion.number.toString()),
+                );
+              },
+              transitionBuilder: (context, suggestionsBox, controller) {
+                return suggestionsBox;
+              },
+              onSuggestionSelected: (LevelListItem suggestion) {
+                FeedBackScreen.levelInputController.text =
+                    suggestion.number.toString();
+                context
+                    .read<FeedbackBloc>()
+                    .add(FeedbackLevelFormEvent(suggestion));
+              },
+              validator: (value) =>
+                  value!.isEmpty ? 'Please select a level' : null,
+            );
+          } else {
+            FeedBackScreen.levelInputController.clear();
             return const Center();
           }
         } else {
@@ -254,12 +354,12 @@ class _MessageField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FeedbackBloc, FeedbackState>(
-      buildWhen: (previous, current) => (current is FeedbackInputFieldsState),
+      buildWhen: (previous, current) => (current is FeedbackMainState),
       builder: (context, state) {
-        if (state is FeedbackInputFieldsState) {
+        if (state is FeedbackMainState) {
           if (state.messageFieldVisible) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
               child: Column(
                 children: [
                   SizedBox(
@@ -316,23 +416,23 @@ class _MessageField extends StatelessWidget {
 class _Button extends StatelessWidget {
   void _submitButton(BuildContext popupContext) async {
     bool _exit = false;
-    
+
     await showDialog(
         context: popupContext,
-        builder: (context) {
+        builder: (_) {
           return BlocProvider<FeedbackBloc>.value(
             value: popupContext.read<FeedbackBloc>(),
             child: BlocBuilder<FeedbackBloc, FeedbackState>(
-              buildWhen: (previous, current) => current is FeedbackPopupState,
+              // buildWhen: (previous, current) => current is FeedbackPopupState,
               builder: (popupContext, state) {
                 if (state is FeedbackPopupLoadingState) {
                   return const AlertDialog(
                     title: Center(child: CircularProgressIndicator()),
                   );
                 }
-                if (state == FeedbackSuccessState) {
+                if (state is FeedbackSuccessState) {
                   _exit = true;
-                  AlertDialog(
+                  return AlertDialog(
                     title: Text(
                       "Сообщение отправлено",
                       textAlign: TextAlign.center,
@@ -359,17 +459,20 @@ class _Button extends StatelessWidget {
       Navigator.pop(popupContext);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FeedbackBloc, FeedbackState>(
-      buildWhen: (previous, current) => (current is FeedbackInputFieldsState),
+      buildWhen: (previous, current) => (current is FeedbackMainState),
       builder: (context, state) {
-        if (state is FeedbackInputFieldsState) {
+        if (state is FeedbackMainState) {
           if (state.buttonVisible) {
             return Center(
               child: AtbElevatedButton(
                   onPressed: () {
-                    context.read<FeedbackBloc>().add(FeedbackButtonSubmitEvent());
+                    context
+                        .read<FeedbackBloc>()
+                        .add(FeedbackButtonSubmitEvent());
                     _submitButton(context);
                   },
                   text: "Отправить"),

@@ -49,4 +49,21 @@ class AuthController {
       throw "Auth controller problem";
     }
   }
+
+  /// Функция разлогирования
+  Future<void> exitFromApp() async {
+    /// Получаем refresh токен и добавляем его в url
+    final String refresh = await SecurityStorage().getRefreshTokenStorage();
+    var uri = Uri.http(
+      NetworkController().getUrl(),
+      '/api/auth/logout/$refresh',
+    );
+
+    /// Вызов POST запроса
+    var response = await http.post(uri, headers: {}, body: {});
+
+    if (response.statusCode != 200) {
+      throw "Logout problem in controller";
+    }
+  }
 }
