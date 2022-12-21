@@ -80,6 +80,7 @@ class BookingProvider {
       headers: headers,
     );
     if (response.statusCode == 200) {
+      print(json.decode(utf8.decode(response.bodyBytes)));
       print("successful fetching booking!");
       final List<dynamic> bookingJson =
           json.decode(utf8.decode(response.bodyBytes));
@@ -108,6 +109,7 @@ class BookingProvider {
     var uri = Uri.http(baseUrl, '/api/reservations/$id');
     var response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
+      print(json.decode(utf8.decode(response.bodyBytes)));
       final Map<String, dynamic> bookingJson =
           json.decode(utf8.decode(response.bodyBytes));
       return Booking.fromJson(bookingJson);
@@ -138,6 +140,7 @@ class BookingProvider {
     var uri = Uri.http(baseUrl, '/api/reservations', queryParameters);
     var response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
+      print(json.decode(utf8.decode(response.bodyBytes)));
       final List<dynamic> windowsJson =
           json.decode(utf8.decode(response.bodyBytes))['freeIntervals'];
       var result = windowsJson
@@ -186,6 +189,7 @@ class BookingProvider {
     var uri = Uri.http(baseUrl, '/api/reservations/$id');
     var response = await http.delete(uri, headers: headers);
     if (response.statusCode == 200) {
+      print(json.decode(utf8.decode(response.bodyBytes)));
       return;
     } else if (response.statusCode == 401) {
       /// Если 401, то обновляем все токены

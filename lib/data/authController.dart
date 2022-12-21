@@ -7,6 +7,8 @@ import '../logic/secure_storage_api.dart';
 import 'models/login.dart';
 
 class AuthController {
+  static String? role;
+  static int? currentUserId;
   var uri = Uri.http(
     NetworkController().getUrl(),
     '/api/auth/login',
@@ -19,7 +21,6 @@ class AuthController {
     newJson["login"] = login;
     newJson["password"] = password;
     var encoded = jsonEncode(newJson);
-
     /// Создание headers запроса
     Map<String, String> headers = {};
     headers["Content-type"] = 'application/json';
@@ -33,12 +34,14 @@ class AuthController {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       Login resData = Login.fromJson(data);
-
       /// Сохранение токенов и id
       await SecurityStorage().saveIdStorage(resData.userId);
       await SecurityStorage().saveAccessTokenStorage(resData.access);
       await SecurityStorage().saveRefreshTokenStorage(resData.refresh);
       await SecurityStorage().saveTypeStorage(resData.type);
+      currentUserId = resData.userId;
+      role = resData.type;
+      print("role: $role");
       //* TODO нужно переделать сохранения типа********
 
       return resData.type;

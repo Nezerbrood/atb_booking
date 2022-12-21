@@ -25,33 +25,54 @@ class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
 
   bool isHolder = true;
   bool isGuest = false;
+  List<bool> filter = <bool>[true, false, false];
 
   // todo получаем айди из секьюрити
-  BookingListBloc._internal() : super(BookingListLoadingState()) {
+  BookingListBloc._internal() : super(BookingListLoadingState(filterList: [true, false, false],)) {
     on<BookingListInitialEvent>((event, emit) async {
-      emit(BookingListLoadingState());
+      emit(BookingListLoadingState(filterList: filter,));
     });
     on<BookingListLoadEvent>((event, emit) async {
       try {
         final currentUserId = await SecurityStorage().getIdStorage();
         final List<Booking> bookingList = await BookingProvider()
             .getBookingsByUserId(currentUserId,
-                isHolder: isHolder, isGuest: isGuest);
+            isHolder: isHolder, isGuest: isGuest);
         final Map<int, WorkspaceType> mapOfTypes =
-            await WorkspaceTypeRepository().getMapOfTypes();
-        initializeDateFormatting();
-        if (bookingList.isEmpty) {
-          emit(BookingListEmptyState());
-        } else {
-          emit(BookingListLoadedState(
-              bookingList: bookingList, mapOfTypes: mapOfTypes));
-        }
+        await WorkspaceTypeRepository().getMapOfTypes();
+        emit(BookingListLoadedState(filterList: filter,
+            bookingList: bookingList, mapOfTypes: mapOfTypes,));
       } catch (_) {
-        emit(BookingListErrorState());
+        emit(BookingListErrorState(filterList: filter,));
       }
     });
     on<BookingCardTapEvent>((event, emit) async {
       try {} catch (_) {}
+    });
+    on<BookingListFilterChangeEvent>((event, emit) async {
+      filter = [false, false, false]..[event.filterNewValue] = true;
+      if (filter[0]) {
+        isHolder = true;
+        isGuest = false;
+      } else if (filter[1]) {
+        isHolder = false;
+        isGuest = true;
+      } else if (filter[2]) {
+        isHolder = true;
+        isGuest = true;
+      }
+      try {
+        emit(BookingListLoadingState(filterList: filter,));
+        final currentUserId = await SecurityStorage().getIdStorage();
+        final List<Booking> bookingList = await BookingProvider()
+            .getBookingsByUserId(currentUserId,
+            isHolder: isHolder, isGuest: isGuest);
+        final Map<int, WorkspaceType> mapOfTypes =
+        await WorkspaceTypeRepository().getMapOfTypes();
+        emit(BookingListLoadedState(filterList: filter,
+            bookingList: bookingList, mapOfTypes: mapOfTypes,));
+      } catch (_) {}
+      add(BookingListLoadEvent());
     });
     add(BookingListLoadEvent());
   }

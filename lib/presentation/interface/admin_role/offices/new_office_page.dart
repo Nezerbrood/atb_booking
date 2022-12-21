@@ -32,7 +32,6 @@ class NewOfficePage extends StatelessWidget {
         },
         child: BlocBuilder<NewOfficePageBloc, NewOfficePageState>(
           builder: (context, state) {
-            print("newOfficePage state: $state");
             if (state is NewOfficePageLoadedState) {
               print("${state.buttonIsActive}");
               return Column(

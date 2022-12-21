@@ -1,3 +1,4 @@
+import 'package:atb_booking/data/authController.dart';
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
@@ -162,23 +163,26 @@ class BookingDetailsScreen extends StatelessWidget {
                               });
                         },
                         color: appThemeData.primaryColor,
-                        child: Row(
-                          children: [
-                            Text(
-                              (state.booking.guests != null &&
-                                      state.booking.guests!.isNotEmpty)
-                                  ? "Показать\nна карте"
-                                  : "Показать на карте",
-                              style:
-                                  appThemeData.textTheme.titleMedium!.copyWith(
-                                color: Colors.white,
+                        child: Container(
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Text(
+                                (state.booking.guests != null &&
+                                        state.booking.guests!.isNotEmpty)
+                                    ? "Показать\nна плане"
+                                    : "Показать на плане",
+                                style: appThemeData.textTheme.titleMedium!
+                                    .copyWith(
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            const Icon(Icons.place)
-                          ],
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              const Icon(Icons.place)
+                            ],
+                          ),
                         ),
                       ),
                       if (state.booking.guests != null &&
@@ -199,41 +203,81 @@ class BookingDetailsScreen extends StatelessWidget {
                                 });
                           },
                           color: appThemeData.primaryColor,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                "Добавленные\nлюди",
-                                style: appThemeData.textTheme.titleMedium!
-                                    .copyWith(
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.end,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Icon(Icons.people),
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: Colors.white),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(20))),
-                                child: Center(
-                                    child: Text(
-                                  state.booking.guests!.length.toString(),
+                          child: Container(
+                            height: 50,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "Гости",
                                   style: appThemeData.textTheme.titleMedium!
                                       .copyWith(
-                                          color: appThemeData.primaryColor),
-                                )),
-                              )
-                            ],
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.end,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                const Icon(Icons.people),
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(20))),
+                                  child: Center(
+                                      child: Text(
+                                    state.booking.guests!.length.toString(),
+                                    style: appThemeData.textTheme.titleMedium!
+                                        .copyWith(
+                                            color: appThemeData.primaryColor),
+                                  )),
+                                )
+                              ],
+                            ),
                           ),
                         )
                     ],
+                  ),
+                  ///
+                  ///
+                  ///
+                  /// Бронирующий
+                  if(state.booking.holderId!=AuthController.currentUserId)Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30.0, vertical: 5),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: Text("Бронирующий",
+                              textAlign: TextAlign.left,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                  color: Colors.black54,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w300)),
+                        ),
+                        Container(
+                          height: 0.3,
+                          color: Colors.black54,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Text(state.booking.workspace.description,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                  color: Colors.black, fontSize: 23)),
+                        ),
+                      ],
+                    ),
                   ),
 
                   ///

@@ -109,26 +109,28 @@ class PersonProfileScreen extends StatelessWidget {
                                 const EdgeInsets.fromLTRB(10.0, 00.0, 10.0, 0),
                             child: Stack(children: <Widget>[
                               Scrollbar(
-                                child: ListView.builder(
-                                  controller: scrollController,
-                                  itemCount: state.bookingList.length,
-                                  itemBuilder: (context, index) {
-                                    final item = state.bookingList[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        PeopleProfileBookingBloc().add(
-                                            PeopleProfileBookingCardTapEvent(
-                                                item.id));
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    BookingDetailsScreen()));
-                                      },
-                                      child: getBookingCard(
-                                          state.bookingList[index],
-                                          state.mapOfTypes),
-                                    );
-                                  },
+                                child: Expanded(
+                                  child: ListView.builder(
+                                    controller: scrollController,
+                                    itemCount: state.bookingList.length,
+                                    itemBuilder: (context, index) {
+                                      final item = state.bookingList[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          PeopleProfileBookingBloc().add(
+                                              PeopleProfileBookingCardTapEvent(
+                                                  item.id));
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BookingDetailsScreen()));
+                                        },
+                                        child: getBookingCard(
+                                            state.bookingList[index],
+                                            state.mapOfTypes),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ]),
@@ -162,7 +164,7 @@ BookingCard getBookingCard(
   Map<int, WorkspaceType> mapOfTypes,
 ) {
   return BookingCard(
-      bookingData.reservationInterval,
+      bookingData,
       bookingData.workspace.type.type,
       "assets/workplacelogo.png",
       (bookingData.workspace.photosIds.isEmpty)
@@ -174,6 +176,6 @@ BookingCard getBookingCard(
         httpHeaders: NetworkController().getAuthHeader(),
         placeholder: (context, url) => const Center(),
         errorWidget: (context, url, error) => const Icon(Icons.error),
-      )
+      ),false
   );
 }

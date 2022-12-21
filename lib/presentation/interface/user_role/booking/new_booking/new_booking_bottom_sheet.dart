@@ -104,14 +104,11 @@ class _SheetLoadedStateWidget extends StatelessWidget {
       sliderType = setSliderType();
       double getSliderWidth(int sliderType) {
         double width = 0.0;
-        print("SLIDER TYPE: $sliderType");
         if (sliderType == 0) {
           var diff = ((rangeList[index].end as DateTime)
                       .millisecondsSinceEpoch -
                   (rangeList[index].start as DateTime).millisecondsSinceEpoch)
               .abs();
-          print("diff = $diff");
-          print("width");
           width = ((rangeList[index].end.hour - rangeList[index].start.hour)
                       .toDouble() *
                   1.5.toDouble() *
@@ -124,7 +121,6 @@ class _SheetLoadedStateWidget extends StatelessWidget {
                       .millisecondsSinceEpoch -
                   (rangeList[index].start as DateTime).millisecondsSinceEpoch))
               .abs();
-          print("diff = $diff");
           width = ((rangeList[index].end.minute - rangeList[index].start.minute)
                           .toDouble() *
                       4.toDouble().abs())
@@ -137,13 +133,10 @@ class _SheetLoadedStateWidget extends StatelessWidget {
                   .abs();
         }
         var newWidth = diff / 132631;
-        print("newWidth $newWidth");
-        print("oldWidth $width");
         if (width < 100.0) width = 100;
         if (width > 380.0) {
           width = 380.0;
         }
-        print("WIDTH: $width");
         return width;
       }
 

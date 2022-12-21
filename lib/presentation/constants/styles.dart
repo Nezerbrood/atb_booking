@@ -60,9 +60,9 @@ var appThemeData = ThemeData(
       labelMedium: TextStyle(fontSize: 12),
       labelSmall: TextStyle(fontSize: 11),
 
-      bodyLarge: TextStyle(fontSize: 17),
-      bodyMedium: TextStyle(fontSize: 14),
-      bodySmall: TextStyle(fontSize: 12),
+      bodyLarge: TextStyle(fontSize: 23),
+      bodyMedium: TextStyle(fontSize: 20),
+      bodySmall: TextStyle(fontSize: 14),
 
       /// используй код ниже чтобы быстро проверить все стилли
       // Text("Lorem Ипсум",style: appThemeData.textTheme.displayLarge,),
@@ -158,7 +158,7 @@ var appDarkThemeData = ThemeData(
 
       bodyLarge: TextStyle(fontSize: 17),
       bodyMedium: TextStyle(fontSize: 14),
-      bodySmall: TextStyle(fontSize: 12),
+      bodySmall: TextStyle(fontSize: 13),
 
       /// используй код ниже чтобы быстро проверить все стилли
       // Text("Lorem Ипсум",style: appThemeData.textTheme.displayLarge,),
@@ -197,4 +197,10 @@ class AtbAdditionalColors {
   static Color planBorderElementTranslucent = const Color.fromARGB(
       155, 0, 104, 255);
   static Color debugTranslucent = const Color.fromARGB(116, 237, 0, 255);
+  static Color lightGray = const Color.fromARGB(
+      255, 245, 245, 245);
+  static Color black10 = const Color.fromARGB(
+      26, 0, 0, 0);
+  static Color black7 = const Color.fromARGB(
+      18, 0, 0, 0);
 }
