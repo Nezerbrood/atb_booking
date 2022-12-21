@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdminFeedbackScreen extends StatelessWidget {
-  const AdminFeedbackScreen({Key? key}) : super(key: key);
+  AdminFeedbackScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,8 @@ class AdminFeedbackScreen extends StatelessWidget {
             style: appThemeData.textTheme.headlineSmall
                 ?.copyWith(color: Colors.black, fontSize: 23),
           ),
-          const _DropdownButtonType(),
+          SizedBox(height: 10),
+          _DropdownButtonType(),
           const SizedBox(height: 30),
           _ResultList(),
         ]),
@@ -33,7 +34,7 @@ class AdminFeedbackScreen extends StatelessWidget {
 }
 
 class _DropdownButtonType extends StatelessWidget {
-  const _DropdownButtonType();
+  _DropdownButtonType({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,120 +44,114 @@ class _DropdownButtonType extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DropdownButton<String>(
-                underline: Container(
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 0.5,
-                        style: BorderStyle.solid,
-                        color: appThemeData.colorScheme.primary,
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 238, 238, 238),
+                  borderRadius: BorderRadius.all(Radius.circular(10.0) //
                       ),
-                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-                    ),
-                  ),
                 ),
-                value: state.listType[0],
-                onChanged: (String? value) {
-                  if (value == state.listType[1]) {
-                    context
-                        .read<AdminFeedbackBloc>()
-                        .add(AdminFeedbackType_UserComplaintEvent());
-                  } else if (value == state.listType[2]) {
-                    context
-                        .read<AdminFeedbackBloc>()
-                        .add(AdminFeedbackType_WorkplaceComplaintEvent());
-                  } else {
-                    return;
-                  }
-                },
-                items: state.listType
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+                child: DropdownButton<String>(
+                  underline: Container(),
+                  value: state.listType[0],
+                  onChanged: (String? value) {
+                    if (value == state.listType[1]) {
+                      context
+                          .read<AdminFeedbackBloc>()
+                          .add(AdminFeedbackType_UserComplaintEvent());
+                    } else if (value == state.listType[2]) {
+                      context
+                          .read<AdminFeedbackBloc>()
+                          .add(AdminFeedbackType_WorkplaceComplaintEvent());
+                    } else {
+                      return;
+                    }
+                  },
+                  items: state.listType
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
               ),
             ],
           );
         } else if (state.typeId == 2) {
           return Column(
             children: [
-              DropdownButton<String>(
-                underline: Container(
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 0.5,
-                        style: BorderStyle.solid,
-                        color: appThemeData.colorScheme.primary,
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 238, 238, 238),
+                  borderRadius: BorderRadius.all(Radius.circular(10.0) //
                       ),
-                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-                    ),
-                  ),
                 ),
-                value: state.listType[1],
-                onChanged: (String? value) {
-                  if (value == state.listType[0]) {
-                    context
-                        .read<AdminFeedbackBloc>()
-                        .add(AdminFeedbackType_ApplicationMessageEvent());
-                  } else if (value == state.listType[2]) {
-                    context
-                        .read<AdminFeedbackBloc>()
-                        .add(AdminFeedbackType_WorkplaceComplaintEvent());
-                  } else {
-                    return;
-                  }
-                },
-                items: state.listType
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+                child: DropdownButton<String>(
+                  underline: Container(),
+                  value: state.listType[1],
+                  onChanged: (String? value) {
+                    if (value == state.listType[0]) {
+                      context
+                          .read<AdminFeedbackBloc>()
+                          .add(AdminFeedbackType_ApplicationMessageEvent());
+                    } else if (value == state.listType[2]) {
+                      context
+                          .read<AdminFeedbackBloc>()
+                          .add(AdminFeedbackType_WorkplaceComplaintEvent());
+                    } else {
+                      return;
+                    }
+                  },
+                  items: state.listType
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
               ),
             ],
           );
         } else {
           return Column(
             children: [
-              DropdownButton<String>(
-                underline: Container(
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 0.5,
-                        style: BorderStyle.solid,
-                        color: appThemeData.colorScheme.primary,
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 238, 238, 238),
+                  borderRadius: BorderRadius.all(Radius.circular(10.0) //
                       ),
-                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-                    ),
-                  ),
                 ),
-                value: state.listType[2],
-                onChanged: (String? value) {
-                  if (value == state.listType[0]) {
-                    context
-                        .read<AdminFeedbackBloc>()
-                        .add(AdminFeedbackType_ApplicationMessageEvent());
-                  } else if (value == state.listType[1]) {
-                    context
-                        .read<AdminFeedbackBloc>()
-                        .add(AdminFeedbackType_UserComplaintEvent());
-                  } else {
-                    return;
-                  }
-                },
-                items: state.listType
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+                child: DropdownButton<String>(
+                  underline: Container(),
+                  value: state.listType[2],
+                  onChanged: (String? value) {
+                    if (value == state.listType[0]) {
+                      context
+                          .read<AdminFeedbackBloc>()
+                          .add(AdminFeedbackType_ApplicationMessageEvent());
+                    } else if (value == state.listType[1]) {
+                      context
+                          .read<AdminFeedbackBloc>()
+                          .add(AdminFeedbackType_UserComplaintEvent());
+                    } else {
+                      return;
+                    }
+                  },
+                  items: state.listType
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
               ),
             ],
           );
@@ -175,9 +170,7 @@ class _ResultList extends StatelessWidget {
     _scrollController.addListener(() {
       if (_scrollController.position.maxScrollExtent ==
           _scrollController.position.pixels) {
-        context
-            .read<AdminFeedbackBloc>()
-            .add(AdminFeedbackLoadNextPageEvent());
+        context.read<AdminFeedbackBloc>().add(AdminFeedbackLoadNextPageEvent());
       }
     });
 
@@ -214,7 +207,8 @@ class _ResultList extends StatelessWidget {
                     text: "Загрузить")
               ],
             ));
-          } else if (state is AdminFeedbackMainState || state is AdminFeedbackLoadingState) {
+          } else if (state is AdminFeedbackMainState ||
+              state is AdminFeedbackLoadingState) {
             if (state is AdminFeedbackLoadingState &&
                 state.formHasBeenChanged) {
               return const Center(
@@ -236,7 +230,7 @@ class _ResultList extends StatelessWidget {
                               index == state.feedbackListItems.length - 1)
                           ? Container(
                               height: 150,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
                               child: const Center(
                                 child: CircularProgressIndicator(),
                               ))

@@ -45,18 +45,18 @@ class FeedBackScreen extends StatelessWidget {
                   /// Инпут города
                   _CityField(),
 
-                  /// Инпут Город и Офис
+                  /// Инпут Офис и Этаж
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        /// Инпут Города
+                        /// Инпут Офиса
                         Expanded(flex: 13, child: _OfficeField()),
                         const SizedBox(width: 10),
 
-                        ///Инпут Офиса
+                        ///Инпут Этажа
                         Expanded(flex: 10, child: _LevelField()),
                       ],
                     ),
@@ -65,7 +65,8 @@ class FeedBackScreen extends StatelessWidget {
 
                   /// Карта
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                     child: BlocConsumer<FeedbackBloc, FeedbackState>(
                         listener: (context, state) {},
                         buildWhen: (previous, current) =>
@@ -129,9 +130,19 @@ class _TypeField extends StatelessWidget {
                           .textTheme
                           .headlineSmall
                           ?.copyWith(color: Colors.black, fontSize: 20),
+                      // decoration: const InputDecoration(
+                      //   border: OutlineInputBorder(),
+                      //   labelText: "Выберите тип обращения...",
+                      // ),
                       decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Выберите тип обращения...",
+                        hintText: "Выберите тип обращения...",
+                        filled: true,
+                        fillColor: Color.fromARGB(255, 238, 238, 238),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        suffixIcon: Icon(Icons.search),
                       ),
                       controller: FeedBackScreen.typeInputController,
                     ),
@@ -192,8 +203,13 @@ class _CityField extends StatelessWidget {
                         .headlineSmall
                         ?.copyWith(color: Colors.black, fontSize: 20),
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Выберите город...",
+                      hintText: "Выберите город",
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 238, 238, 238),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
                     ),
                     controller: FeedBackScreen.cityInputController,
                   ),
@@ -250,8 +266,13 @@ class _OfficeField extends StatelessWidget {
                     .headlineSmall
                     ?.copyWith(color: Colors.black, fontSize: 20),
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Выберите офис...",
+                  hintText: "Выберите офис...",
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 238, 238, 238),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
                 ),
                 controller: FeedBackScreen.officeInputController,
               ),
@@ -309,9 +330,16 @@ class _LevelField extends StatelessWidget {
                     .headlineSmall
                     ?.copyWith(color: Colors.black, fontSize: 20),
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Выберите этаж...",
+                  hintText: "Выберите этаж",
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 238, 238, 238),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  suffixIcon: Icon(Icons.arrow_drop_down),
                 ),
+                
                 controller: FeedBackScreen.levelInputController,
               ),
               suggestionsCallback: (pattern) {

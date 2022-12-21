@@ -180,9 +180,12 @@ class __FormWidgetState extends State<_FormWidget> {
                           });
                         }),
                       ),
-                      const Text(
-                        "Запомнить логин и пароль?",
-                        textAlign: TextAlign.center,
+                      const Expanded(
+                        child:  Text(
+                          "Запомнить логин и пароль?",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 19),
+                        ),
                       ),
                     ],
                   ),
