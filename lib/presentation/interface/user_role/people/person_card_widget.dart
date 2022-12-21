@@ -1,11 +1,12 @@
-
 import 'package:atb_booking/data/models/user.dart';
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
+import 'package:atb_booking/logic/user_role/feedback_bloc/complaint_bloc/complaint_bloc.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/logic/user_role/people_bloc/people_bloc.dart';
 import 'package:atb_booking/logic/user_role/people_profile_bloc/people_profile_booking_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
+import 'package:atb_booking/presentation/interface/user_role/feedback/user_complaint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,18 +53,14 @@ class PersonCard extends StatelessWidget {
                           height: 50,
                           child: CachedNetworkImage(
                               fit: BoxFit.cover,
-                              imageUrl: AppImageProvider
-                                  .getImageUrlFromImageId(user.avatarImageId,),
-                              httpHeaders: NetworkController()
-                                  .getAuthHeader(),
-                              progressIndicatorBuilder: (context,
-                                  url, downloadProgress) =>
-                                  Center(
-                                      child:
-                                      CircularProgressIndicator(
-                                          value:
-                                          downloadProgress
-                                              .progress)),
+                              imageUrl: AppImageProvider.getImageUrlFromImageId(
+                                user.avatarImageId,
+                              ),
+                              httpHeaders: NetworkController().getAuthHeader(),
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => Center(
+                                      child: CircularProgressIndicator(
+                                          value: downloadProgress.progress)),
                               errorWidget: (context, url, error) =>
                                   Container()),
                         ),
@@ -113,12 +110,16 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
               SimpleDialogOption(
                 onPressed: () async {
                   Navigator.pop(context);
-                  Navigator.of(contextDialog).push(MaterialPageRoute(
-                      builder: (contextBuilder) => BlocProvider.value(
-                            value:
-                                BlocProvider.of<FeedbackBloc>(contextDialog),
-                            child: const FeedBackScreen(),
-                          )));
+                  await Navigator.push(
+                    contextDialog,
+                    MaterialPageRoute(builder: (contextBuilder) {
+                      return BlocProvider<ComplaintBloc>(
+                        create: (contextBuilder) =>
+                            ComplaintBloc()..add(ComplaintStartingEvent(user)),
+                        child: const FeedbackUserComplaint(),
+                      );
+                    }),
+                  );
                 },
                 child: Row(
                   children: [
@@ -167,14 +168,4 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
           ),
         );
       });
-}
-
-Future<void> _feedbackTransition(BuildContext functionContext) async {
-  Navigator.push(
-      functionContext,
-      MaterialPageRoute(
-          builder: (context) => BlocProvider.value(
-                value: BlocProvider.of<FeedbackBloc>(functionContext),
-                child: const FeedBackScreen(),
-              )));
 }
