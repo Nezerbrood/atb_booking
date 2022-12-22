@@ -266,7 +266,7 @@ class _OfficeField extends StatelessWidget {
                     .headlineSmall
                     ?.copyWith(color: Colors.black, fontSize: 20),
                 decoration: const InputDecoration(
-                  hintText: "Выберите офис...",
+                  hintText: "Выберите офис",
                   filled: true,
                   fillColor: Color.fromARGB(255, 238, 238, 238),
                   border: OutlineInputBorder(
@@ -330,7 +330,7 @@ class _LevelField extends StatelessWidget {
                     .headlineSmall
                     ?.copyWith(color: Colors.black, fontSize: 20),
                 decoration: const InputDecoration(
-                  hintText: "Выберите этаж",
+                  hintText: "Этаж",
                   filled: true,
                   fillColor: Color.fromARGB(255, 238, 238, 238),
                   border: OutlineInputBorder(
@@ -399,12 +399,8 @@ class _MessageField extends StatelessWidget {
                             .headlineSmall
                             ?.copyWith(
                                 color: Colors.black54,
-                                fontSize: 24,
+                                fontSize: 22,
                                 fontWeight: FontWeight.w300)),
-                  ),
-                  Container(
-                    height: 0.3,
-                    color: Colors.black54,
                   ),
                   SizedBox(
                     width: double.infinity,
@@ -415,8 +411,15 @@ class _MessageField extends StatelessWidget {
                             .add(FeedbackMessageInputEvent(form));
                       },
                       controller: FeedBackScreen.messageInputController,
-                      decoration:
-                          const InputDecoration(hintText: 'Введите текст \n\n'),
+                      decoration: const InputDecoration(
+                        hintText: "Введите текст сообщения",
+                        filled: true,
+                        fillColor: Color.fromARGB(255, 238, 238, 238),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                      ),
                       keyboardType: TextInputType.streetAddress,
                       style: Theme.of(context)
                           .textTheme

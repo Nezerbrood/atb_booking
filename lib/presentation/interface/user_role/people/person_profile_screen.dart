@@ -41,8 +41,8 @@ class PersonProfileScreen extends StatelessWidget {
                   child: ClipOval(
                     child:
                     Container(
-                      height: 90,
-                      width: 90,
+                      height: 70,
+                      width: 70,
                       child: CachedNetworkImage(
                           fit: BoxFit.cover,
                           imageUrl: AppImageProvider
@@ -68,21 +68,46 @@ class PersonProfileScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          user.fullName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                              fontSize: 25,
-                              color: appThemeData.colorScheme.primary),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AtbAdditionalColors.black7,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              user.fullName,
+                              style: appThemeData.textTheme.bodyLarge!.copyWith(
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                              ),
+                            ),
+                          ),
                         ),
-                        Text(
-                          user.email,
-                          style: appThemeData.textTheme.bodyLarge,),
-                        Text(
-                          user.phone,
-                        style: appThemeData.textTheme.bodyLarge,),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              user.jobTitle,
+                              style: appThemeData.textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.w300,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              user.email,
+                              style: appThemeData.textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.w300,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

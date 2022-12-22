@@ -27,7 +27,7 @@ class _WorkspaceRow extends StatelessWidget {
             style: appThemeData.textTheme.bodyLarge!.copyWith(
               fontWeight: FontWeight.w600,
               height: 0,
-            ),
+            ).copyWith(fontSize:19 ),
           ),
         ),
       ),
@@ -57,15 +57,6 @@ class _DateRow extends StatelessWidget {
       dateString =
           DateFormat.MMMMd("ru_RU").format(booking.reservationInterval.start);
     }
-    // Text(
-    // 'c ' +
-    // DateFormat('HH:mm').format(booking.reservationInterval.start) +
-    // " до " +
-    // DateFormat('HH:mm').format(booking.reservationInterval.end) +
-    // '\n' +
-    // DateFormat.MMMMd("ru_RU").format(booking.reservationInterval.start),
-    // style: appThemeData.textTheme.titleMedium,
-    // ),
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Container(
@@ -154,18 +145,16 @@ class _Image extends StatelessWidget {
     if (booking.workspace.photosIds.isEmpty) {
       return const SizedBox.shrink();
     } else {
-      return Container(
-        child: CachedNetworkImage(
-            fit: BoxFit.fitWidth,
-            imageUrl: AppImageProvider.getImageUrlFromImageId(
-                booking.workspace.photosIds.first),
-            httpHeaders: NetworkController().getAuthHeader(),
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                Center(
-                    child: CircularProgressIndicator(
-                        value: downloadProgress.progress)),
-            errorWidget: (context, url, error) => const Icon(Icons.error)),
-      );
+      return CachedNetworkImage(
+          fit: BoxFit.fitWidth,
+          imageUrl: AppImageProvider.getImageUrlFromImageId(
+              booking.workspace.photosIds.first),
+          httpHeaders: NetworkController().getAuthHeader(),
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              Center(
+                  child: CircularProgressIndicator(
+                      value: downloadProgress.progress)),
+          errorWidget: (context, url, error) => const Icon(Icons.error));
     }
   }
 }
@@ -185,15 +174,14 @@ class BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(6.0),
       child: Card(
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          elevation: 1,
           shape: RoundedRectangleBorder(
               side: const BorderSide(
                   width: 0.3, color: Color.fromARGB(255, 200, 194, 207)),
               borderRadius: BorderRadius.circular(20.0)),
-          color: Colors.white,
+
           child: Stack(
             alignment: Alignment.centerLeft,
               children: [
@@ -234,7 +222,4 @@ class BookingCard extends StatelessWidget {
     );
   }
 
-  _getImage() {
-    return Container(width: 110, height: 110, child: image);
-  }
 }

@@ -2,6 +2,7 @@ import 'package:atb_booking/data/models/user.dart';
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/adding_people_to_booking_bloc/adding_people_to_booking_bloc.dart';
+import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/user_role/feedback/feedback_screen.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
@@ -513,9 +514,12 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
       });
 }
 
-Future<void> _feedbackTransition(BuildContext context) async {
-  await Navigator.push(
+ _feedbackTransition(BuildContext context){
+  Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const FeedBackScreen()),
+    MaterialPageRoute(builder: (context) => BlocProvider(
+  create: (context) => FeedbackBloc(),
+  child: const FeedBackScreen(),
+)),
   );
 }

@@ -4,12 +4,15 @@ import 'package:atb_booking/data/services/city_provider.dart';
 import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
+import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/new_office_page.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/office_page.dart';
+import 'package:atb_booking/presentation/interface/auth/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:intl/intl.dart';
 
 class AdminOfficesScreen extends StatelessWidget {
   const AdminOfficesScreen({Key? key}) : super(key: key);
@@ -17,7 +20,18 @@ class AdminOfficesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Center(child: const Text("Офисы"))),
+      appBar: AppBar(
+        title: const Center(child: Text("Офисы")),
+        actions: [
+          IconButton(
+              onPressed: () {
+                BookingListBloc().add(BookingListInitialEvent());
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (_) => const Auth()));
+              },
+              icon: const Icon(Icons.logout, size: 28))
+        ],
+      ),
       body: Column(
         children: [
           const _CityField(),
@@ -35,11 +49,11 @@ class AdminOfficesScreen extends StatelessWidget {
               BlocProvider<NewOfficePageBloc>(
                   create: (context) =>
                       NewOfficePageBloc() //context.read<NewOfficePageBloc>(),
-                  ),
+              ),
               BlocProvider(
                   create: (context) =>
                       AdminOfficePageBloc() //context.read<AdminOfficePageBloc>(),
-                  ),
+              ),
             ], child: const NewOfficePage());
           }));
         },
@@ -54,7 +68,7 @@ class _CityField extends StatelessWidget {
   ///City input fields
   /// -> -> ->
   static final TextEditingController _cityInputController =
-      TextEditingController();
+  TextEditingController();
 
   const _CityField({Key? key}) : super(key: key);
 
@@ -101,7 +115,7 @@ class _CityField extends StatelessWidget {
               //todo _selectedCity = suggestion;
             },
             validator: (value) =>
-                value!.isEmpty ? 'Введите название города' : null,
+            value!.isEmpty ? 'Введите название города' : null,
             //onSaved: (value) => this._selectedCity = value,
           ),
         );
@@ -181,19 +195,20 @@ class OfficeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
           onTap: () {
             Navigator.of(context).push(PageRouteBuilder(
               pageBuilder: (_, animation, secondaryAnimation) =>
                   MultiBlocProvider(providers: [
-                BlocProvider.value(
-                  value: context.read<AdminOfficesBloc>(),
-                ),
-                BlocProvider<AdminOfficePageBloc>(
-                    create: (_) => AdminOfficePageBloc()
-                      ..add(OfficePageLoadEvent(officeListItem.id)))
-              ], child: const OfficePage()),
+                    BlocProvider.value(
+                      value: context.read<AdminOfficesBloc>(),
+                    ),
+                    BlocProvider<AdminOfficePageBloc>(
+                        create: (_) =>
+                        AdminOfficePageBloc()
+                          ..add(OfficePageLoadEvent(officeListItem.id)))
+                  ], child: const OfficePage()),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 const begin = Offset(1.0, 0.0);
@@ -209,40 +224,63 @@ class OfficeCard extends StatelessWidget {
                 );
               },
             ));
-
-            //
-            //   MaterialPageRoute(builder: (cont) {
-            // return MultiBlocProvider(providers: [
-            //   BlocProvider.value(
-            //     value: context.read<AdminOfficesBloc>(),
-            //   ),
-            //   BlocProvider<AdminOfficePageBloc>(
-            //       create: (_) => AdminOfficePageBloc()
-            //         ..add(OfficePageLoadEvent(officeListItem.id)))
-            // ], child: const OfficePage());
-            //}));
           },
-          child: ListTile(
-            title: Text(officeListItem.address),
-            subtitle: Text("ID: ${officeListItem.id}"),
-          ),
-        ));
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _AddressRow(officeListItem: officeListItem),
+
+                _WorkTimeRangeRow(officeListItem: officeListItem)
+              ],
+            ),
+          )
+      ),
+    );
   }
 }
-// Route _createRoute() {
-//   return PageRouteBuilder(
-//     pageBuilder: (context, animation, secondaryAnimation) => const (),
-//     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-//       const begin = Offset(0.0, 1.0);
-//       const end = Offset.zero;
-//       const curve = Curves.ease;
-//
-//       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-//
-//       return SlideTransition(
-//         position: animation.drive(tween),
-//         child: child,
-//       );
-//     },
-//   );
-// }
+
+class _AddressRow extends StatelessWidget {
+  final Office officeListItem;
+
+  const _AddressRow({required this.officeListItem});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Container(
+        // decoration: BoxDecoration(
+        //   color: AtbAdditionalColors.black7,
+        //   borderRadius: BorderRadius.circular(20),
+        // ),
+        child: Text(officeListItem.address,
+          style: appThemeData.textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w400),),
+      ),
+    );
+  }
+}
+
+
+class _WorkTimeRangeRow extends StatelessWidget {
+  final Office officeListItem;
+
+  const _WorkTimeRangeRow({required this.officeListItem});
+
+  @override
+  Widget build(BuildContext context) {
+    String text = "c ${DateFormat('HH:mm').format(
+        officeListItem.workTimeRange.start)} до ${DateFormat('HH:mm').format(
+        officeListItem.workTimeRange.end)}";
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Container(
+        child: Text("Работает "+text,
+          style: appThemeData.textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w400),),
+      ),
+    );
+  }
+}

@@ -32,6 +32,8 @@ class SearchPeopleTextField extends StatelessWidget {
   final _controller = TextEditingController();
   Timer? _debounce;
 
+  SearchPeopleTextField({super.key});
+
   @override
   Widget build(BuildContext context) {
     _onSearchChanged(String query) {
@@ -75,8 +77,8 @@ class SearchPeopleTextField extends StatelessWidget {
                                   textAlign: TextAlign.right),
                               const SizedBox(width: 10),
                               state.isFavoriteOn
-                                  ? Icon(Icons.star,)
-                                  : Icon(
+                                  ? const Icon(Icons.star,)
+                                  : const Icon(
                                 Icons.star_border,
                               ),
                             ],
@@ -112,81 +114,104 @@ class SearchResultList extends StatelessWidget {
         context.read<PeopleBloc>().add(PeopleLoadNextPageEvent());
       }
     });
-    return Expanded(
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: BlocBuilder<PeopleBloc, PeopleState>(
-            builder: (context, state) {
-              if (state is PeopleLoadedState) {
-                if (state.formHasBeenChanged) {
-                  if (_scrollController.hasClients) {
-                    _scrollController.jumpTo(0);
-                  }
-                }
-              }
+    return BlocBuilder<PeopleBloc, PeopleState>(
+      builder: (context, state) {
+        if (state is PeopleLoadedState) {
+          if (state.formHasBeenChanged) {
+            if (_scrollController.hasClients) {
+              _scrollController.jumpTo(0);
+            }
+          }
+        }
 
-              if (state is PeopleEmptyState) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Ничего не найдено"
-                          ,
-                          style: appThemeData.textTheme.headlineMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
+        if (state is PeopleEmptyState) {
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Ничего не найдено"
+                    ,
+                    style: appThemeData.textTheme.headlineMedium,
+                    textAlign: TextAlign.center,
                   ),
-                );
-              }
-              if (state is PeopleInitialState) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Введите имя человека в строку поиска выше",
-                          style: appThemeData.textTheme.headlineMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
+                ),
+              ),
+            ),
+          );
+        }
+        if (state is PeopleInitialState) {
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Введите имя человека в строку поиска выше",
+                    style: appThemeData.textTheme.headlineMedium,
+                    textAlign: TextAlign.center,
                   ),
+                ),
+              ),
+            ),
+          );
+        }
+        if (state is PeopleLoadedState) {
+          return Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              shrinkWrap: false,
+              itemCount: state.users.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    PersonCard(state.users[index]),
+                    (state is PeopleLoadingState &&
+                        index == state.users.length - 1)
+                        ? Container(
+                        height: 150,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ))
+                        : const SizedBox.shrink(),
+                  ],
                 );
-              }
+              },
+            ),
+          );}
+          else if(state is PeopleLoadingState){
+            return Expanded(
 
-              return ListView.builder(
-                controller: _scrollController,
-                shrinkWrap: false,
-                itemCount: state.users.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      PersonCard(state.users[index]),
-                      (state is PeopleLoadingState &&
-                              index == state.users.length - 1)
-                          ? Container(
-                              height: 150,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
-                              child: const Center(
-                                child: CircularProgressIndicator(),
-                              ))
-                          : const SizedBox.shrink(),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-        ),
-      ),
+                child: ListView.builder(
+                  controller: _scrollController,
+                  shrinkWrap: false,
+                  itemCount: state.users.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        PersonCard(state.users[index]),
+                        (state is PeopleLoadingState &&
+                            index == state.users.length - 1)
+                            ? Container(
+                            height: 150,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ))
+                            : const SizedBox.shrink(),
+                      ],
+                    );
+                  },
+                ),
+            );
+        }else{
+          return ErrorWidget((Exception("bad state: $state")));
+        }
+      },
     );
   }
 }

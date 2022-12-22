@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class OfficePage extends StatelessWidget {
@@ -21,9 +22,10 @@ class OfficePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-      context.read<AdminOfficesBloc>().add(AdminOfficesReloadEvent());
-      return true;},
+      onWillPop: () async {
+        context.read<AdminOfficesBloc>().add(AdminOfficesReloadEvent());
+        return true;
+      },
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -140,7 +142,7 @@ class _OfficeAddress extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: Padding(
-              padding: const EdgeInsets.only(left:8.0),
+              padding: const EdgeInsets.only(left: 8.0),
               child: Text("Адрес",
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -290,6 +292,8 @@ class _WorkTimeRange extends StatelessWidget {
   Widget build(BuildContext context) {
     var values =
         SfRangeValues(state.workTimeRange.start, state.workTimeRange.end);
+    var start = DateFormat('HH:mm').format(state.workTimeRange.start);
+    var end = DateFormat('HH:mm').format(state.workTimeRange.end);
     return Column(
       children: [
         Padding(
@@ -298,7 +302,7 @@ class _WorkTimeRange extends StatelessWidget {
             children: [
               SizedBox(
                 width: double.infinity,
-                child: Text("Время работы офиса",
+                child: Text("Время работы: c $start до $end",
                     textAlign: TextAlign.left,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: Colors.black54,
@@ -314,37 +318,74 @@ class _WorkTimeRange extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5.0),
-          child: SfRangeSlider(
-              showTicks: true,
-              showDividers: true,
-              minorTicksPerInterval: 2,
-              values: values,
-              min: DateTime(
-                  state.workTimeRange.start.year,
-                  state.workTimeRange.start.month,
-                  state.workTimeRange.start.day,
-                  0),
-              max: DateTime(
-                  state.workTimeRange.start.year,
-                  state.workTimeRange.start.month,
-                  state.workTimeRange.start.day,
-                  24),
-              showLabels: true,
-              interval: 4,
-              stepDuration: const SliderStepDuration(minutes: 30),
-              dateIntervalType: DateIntervalType.hours,
-              //numberFormat: NumberFormat('\$'),
-              dateFormat: DateFormat.Hm(),
-              enableTooltip: true,
-              onChanged: (newValues) {
-                context
-                    .read<AdminOfficePageBloc>()
-                    .add(AdminOfficePageWorkRangeChangeEvent(DateTimeRange(
-                      start: newValues.start,
-                      end: newValues.end,
-                    )));
-                //values = newValues;
-              }),
+          child: SfRangeSliderTheme(
+            data: SfRangeSliderThemeData(
+              activeLabelStyle: appThemeData.textTheme.headlineMedium?.copyWith(
+                  color: Colors.black54,
+                  fontSize: 14,
+                  fontStyle: FontStyle.normal),
+              inactiveLabelStyle: appThemeData.textTheme.headlineMedium
+                  ?.copyWith(
+                      color: Colors.black54,
+                      fontSize: 14,
+                      fontStyle: FontStyle.normal),
+              tooltipTextStyle: appThemeData.textTheme.headlineMedium?.copyWith(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontStyle: FontStyle.normal),
+              overlappingTooltipStrokeColor: Colors.white,
+              tooltipBackgroundColor: appThemeData.primaryColor,
+              disabledActiveTrackColor: Colors.black38,
+              disabledInactiveTrackColor: Colors.black38,
+              disabledActiveTickColor: Colors.black38,
+              disabledInactiveTickColor: Colors.black38,
+              disabledActiveMinorTickColor: Colors.black38,
+              disabledInactiveMinorTickColor: Colors.black38,
+              disabledActiveDividerColor: Colors.red,
+              disabledInactiveDividerColor: Colors.black38,
+              disabledThumbColor: Colors.black38,
+              activeTrackColor: appThemeData.primaryColor,
+              inactiveTrackColor: Colors.black38,
+              activeTickColor: appThemeData.primaryColor,
+              inactiveTickColor: Colors.black38,
+              activeMinorTickColor: appThemeData.primaryColor,
+              inactiveMinorTickColor: Colors.black38,
+              activeDividerColor: appThemeData.primaryColor,
+              inactiveDividerColor: Colors.black38,
+              thumbColor: appThemeData.primaryColor,
+            ),
+            child: SfRangeSlider(
+                showTicks: true,
+                showDividers: true,
+                minorTicksPerInterval: 2,
+                values: values,
+                min: DateTime(
+                    state.workTimeRange.start.year,
+                    state.workTimeRange.start.month,
+                    state.workTimeRange.start.day,
+                    0),
+                max: DateTime(
+                    state.workTimeRange.start.year,
+                    state.workTimeRange.start.month,
+                    state.workTimeRange.start.day,
+                    24),
+                showLabels: true,
+                interval: 4,
+                stepDuration: const SliderStepDuration(minutes: 30),
+                dateIntervalType: DateIntervalType.hours,
+                //numberFormat: NumberFormat('\$'),
+                dateFormat: DateFormat.Hm(),
+                enableTooltip: true,
+                onChanged: (newValues) {
+                  context
+                      .read<AdminOfficePageBloc>()
+                      .add(AdminOfficePageWorkRangeChangeEvent(DateTimeRange(
+                        start: newValues.start,
+                        end: newValues.end,
+                      )));
+                  //values = newValues;
+                }),
+          ),
         ),
       ],
     );
@@ -427,32 +468,32 @@ class _LevelCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (_, animation, secondaryAnimation) =>
+                MultiBlocProvider(providers: [
+              BlocProvider.value(
+                value: context.read<AdminOfficePageBloc>(),
+              ),
+              BlocProvider<LevelPlanEditorBloc>(
+                create: (_) => LevelPlanEditorBloc()
+                  ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(level.id)),
+              ),
+            ], child: const LevelEditorPage()),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
 
-              PageRouteBuilder(
-                pageBuilder: (_, animation, secondaryAnimation) => MultiBlocProvider(providers: [
-                  BlocProvider.value(
-                    value: context.read<AdminOfficePageBloc>(),
-                  ),
-                  BlocProvider<LevelPlanEditorBloc>(
-                    create: (_) => LevelPlanEditorBloc()
-                      ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(level.id)),
-                  ),
-                ], child: const LevelEditorPage()),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(1.0, 0.0);
-                  const end = Offset.zero;
-                  const curve = Curves.ease;
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-                  return SlideTransition(
-                    position: animation.drive(tween),
-                    child: child,
-                  );
-                },
-              )
-          );
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+          ));
         },
         child: ListTile(
           title: Text("${level.number} Этаж"),
@@ -614,13 +655,14 @@ class _AddNewLevelButton extends StatelessWidget {
               .read<AdminOfficePageBloc>()
               .add(AdminOfficePageCreateNewLevelButtonPress());
           showDialog(
-            useRootNavigator: false,
+              useRootNavigator: false,
               context: context,
               builder: (_) {
                 return BlocProvider.value(
                   value: context.read<AdminOfficePageBloc>(),
-                  child: BlocConsumer<AdminOfficePageBloc, AdminOfficePageState>(
-                      builder: (context, state) {
+                  child:
+                      BlocConsumer<AdminOfficePageBloc, AdminOfficePageState>(
+                          builder: (context, state) {
                     if (state is AdminOfficePageErrorCreateLevelState) {
                       return const AlertDialog(
                         content: Text("Ошибка при создании..."),
@@ -630,36 +672,34 @@ class _AddNewLevelButton extends StatelessWidget {
                   }, listener: (_, state) {
                     if (state is AdminOfficePageSuccessCreateLevelState) {
                       Navigator.pop(context);
-                      Navigator.of(context)
-                          .push(
-
-
-                          PageRouteBuilder(
-                            pageBuilder: (_, animation, secondaryAnimation) => MultiBlocProvider(providers: [
-                              BlocProvider.value(
-                                value: context.read<AdminOfficePageBloc>(),
-                              ),
-                              BlocProvider(
-                                create: (_) => LevelPlanEditorBloc()
-                                  ..add(LevelPlanEditorLoadWorkspacesFromServerEvent(
+                      Navigator.of(context).push(PageRouteBuilder(
+                        pageBuilder: (_, animation, secondaryAnimation) =>
+                            MultiBlocProvider(providers: [
+                          BlocProvider.value(
+                            value: context.read<AdminOfficePageBloc>(),
+                          ),
+                          BlocProvider(
+                            create: (_) => LevelPlanEditorBloc()
+                              ..add(
+                                  LevelPlanEditorLoadWorkspacesFromServerEvent(
                                       state.levelId)),
-                              ),
-                            ], child: const LevelEditorPage()),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              const begin = Offset(1.0, 0.0);
-                              const end = Offset.zero;
-                              const curve = Curves.ease;
+                          ),
+                        ], child: const LevelEditorPage()),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
 
-                              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
 
-                              return SlideTransition(
-                                position: animation.drive(tween),
-                                child: child,
-                              );
-                            },
-                          )
-
-                    );
+                          return SlideTransition(
+                            position: animation.drive(tween),
+                            child: child,
+                          );
+                        },
+                      ));
                     }
                   }),
                 );

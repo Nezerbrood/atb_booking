@@ -3,12 +3,14 @@ import 'package:atb_booking/data/services/city_provider.dart';
 import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
+import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/office_page.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class NewOfficePage extends StatelessWidget {
@@ -325,33 +327,70 @@ class _WorkTimeRange extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
-            child: SfRangeSlider(
-                showTicks: true,
-                showDividers: true,
-                minorTicksPerInterval: 2,
-                values: values,
-                min: DateTime(DateTime.now().year, DateTime.now().month,
-                        DateTime.now().day, 0).toLocal(),
+            child: SfRangeSliderTheme(
+              data: SfRangeSliderThemeData(
+                activeLabelStyle: appThemeData.textTheme.headlineMedium?.copyWith(
+                    color: Colors.black54,
+                    fontSize: 14,
+                    fontStyle: FontStyle.normal),
+                inactiveLabelStyle: appThemeData.textTheme.headlineMedium
+                    ?.copyWith(
+                    color: Colors.black54,
+                    fontSize: 14,
+                    fontStyle: FontStyle.normal),
+                tooltipTextStyle: appThemeData.textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontStyle: FontStyle.normal),
+                overlappingTooltipStrokeColor: Colors.white,
+                tooltipBackgroundColor: appThemeData.primaryColor,
+                disabledActiveTrackColor: Colors.black38,
+                disabledInactiveTrackColor: Colors.black38,
+                disabledActiveTickColor: Colors.black38,
+                disabledInactiveTickColor: Colors.black38,
+                disabledActiveMinorTickColor: Colors.black38,
+                disabledInactiveMinorTickColor: Colors.black38,
+                disabledActiveDividerColor: Colors.red,
+                disabledInactiveDividerColor: Colors.black38,
+                disabledThumbColor: Colors.black38,
+                activeTrackColor: appThemeData.primaryColor,
+                inactiveTrackColor: Colors.black38,
+                activeTickColor: appThemeData.primaryColor,
+                inactiveTickColor: Colors.black38,
+                activeMinorTickColor: appThemeData.primaryColor,
+                inactiveMinorTickColor: Colors.black38,
+                activeDividerColor: appThemeData.primaryColor,
+                inactiveDividerColor: Colors.black38,
+                thumbColor: appThemeData.primaryColor,
+              ),
+              child: SfRangeSlider(
+                  showTicks: true,
+                  showDividers: true,
+                  minorTicksPerInterval: 2,
+                  values: values,
+                  min: DateTime(DateTime.now().year, DateTime.now().month,
+                          DateTime.now().day, 0).toLocal(),
 
-                max: DateTime(DateTime.now().year, DateTime.now().month,
-                        DateTime.now().day+1,0).toLocal(),
+                  max: DateTime(DateTime.now().year, DateTime.now().month,
+                          DateTime.now().day+1,0).toLocal(),
 
-                showLabels: true,
-                interval: 4,
-                stepDuration: const SliderStepDuration(minutes: 30),
-                dateIntervalType: DateIntervalType.hours,
-                //numberFormat: NumberFormat('\$'),
-                dateFormat: DateFormat.Hm(),
-                enableTooltip: true,
-                onChanged: (newValues) {
-                  context
-                      .read<NewOfficePageBloc>()
-                      .add(NewOfficePageWorkTimeRangeChangeEvent(DateTimeRange(
-                        start: newValues.start,
-                        end: newValues.end,
-                      )));
-                  //values = newValues;
-                }),
+                  showLabels: true,
+                  interval: 4,
+                  stepDuration: const SliderStepDuration(minutes: 30),
+                  dateIntervalType: DateIntervalType.hours,
+                  //numberFormat: NumberFormat('\$'),
+                  dateFormat: DateFormat.Hm(),
+                  enableTooltip: true,
+                  onChanged: (newValues) {
+                    context
+                        .read<NewOfficePageBloc>()
+                        .add(NewOfficePageWorkTimeRangeChangeEvent(DateTimeRange(
+                          start: newValues.start,
+                          end: newValues.end,
+                        )));
+                    //values = newValues;
+                  }),
+            ),
           ),
         ],
       ),
@@ -387,9 +426,9 @@ class _CreateButton extends StatelessWidget {
                       if (state is NewOfficePageSuccessfulCreatedState) {
                         var adminOfficesBloc =
                             mainContext.read<AdminOfficesBloc>();
-                        Navigator.popUntil(_, (route) => route.isFirst);
-                        Navigator.popUntil(
-                            mainContext, (route) => route.isFirst);
+                        //Navigator.popUntil(_, (route) => route.isFirst);
+                        // Navigator.popUntil(
+                        //     mainContext, (route) => route.isFirst);
                         Navigator.push(mainContext,
                             MaterialPageRoute(builder: (_) {
                           return MultiBlocProvider(providers: [

@@ -30,6 +30,8 @@ var appThemeData = ThemeData(
     cardTheme: const CardTheme(
       shadowColor: Colors.black,
       color: Colors.white,
+        surfaceTintColor: Colors.white,
+      elevation: 3
     ),
     primaryColor: const Color.fromARGB(255, 252, 100, 1),
     backgroundColor: const Color.fromARGB(255, 238, 238, 238),

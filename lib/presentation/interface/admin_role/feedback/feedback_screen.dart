@@ -1,12 +1,14 @@
 import 'package:atb_booking/logic/admin_role/feedback/admin_feedback_bloc.dart';
+import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/feedback/feedback_card.dart';
+import 'package:atb_booking/presentation/interface/auth/auth_screen.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdminFeedbackScreen extends StatelessWidget {
-  AdminFeedbackScreen({Key? key}) : super(key: key);
+  const AdminFeedbackScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +16,15 @@ class AdminFeedbackScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Обратная связь"),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                BookingListBloc().add(BookingListInitialEvent());
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (_) => const Auth()));
+              },
+              icon: const Icon(Icons.logout, size: 28))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
@@ -34,7 +45,7 @@ class AdminFeedbackScreen extends StatelessWidget {
 }
 
 class _DropdownButtonType extends StatelessWidget {
-  _DropdownButtonType({super.key});
+  const _DropdownButtonType();
 
   @override
   Widget build(BuildContext context) {

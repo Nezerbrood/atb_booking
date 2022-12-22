@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:atb_booking/logic/admin_role/people/people_page/admin_people_bloc.dart';
+import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/people/admin_person_card.dart';
+import 'package:atb_booking/presentation/interface/auth/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,7 +14,15 @@ class AdminPeopleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text("Люди"),),),
+      appBar: AppBar(title: Center(child: Text("Люди"),),actions: [
+        IconButton(
+            onPressed: () {
+              BookingListBloc().add(BookingListInitialEvent());
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => const Auth()));
+            },
+            icon: const Icon(Icons.logout, size: 28))
+      ],),
       body: Column(
         children: [
           _PeopleSearchField(),

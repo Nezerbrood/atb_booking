@@ -3,7 +3,6 @@ import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
-import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/auth/auth_screen.dart';
 import 'package:atb_booking/presentation/interface/user_role/feedback/feedback_screen.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
@@ -14,33 +13,6 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void _exitToAuth(BuildContext mainContext) async {
-  await showDialog(
-    useRootNavigator: true,
-      context: mainContext,
-      builder: (context) => AlertDialog(
-            title: Text(
-              "Вы действительно хотите выйти?",
-              style: TextStyle(color: appThemeData.colorScheme.primary),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(mainContext).pushReplacementNamed('/auth');
-                  Navigator.of(context).pop();
-                  ProfileBloc().add(ProfileExitToAuthEvent());
-                },
-                child: const Text('Выйти'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, 'Cancel');
-                },
-                child: const Text('Остаться'),
-              ),
-            ],
-          ));
-}
 
 void _bubbleTransition(BuildContext context) async {
   await Navigator.push(
@@ -65,16 +37,13 @@ class ProfileScreen extends StatelessWidget {
           IconButton(
               onPressed: () {
                 BookingListBloc().add(BookingListInitialEvent());
-                Navigator.pushReplacement(context,  MaterialPageRoute(builder: (_) => const Auth()));
-                },
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (_) => const Auth()));
+              },
               icon: const Icon(Icons.logout, size: 28))
         ],
-        title: Text(
-          "Профиль",
-          style: appThemeData.textTheme.displayLarge?.copyWith(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-              color: appThemeData.colorScheme.onSurface),
+        title: const Center(
+          child: Text("     Профиль"),
         ),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
@@ -90,26 +59,23 @@ class ProfileScreen extends StatelessWidget {
                   _UserTitle(
                     avatar: CachedNetworkImage(
                         fit: BoxFit.cover,
-                        imageUrl: AppImageProvider
-                            .getImageUrlFromImageId(state.userPerson.avatarImageId,),
-                        httpHeaders: NetworkController()
-                            .getAuthHeader(),
-                        progressIndicatorBuilder: (context,
-                            url, downloadProgress) =>
-                            Center(
-                                child:
-                                CircularProgressIndicator(
-                                    value:
-                                    downloadProgress
-                                        .progress)),
-                        errorWidget: (context, url, error) =>
-                            Container()),
+                        imageUrl: AppImageProvider.getImageUrlFromImageId(
+                          state.userPerson.avatarImageId,
+                        ),
+                        httpHeaders: NetworkController().getAuthHeader(),
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) => Center(
+                                child: CircularProgressIndicator(
+                                    value: downloadProgress.progress)),
+                        errorWidget: (context, url, error) => Container()),
                     userName: state.userPerson.fullName,
                   ),
                   const SizedBox(height: 55),
                   _UserInfo(
                       email: state.userPerson.email,
-                      number: state.userPerson.phone),
+                      number: state.userPerson.phone,
+                    job: state.userPerson.jobTitle,
+                  ),
                   const SizedBox(height: 65),
                   GestureDetector(
                       onTap: () {
@@ -150,6 +116,7 @@ class ProfileScreen extends StatelessWidget {
 
 class _UserTitle extends StatelessWidget {
   const _UserTitle({required this.avatar, required this.userName});
+
   final CachedNetworkImage avatar;
   final String userName;
 
@@ -169,22 +136,7 @@ class _UserTitle extends StatelessWidget {
             width: 150,
             height: 150,
           ),
-        )
-            //(avatar == null)
-            //     ? ClipOval(
-            //         child: Image.network(
-            //           avatar,
-            //           alignment: Alignment.center,
-            //           width: 150,
-            //           height: 150,
-            //           fit: BoxFit.cover,
-            //         ),
-            //       )
-            //     : const CircleAvatar(
-            //         radius: 55, // Image radius
-            //         backgroundImage: AssetImage('assets/avatar.jpg'),
-            //       ),
-            ),
+        )),
         const SizedBox(height: 25),
         Text(
           userName,
@@ -196,24 +148,55 @@ class _UserTitle extends StatelessWidget {
 }
 
 class _UserInfo extends StatelessWidget {
-  const _UserInfo({required this.email, required this.number});
+  const _UserInfo(
+      {required this.email, required this.number, required this.job});
+
+  final String job;
   final String email;
   final String number;
-
-  final TextStyle _titleStyle =
-      const TextStyle(color: Colors.grey, fontSize: 15);
-  final TextStyle _dataStyle =
-      const TextStyle(color: Colors.black, fontSize: 17);
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       width: double.infinity,
       child: Column(children: [
-        _RowForInfo("E-MAIL", "email", _titleStyle, _dataStyle, email),
+        _RowForInfo(
+            "Должность",
+            "email",
+            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                color: Colors.black54,
+                fontSize: 22,
+                fontWeight: FontWeight.w300),
+            Theme.of(context)
+                .textTheme
+                .headlineSmall!
+                .copyWith(color: Colors.black, fontSize: 23),
+            job),
+        _RowForInfo(
+            "E-MAIL",
+            "email",
+            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                color: Colors.black54,
+                fontSize: 22,
+                fontWeight: FontWeight.w300),
+            Theme.of(context)
+                .textTheme
+                .headlineSmall!
+                .copyWith(color: Colors.black, fontSize: 23),
+            email),
         const SizedBox(height: 15),
-        _RowForInfo("ТЕЛЕФОН", "number", _titleStyle, _dataStyle, number),
+        _RowForInfo(
+            "Телефон",
+            "number",
+            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                color: Colors.black54,
+                fontSize: 22,
+                fontWeight: FontWeight.w300),
+            Theme.of(context)
+                .textTheme
+                .headlineSmall!
+                .copyWith(color: Colors.black, fontSize: 23),
+            number),
       ]),
     );
   }
@@ -230,8 +213,36 @@ Row _RowForInfo(String title, String dataType, TextStyle titleStyle,
             title,
             style: titleStyle,
           ),
-          if (dataType == "email") ...[Text(element, style: dataStyle)],
-          if (dataType == 'number') ...[Text(element, style: dataStyle)]
+          if (dataType == "job") ...[
+            Container(
+                decoration: const ShapeDecoration(
+                  color: Color.fromARGB(255, 243, 243, 243),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                child: Text(element, style: dataStyle))
+          ],
+          if (dataType == "email") ...[
+            Container(
+                decoration: const ShapeDecoration(
+                  color: Color.fromARGB(255, 243, 243, 243),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                child: Text(element, style: dataStyle))
+          ],
+          if (dataType == 'number') ...[
+            Container(
+                decoration: const ShapeDecoration(
+                  color: Color.fromARGB(255, 243, 243, 243),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                child: Text(element, style: dataStyle))
+          ]
         ],
       )
     ],
