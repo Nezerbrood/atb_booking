@@ -1,6 +1,5 @@
-
+import 'package:atb_booking/logic/secure_storage_api.dart';
 import 'package:atb_booking/presentation/interface/admin_role/adminHome.dart';
-import 'package:atb_booking/presentation/interface/admin_role/offices/level_editor_page.dart';
 import 'package:atb_booking/presentation/interface/auth/auth_screen.dart';
 import 'package:atb_booking/presentation/interface/user_role/home/home.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,16 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const Auth());
 
       default:
-        return MaterialPageRoute(builder: (_) => const Auth());
+        var type = SecurityStorage().getLastUserTypeCYNC();
+        if (type == '') {
+          return MaterialPageRoute(builder: (_) => const Auth());
+        } else if (type == "ADMIN") {
+          return MaterialPageRoute(builder: (_) => const AdminHome());
+        } else if (type == "USER") {
+          return MaterialPageRoute(builder: (_) => const Home());
+        } else {
+          throw Exception("unknown type: $type");
+        }
     }
   }
 }

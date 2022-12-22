@@ -12,7 +12,8 @@ class BookingDeleteDialog extends StatelessWidget {
         builder: (context, state) {
       if (state is BookingDetailsLoadedState) {
         return AlertDialog(
-          insetPadding: const EdgeInsets.symmetric(vertical: 30,horizontal: 30),
+          insetPadding:
+              const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
           content: Text(
             'Вы действительно хотите отменить  бонирование?',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -38,7 +39,9 @@ class BookingDeleteDialog extends StatelessWidget {
                 context
                     .read<BookingDetailsBloc>()
                     .add(BookingDetailsDeleteEvent());
-                Navigator.pop(context, 'OK');
+                Navigator.popUntil(context, (route) {
+                  return route.isFirst;
+                });
               },
               child: Text(
                 'Отменить',

@@ -1,6 +1,7 @@
 import 'package:atb_booking/data/models/city.dart';
 import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/data/services/city_provider.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/admin_role/offices/new_office_page/new_office_page_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/offices_screen/admin_offices_bloc.dart';
 import 'package:atb_booking/logic/admin_role/offices/office_page/admin_office_page_bloc.dart';
@@ -28,6 +29,8 @@ class AdminOfficesScreen extends StatelessWidget {
                 BookingListBloc().add(BookingListInitialEvent());
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (_) => const Auth()));
+                NetworkController().exitFromApp();//todo вынести в блок как эвент и ждать
+
               },
               icon: const Icon(Icons.logout, size: 28))
         ],

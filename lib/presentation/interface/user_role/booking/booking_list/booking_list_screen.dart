@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:atb_booking/data/authController.dart';
 import 'package:atb_booking/data/models/booking.dart';
@@ -74,6 +73,7 @@ class BookingScreen extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 ));
           } else if (state is BookingListLoadedState) {
+            if(state.bookingList.isNotEmpty){
             return Padding(
               padding: const EdgeInsets.fromLTRB(10.0, 00.0, 10.0, 0),
               child: Stack(children: <Widget>[
@@ -101,7 +101,21 @@ class BookingScreen extends StatelessWidget {
                   ),
                 ),
               ]),
-            );
+            );}else{
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Чтобы забронировать используйте кнопку ниже",
+                      style: appThemeData.textTheme.headlineMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              );
+            }
           } else {
             throw Exception("unexpected state $state");
           }

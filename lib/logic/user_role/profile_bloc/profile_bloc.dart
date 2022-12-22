@@ -1,4 +1,4 @@
-import 'package:atb_booking/data/authController.dart';
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/secure_storage_api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,9 +31,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     on<ProfileExitToAuthEvent>((event, emit) async {
       /// Выход для бека
-      await AuthController().exitFromApp();
-      /// Чистка SecurityStorage
-      await SecurityStorage().clearValueStorage();
+      NetworkController().exitFromApp();
     });
     //emit(ProfileLoadingState());
     add(ProfileLoadEvent());

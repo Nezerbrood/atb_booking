@@ -37,33 +37,31 @@ class _HomeState extends State<Home> {
   build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<BookingListBloc>(
-          lazy: true,
-          create: (context) => BookingListBloc(),
+        BlocProvider.value(
+          value: BookingListBloc()..add(BookingListLoadEvent()),
         ),
-        BlocProvider<NewBookingConfirmationPopupBloc>(
-          create: (context) => NewBookingConfirmationPopupBloc(),
+        BlocProvider.value(
+          value:  NewBookingConfirmationPopupBloc(),
         ),
-        BlocProvider<PlanBloc>(
-          create: (context) => PlanBloc(),
+        BlocProvider.value(
+          value: PlanBloc(),
         ),
-        BlocProvider<LockedPlanBloc>(create: (context) => LockedPlanBloc()),
-        BlocProvider<NewBookingBloc>(
-          create: (context) => NewBookingBloc(),
+        BlocProvider.value(
+            value: LockedPlanBloc()),
+        BlocProvider.value(
+          value: NewBookingBloc()..add(NewBookingInitialEvent()),
         ),
-        BlocProvider<NewBookingSheetBloc>(
-          create: (context) => NewBookingSheetBloc(),
+        BlocProvider.value(
+          value:  NewBookingSheetBloc(),
         ),
-        BlocProvider<ProfileBloc>(
-          create: (context) => ProfileBloc(),
+        BlocProvider.value(
+          value:  ProfileBloc(),
         ),
-        BlocProvider<PeopleProfileBookingBloc>(
-          create: (context) => PeopleProfileBookingBloc(),
+        BlocProvider.value(
+          value: PeopleProfileBookingBloc(),
         ),
       ],
-      child: MaterialApp(
-          theme: appThemeData,
-          home: Scaffold(
+      child: Scaffold(
               body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 00),
                 child: Center(
@@ -104,7 +102,7 @@ class _HomeState extends State<Home> {
                             icon: Icon(Icons.person), label: 'Профиль')
                       ],
                     ),
-                  )))),
+                  ))),
     );
   }
 }

@@ -184,12 +184,9 @@ class BookingProvider {
     var baseUrl = NetworkController().getUrl();
     var token = await NetworkController().getAccessToken();
     headers["Authorization"] = 'Bearer $token';
-    Map<String, dynamic> queryParameters = {};
-    //queryParameters['reservationId'] = id.toString();
     var uri = Uri.http(baseUrl, '/api/reservations/$id');
     var response = await http.delete(uri, headers: headers);
     if (response.statusCode == 200) {
-      print(json.decode(utf8.decode(response.bodyBytes)));
       return;
     } else if (response.statusCode == 401) {
       /// Если 401, то обновляем все токены

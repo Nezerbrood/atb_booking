@@ -1,7 +1,4 @@
 import 'package:atb_booking/logic/auth_bloc/auth_bloc.dart';
-import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
-import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
-import 'package:atb_booking/presentation/interface/admin_role/adminHome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants/styles.dart';
@@ -19,13 +16,9 @@ class Auth extends StatelessWidget {
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthUserSuccessState) {
-            BookingListBloc().add(BookingListLoadEvent());
-            ProfileBloc().add(ProfileLoadEvent());
-            Navigator.pop(context);
-            Navigator.popAndPushNamed(context, '/home');
+            Navigator.of(context).pushReplacementNamed('/home');
           } else if (state is AuthAdminSuccessState) {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const AdminHome()));
+            Navigator.of(context).pushReplacementNamed('/adminHome');
           }
         },
         child: Scaffold(
@@ -106,7 +99,7 @@ class __FormWidgetState extends State<_FormWidget> {
         //   ProfileBloc().add(ProfileLoadEvent());
         //
         //   Navigator.of(context)
-        //       .pushReplacement(MaterialPageRoute(builder: (_) => const Home()));
+        //       .pushReplacementNamed(MaterialPageRoute('/home', builder: (BuildContext context) {  }))
         // } else if (state is AuthAdminSuccessState) {
         //   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminHome()));
         // }
@@ -140,7 +133,7 @@ class __FormWidgetState extends State<_FormWidget> {
                     obscureText: true,
                     controller: _passwordTextController,
                     decoration: const InputDecoration(
-                      hintText: "пароль",
+                      hintText: "Пароль",
                       filled: true,
                       fillColor: Color.fromARGB(255, 238, 238, 238),
                       border: OutlineInputBorder(
@@ -196,7 +189,7 @@ class __FormWidgetState extends State<_FormWidget> {
                         child: Text(
                           "Запомнить логин и пароль?",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 19),
+                          style: TextStyle(fontSize: 18),
                         ),
                       ),
                     ],

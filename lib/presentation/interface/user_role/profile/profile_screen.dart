@@ -1,6 +1,5 @@
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
-import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
 import 'package:atb_booking/presentation/interface/auth/auth_screen.dart';
@@ -36,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                BookingListBloc().add(BookingListInitialEvent());
+                NetworkController().exitFromApp();//todo вынести в блок как эвент и ждать
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (_) => const Auth()));
               },
@@ -124,19 +123,13 @@ class _UserTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-            // padding: const EdgeInsets.all(1),
-            // decoration: BoxDecoration(
-            //   borderRadius: BorderRadius.circular(55),
-            //   color: Colors.black,
-            // ),
-            child: ClipOval(
-          child: Container(
-            child: avatar,
-            width: 150,
-            height: 150,
+        ClipOval(
+          child: SizedBox(
+        width: 150,
+        height: 150,
+        child: avatar,
           ),
-        )),
+        ),
         const SizedBox(height: 25),
         Text(
           userName,

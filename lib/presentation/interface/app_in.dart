@@ -14,11 +14,11 @@ class Application extends StatelessWidget {
       //Заголовок и тема
       title: 'ATB Flutter Demo',
       theme: appThemeData,
-      initialRoute: (typeUser == "")
-          ? "/auth"
-          : (typeUser == 'USER')
-              ? "/home"
-              : "/adminHome",
+      // initialRoute: (typeUser == "")
+      //     ? "/auth"
+      //     : (typeUser == 'USER')
+      //         ? "/home"
+      //         : "/adminHome",
       onGenerateRoute: _appRouter.onGenerateRoute,
     );
   }

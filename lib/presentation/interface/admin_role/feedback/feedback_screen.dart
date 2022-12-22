@@ -1,3 +1,4 @@
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/admin_role/feedback/admin_feedback_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/feedback/feedback_card.dart';
@@ -20,6 +21,7 @@ class AdminFeedbackScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (context) => const Auth()));
+                NetworkController().exitFromApp();//todo вынести в блок как эвент и ждать
               },
               icon: const Icon(Icons.logout, size: 28))
         ],

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:atb_booking/data/authController.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -9,6 +10,11 @@ class NetworkController {
   static final NetworkController _singleton = NetworkController._internal();
   factory NetworkController() {
     return _singleton;
+  }
+  void exitFromApp(){
+    AuthController().exitFromApp();
+    /// Чистка SecurityStorage
+    SecurityStorage().clearValueStorage();
   }
   // final _baseUrl = "45.67.58.123:8080";
   final _baseUrl = "85.192.32.12:8080";

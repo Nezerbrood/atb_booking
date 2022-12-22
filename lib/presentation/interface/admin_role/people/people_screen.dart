@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/admin_role/people/people_page/admin_people_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
@@ -20,6 +21,7 @@ class AdminPeopleScreen extends StatelessWidget {
               BookingListBloc().add(BookingListInitialEvent());
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (_) => const Auth()));
+              NetworkController().exitFromApp();//todo вынести в блок как эвент и ждать
             },
             icon: const Icon(Icons.logout, size: 28))
       ],),
