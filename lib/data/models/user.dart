@@ -9,7 +9,7 @@ class User {
   bool isFavorite;
   String role;
 
-  User(this.id, this.login, this.fullName, this.avatarImageId, this.phone,this.jobTitle, this.email,
+  User(this.id, this.login, this.fullName, this.avatarImageId, this.phone,this.email, this.jobTitle,
       this.isFavorite,this.role);
 
   factory User.fromJson(Map<String, dynamic> json) {

@@ -27,8 +27,9 @@ class FeedbackLevelPlan extends StatelessWidget {
 
         ///
         ///
+        Widget? backgroundImage;
         if (state.levelPlanImageId != null) {
-          var backgroundImage = Center(
+          backgroundImage = Center(
             child: Container(
               width: double.infinity,
               //height:  double.infinity,
@@ -42,6 +43,8 @@ class FeedbackLevelPlan extends StatelessWidget {
                       const Icon(Icons.error)),
             ),
           );
+        }
+        if (backgroundImage != null) {
           elements.add(backgroundImage);
         }
 

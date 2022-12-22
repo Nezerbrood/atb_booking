@@ -5,7 +5,7 @@ class FeedbackItem {
   int? workplaceId;
   int? guiltyId;
   int userId;
-  String date;
+  DateTime date;
 
   FeedbackItem(this.id, this.comment, this.officeId, this.workplaceId,
       this.guiltyId, this.userId, this.date);
@@ -17,5 +17,5 @@ class FeedbackItem {
         workplaceId = json['workplaceId'],
         guiltyId = json['guiltyId'],
         userId = json['userId'],
-        date = json['date'];
+        date = DateTime.parse(json['date']);
 }

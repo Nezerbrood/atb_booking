@@ -330,7 +330,7 @@ class _LevelField extends StatelessWidget {
                     .headlineSmall
                     ?.copyWith(color: Colors.black, fontSize: 20),
                 decoration: const InputDecoration(
-                  hintText: "Этаж",
+                  hintText: "Выберите этаж",
                   filled: true,
                   fillColor: Color.fromARGB(255, 238, 238, 238),
                   border: OutlineInputBorder(
@@ -404,30 +404,40 @@ class _MessageField extends StatelessWidget {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: TextField(
-                      onChanged: (form) {
-                        context
-                            .read<FeedbackBloc>()
-                            .add(FeedbackMessageInputEvent(form));
-                      },
-                      controller: FeedBackScreen.messageInputController,
-                      decoration: const InputDecoration(
-                        hintText: "Введите текст сообщения",
-                        filled: true,
-                        fillColor: Color.fromARGB(255, 238, 238, 238),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 8),
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 238, 238, 238),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0) //
+                            ),
                       ),
-                      keyboardType: TextInputType.streetAddress,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(color: Colors.black, fontSize: 20),
-                      maxLines: 20,
-                      minLines: 1,
-                      maxLength: 1000,
+                      child: TextField(
+                        onChanged: (form) {
+                          context
+                              .read<FeedbackBloc>()
+                              .add(FeedbackMessageInputEvent(form));
+                        },
+                        controller: FeedBackScreen.messageInputController,
+                        decoration: const InputDecoration(
+                          hintText: "Введите текст сообщения...",
+                          filled: true,
+                          fillColor: Color.fromARGB(255, 238, 238, 238),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                        ),
+                        keyboardType: TextInputType.streetAddress,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(color: Colors.black, fontSize: 20),
+                        maxLines: 20,
+                        minLines: 1,
+                        maxLength: 1000,
+                      ),
                     ),
                   )
                 ],

@@ -5,6 +5,7 @@ import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/feedback/feedback_screen.dart';
 import 'package:atb_booking/presentation/interface/admin_role/offices/offices_list_screen.dart';
 import 'package:atb_booking/presentation/interface/admin_role/people/people_screen.dart';
+import 'package:atb_booking/presentation/interface/admin_role/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -85,6 +86,8 @@ class _HomeState extends State<AdminHome> {
                           icon: Icon(Icons.feed),
                           label: 'Фидбек',
                         ),
+                        NavigationDestination(
+                            icon: Icon(Icons.person), label: 'Профиль')
                       ],
                     ),
                   ))),

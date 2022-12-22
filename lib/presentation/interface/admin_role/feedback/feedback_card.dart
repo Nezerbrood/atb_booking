@@ -1,49 +1,81 @@
 import 'package:atb_booking/data/models/feedback.dart';
+import 'package:atb_booking/data/models/user.dart';
+import 'package:atb_booking/data/services/users_repository.dart';
+import 'package:atb_booking/logic/admin_role/feedback/admin_feedback_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class FeedbackCard extends StatelessWidget {
-  FeedbackItem feedbackItem;
-  FeedbackCard(this.feedbackItem, {super.key});
+  final FeedbackItem feedbackItem;
+
+  const FeedbackCard(this.feedbackItem, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: GestureDetector(
-            onTap: () async {
-              // PeopleProfileBookingBloc()
-              //     .add(PeopleProfileBookingLoadEvent(id: user.id));
-              // await Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => PersonProfileScreen(user),
-              //   ),
-              // );
-            },
-            child: Card(
-              semanticContainer: true,
-              elevation: 1,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                      width: 1, color: appThemeData.colorScheme.tertiary),
-                  borderRadius: BorderRadius.circular(12.0)),
-              child: Column(children: [
-                ListTile(
-                  title: Text(feedbackItem.date,
-                      style: appThemeData.textTheme.titleMedium),
-                  subtitle: Text(
-                    "User id: ${feedbackItem.id.toString()}",
-                    style: appThemeData.textTheme.titleSmall,
-                  ),
-                  trailing: Text(feedbackItem.id.toString(),
-                      style: appThemeData.textTheme.titleMedium),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(16.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(feedbackItem.comment),
-                )
-              ]),
-            )));
+    return BlocProvider.value(
+      value: BlocProvider.of<AdminFeedbackBloc>(context),
+      child: Center(
+          child: GestureDetector(
+        // onTap: () async {
+        //   await Navigator.of(context).push(
+        //     MaterialPageRoute(
+        //       builder: (context) => BlocProvider(
+        //         create: (context) => AdminPersonBookingListBloc(user),
+        //         child: AdminPersonBookingListPage(),
+        //       ),
+        //     ),
+        //   );
+        // },
+        child: Card(
+            semanticContainer: true,
+            elevation: 1,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(
+                    width: 0, color: appThemeData.colorScheme.tertiary),
+                borderRadius: BorderRadius.circular(12.0)),
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: ListTile(
+                    title: Text(_DateConvert(feedbackItem.date),
+                        style: appThemeData.textTheme.bodyMedium!.copyWith(fontWeight: 
+                        FontWeight.w400)),
+                    subtitle: Text(
+                      "User id: ${feedbackItem.userId.toString()}",
+                      style: appThemeData.textTheme.titleSmall,
+                    ),
+                    trailing: GestureDetector(
+                      onTap: () {
+                        context
+                            .read<AdminFeedbackBloc>()
+                            .add(AdminFeedbackDeleteItemEvent(feedbackItem));
+                      },
+                      child: Icon(Icons.cancel),
+                    ),
+                    dense: true,
+                    minLeadingWidth: 100,
+                  ))
+                ],
+              ),
+            )),
+      )),
+    );
   }
+}
+
+String _DateConvert(DateTime date) {
+  String res = '';
+  if (date.toLocal().day == DateTime.now().toLocal().day) {
+    res = "Сегодня";
+  } else if (date.toLocal().day == DateTime.now().toLocal().day - 1) {
+    res = 'Вчера';
+  } else {
+    res = DateFormat.MMMd("ru_RU").format(date);
+  }
+  return res;
 }

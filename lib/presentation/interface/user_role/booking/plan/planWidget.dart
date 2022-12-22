@@ -33,7 +33,7 @@ class PlanWidget extends StatelessWidget {
           ///
           ///
           if (state.levelPlanImageId != null) {
-            var backgroundImage = Center(
+            backgroundImage = Center(
               child: Container(
                 width: double.infinity,
                 height: double.infinity,

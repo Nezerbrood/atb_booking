@@ -110,4 +110,28 @@ class FeedbackProvider {
       throw Exception('Error fetching All users');
     }
   }
+
+  /// Запрос на удаление
+  Future<void> deleteFeedback(int id) async {
+    ///Получаем access токен
+    var token = await NetworkController().getAccessToken();
+
+    /// Создаем headers
+    Map<String, String> headers = {};
+    headers["Authorization"] = 'Bearer $token';
+
+    var baseUrl = NetworkController().getUrl();
+    var uri = Uri.http(baseUrl, '/api/feedbacks/$id');
+    var response = await http.delete(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      return;
+    } else if (response.statusCode == 401) {
+      /// Если 401, то обновляем access токен
+      await NetworkController().updateAccessToken();
+      deleteFeedback(id);
+    } else {
+      throw Exception('Error delete feedback');
+    }
+  }
 }

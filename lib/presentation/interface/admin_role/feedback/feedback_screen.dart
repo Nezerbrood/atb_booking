@@ -27,12 +27,14 @@ class AdminFeedbackScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            'Тип обратной связи',
-            style: appThemeData.textTheme.headlineSmall
-                ?.copyWith(color: Colors.black, fontSize: 23),
+          Padding(
+            padding: const EdgeInsets.only(left: 3),
+            child: Text(
+              'Тип обратной связи',
+              style: appThemeData.textTheme.headlineSmall
+                  ?.copyWith(color: Colors.black, fontSize: 21, fontWeight: FontWeight.w300),
+            ),
           ),
-          SizedBox(height: 10),
           _DropdownButtonType(),
           const SizedBox(height: 30),
           _ResultList(),
@@ -62,6 +64,7 @@ class _DropdownButtonType extends StatelessWidget {
                       ),
                 ),
                 child: DropdownButton<String>(
+                  isExpanded: true,
                   underline: Container(),
                   value: state.listType[0],
                   onChanged: (String? value) {
@@ -100,6 +103,7 @@ class _DropdownButtonType extends StatelessWidget {
                       ),
                 ),
                 child: DropdownButton<String>(
+                  isExpanded: true,
                   underline: Container(),
                   value: state.listType[1],
                   onChanged: (String? value) {
@@ -138,6 +142,7 @@ class _DropdownButtonType extends StatelessWidget {
                       ),
                 ),
                 child: DropdownButton<String>(
+                  isExpanded: true,
                   underline: Container(),
                   value: state.listType[2],
                   onChanged: (String? value) {

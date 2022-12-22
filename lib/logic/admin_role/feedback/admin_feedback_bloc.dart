@@ -7,7 +7,7 @@ part 'admin_feedback_event.dart';
 part 'admin_feedback_state.dart';
 
 class AdminFeedbackBloc extends Bloc<AdminFeedbackEvent, AdminFeedbackState> {
-  static List<String> dropdownListItems = <String>[
+  static List<String> dropdownList = <String>[
     'Отзыв о работе приложения',
     'Жалоба на пользователя',
     'Жалоба на рабочее место'
@@ -19,8 +19,7 @@ class AdminFeedbackBloc extends Bloc<AdminFeedbackEvent, AdminFeedbackState> {
   bool formHasBeenChanged = true;
 
   /// При старте показывает "Отзыв о работе приложения"
-  AdminFeedbackBloc()
-      : super(AdminFeedbackMainState(1, dropdownListItems, [])) {
+  AdminFeedbackBloc() : super(AdminFeedbackMainState(1, dropdownList, [])) {
     on<AdminFeedbackType_ApplicationMessageEvent>((event, emit) {
       formHasBeenChanged = true;
       feedbackListItems = [];
@@ -45,8 +44,8 @@ class AdminFeedbackBloc extends Bloc<AdminFeedbackEvent, AdminFeedbackState> {
       add(AdminFeedbackLoadEvent(formHasBeenChanged));
     });
     on<AdminFeedbackLoadEvent>((event, emit) async {
-      emit(AdminFeedbackLoadingState(typeId, dropdownListItems,
-          feedbackListItems, event.formHasBeenChanged));
+      emit(AdminFeedbackLoadingState(
+          typeId, dropdownList, feedbackListItems, event.formHasBeenChanged));
 
       if (event.formHasBeenChanged) page = 0;
       if (page == 0) {
@@ -58,15 +57,24 @@ class AdminFeedbackBloc extends Bloc<AdminFeedbackEvent, AdminFeedbackState> {
             await FeedbackProvider().getFeedbackByType(page, size, typeId);
         feedbackListItems.addAll(newLoadFeedback);
       } catch (e) {
-        emit(AdminFeedbackErrorState(
-            typeId, dropdownListItems, feedbackListItems));
+        emit(AdminFeedbackErrorState(typeId, dropdownList, feedbackListItems));
         print("Error into AdminFeedbackLoadEvent: ${e.toString()}");
         throw (e);
       }
 
-      emit(
-          AdminFeedbackMainState(typeId, dropdownListItems, feedbackListItems));
+      emit(AdminFeedbackMainState(typeId, dropdownList, feedbackListItems));
     });
+    on<AdminFeedbackDeleteItemEvent>((event, emit) async {
+      feedbackListItems.remove(event.feedbackItem);
+      try {
+        await FeedbackProvider().deleteFeedback(event.feedbackItem.id);
+        emit(AdminFeedbackMainState(typeId, dropdownList, feedbackListItems));
+      } catch (e) {
+        emit(AdminFeedbackErrorState(typeId, dropdownList, feedbackListItems));
+        print("Error delete feedback in bloc: $e");
+      }
+    });
+
     add(AdminFeedbackType_ApplicationMessageEvent());
   }
 }
