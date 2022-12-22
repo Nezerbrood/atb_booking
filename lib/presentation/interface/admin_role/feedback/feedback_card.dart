@@ -43,7 +43,8 @@ class FeedbackCard extends StatelessWidget {
                   Expanded(
                       child: ListTile(
                     title: Text(_DateConvert(feedbackItem.date),
-                        style: appThemeData.textTheme.titleMedium),
+                        style: appThemeData.textTheme.bodyMedium!.copyWith(fontWeight: 
+                        FontWeight.w400)),
                     subtitle: Text(
                       "User id: ${feedbackItem.userId.toString()}",
                       style: appThemeData.textTheme.titleSmall,

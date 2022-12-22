@@ -171,6 +171,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
 
         try {
           level = await LevelProvider().getPlanByLevelId(selectedLevel!.id);
+          levelImageId = level!.planId;
         } catch (e) {
           throw (e);
         }
@@ -269,7 +270,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
         }
 
         try {
-          emit(FeedbackPopupLoadingState(typeFieldVisible!,
+          emit(FeedbackPopupLoadingState(
+              typeFieldVisible!,
               cityFieldVisible!,
               officeFieldVisible!,
               levelFieldVisible!,
@@ -286,7 +288,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
               message));
           await FeedbackProvider().createFeedbackMessage(
               message, feedbackTypeId, officeId, workplaceId, guiltyId);
-          emit(FeedbackSuccessState(typeFieldVisible!,
+          emit(FeedbackSuccessState(
+              typeFieldVisible!,
               cityFieldVisible!,
               officeFieldVisible!,
               levelFieldVisible!,
@@ -302,7 +305,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
               selectedElementIndex,
               message));
         } catch (e) {
-          emit(FeedbackPopupErrorState(typeFieldVisible!,
+          emit(FeedbackPopupErrorState(
+              typeFieldVisible!,
               cityFieldVisible!,
               officeFieldVisible!,
               levelFieldVisible!,
@@ -325,7 +329,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
         selectedLevel = event.level;
         level = await LevelProvider().getPlanByLevelId(selectedLevel!.id);
         listOfPlanElements = level!.workspaces;
-
+        levelImageId = level!.planId;
+        
         typeFieldVisible = true;
         cityFieldVisible = true;
         officeFieldVisible = true;
@@ -423,7 +428,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
       }
 
       try {
-        emit(FeedbackPopupLoadingState(typeFieldVisible!,
+        emit(FeedbackPopupLoadingState(
+            typeFieldVisible!,
             cityFieldVisible!,
             officeFieldVisible!,
             levelFieldVisible!,
@@ -440,7 +446,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
             message));
         await FeedbackProvider().createFeedbackMessage(
             message, feedbackTypeId, officeId, workplaceId, guiltyId);
-        emit(FeedbackSuccessState(typeFieldVisible!,
+        emit(FeedbackSuccessState(
+            typeFieldVisible!,
             cityFieldVisible!,
             officeFieldVisible!,
             levelFieldVisible!,
@@ -456,7 +463,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
             selectedElementIndex,
             message));
       } catch (e) {
-        emit(FeedbackPopupErrorState(typeFieldVisible!,
+        emit(FeedbackPopupErrorState(
+            typeFieldVisible!,
             cityFieldVisible!,
             officeFieldVisible!,
             levelFieldVisible!,
