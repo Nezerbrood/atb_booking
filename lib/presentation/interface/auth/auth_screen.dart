@@ -2,7 +2,6 @@ import 'package:atb_booking/logic/auth_bloc/auth_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
 import 'package:atb_booking/presentation/interface/admin_role/adminHome.dart';
-import 'package:atb_booking/presentation/interface/user_role/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants/styles.dart';
@@ -17,24 +16,37 @@ class Auth extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<AuthBloc>(
       create: (context) => AuthBloc(),
-      child: Scaffold(
-        //resizeToAvoidBottomInset: false,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Container(
-              height: 650,
-              padding: const EdgeInsets.only(top: 30, right: 50, left: 50),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(flex: 1, child: _AuthTitle()),
-                  Expanded(
-                    flex: 2,
-                    child: _FormWidget(
-                      scrollController: _scrollController,
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthUserSuccessState) {
+            BookingListBloc().add(BookingListLoadEvent());
+            ProfileBloc().add(ProfileLoadEvent());
+            Navigator.pop(context);
+            Navigator.popAndPushNamed(context, '/home');
+          } else if (state is AuthAdminSuccessState) {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const AdminHome()));
+          }
+        },
+        child: Scaffold(
+          //resizeToAvoidBottomInset: false,
+          body: Center(
+            child: SingleChildScrollView(
+              child: Container(
+                height: 650,
+                padding: const EdgeInsets.only(top: 30, right: 50, left: 50),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(flex: 1, child: _AuthTitle()),
+                    Expanded(
+                      flex: 2,
+                      child: _FormWidget(
+                        scrollController: _scrollController,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -89,15 +101,15 @@ class __FormWidgetState extends State<_FormWidget> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (_, state) {
-        if (state is AuthUserSuccessState) {
-          BookingListBloc().add(BookingListLoadEvent());
-          ProfileBloc().add(ProfileLoadEvent());
-
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (_) => const Home()));
-        } else if (state is AuthAdminSuccessState) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminHome()));
-        }
+        // if (state is AuthUserSuccessState) {
+        //   BookingListBloc().add(BookingListLoadEvent());
+        //   ProfileBloc().add(ProfileLoadEvent());
+        //
+        //   Navigator.of(context)
+        //       .pushReplacement(MaterialPageRoute(builder: (_) => const Home()));
+        // } else if (state is AuthAdminSuccessState) {
+        //   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminHome()));
+        // }
       },
       builder: (context, state) {
         return Padding(
@@ -181,7 +193,7 @@ class __FormWidgetState extends State<_FormWidget> {
                         }),
                       ),
                       const Expanded(
-                        child:  Text(
+                        child: Text(
                           "Запомнить логин и пароль?",
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 19),

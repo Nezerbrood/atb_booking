@@ -419,6 +419,13 @@ class _CreateButton extends StatelessWidget {
                   )
                 ],
                 child: AlertDialog(
+                  insetPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                  titlePadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 00),
+                  contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 00),
+                  clipBehavior: Clip.none,
                   content: BlocListener<NewOfficePageBloc, NewOfficePageState>(
                     child: const Center(child: CircularProgressIndicator()),
                     listener: (_, state) {
@@ -426,10 +433,8 @@ class _CreateButton extends StatelessWidget {
                       if (state is NewOfficePageSuccessfulCreatedState) {
                         var adminOfficesBloc =
                             mainContext.read<AdminOfficesBloc>();
-                        //Navigator.popUntil(_, (route) => route.isFirst);
-                        // Navigator.popUntil(
-                        //     mainContext, (route) => route.isFirst);
-                        Navigator.push(mainContext,
+                        Navigator.pop(dialogContext);
+                        Navigator.pushReplacement(mainContext,
                             MaterialPageRoute(builder: (_) {
                           return MultiBlocProvider(providers: [
                             BlocProvider.value(value: adminOfficesBloc),

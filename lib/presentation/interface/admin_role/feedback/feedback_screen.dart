@@ -1,5 +1,4 @@
 import 'package:atb_booking/logic/admin_role/feedback/admin_feedback_bloc.dart';
-import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/admin_role/feedback/feedback_card.dart';
 import 'package:atb_booking/presentation/interface/auth/auth_screen.dart';
@@ -19,9 +18,8 @@ class AdminFeedbackScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                BookingListBloc().add(BookingListInitialEvent());
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => const Auth()));
+                    context, MaterialPageRoute(builder: (context) => const Auth()));
               },
               icon: const Icon(Icons.logout, size: 28))
         ],
