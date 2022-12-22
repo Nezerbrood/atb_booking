@@ -92,7 +92,7 @@ class UsersProvider {
     /// Сам запрос
     int curUserId = await SecurityStorage().getIdStorage();
     var uri =
-        Uri.http(baseUrl, '/api/users/$curUserId/search', queryParameters);
+        Uri.http(baseUrl, '/api/users/search', queryParameters);
     var response = await http.get(uri, headers: headers);
 
     /// Проверка
@@ -165,15 +165,10 @@ class UsersProvider {
     int id = await SecurityStorage().getIdStorage();
     var uri = Uri.http(
       baseUrl,
-      '/api/favorites/$favoriteId/users/$id',
+      '/api/favorites/$id',
     );
 
     /// Создание тела запроса
-    var newJson = <String, dynamic>{};
-    newJson["userId"] = id.toString();
-    newJson["favoriteId"] = favoriteId.toString();
-    var encoded = jsonEncode(newJson);
-
     /// Получение Access токена
     String accessToken = await NetworkController().getAccessToken();
 
@@ -183,7 +178,7 @@ class UsersProvider {
     headers["Authorization"] = 'Bearer $accessToken';
 
     /// Вызов POST запроса
-    var response = await http.post(uri, headers: headers, body: encoded);
+    var response = await http.post(uri, headers: headers,);
 
     if (response.statusCode == 401) {
       /// Обновление access токена
@@ -198,15 +193,10 @@ class UsersProvider {
     int userId = await SecurityStorage().getIdStorage();
     var uri = Uri.http(
       baseUrl,
-      '/api/favorites/$favoriteId/users/$userId',
+      '/api/favorites/$userId',
     );
 
     /// Создание тела запроса
-    var newJson = <String, dynamic>{};
-    newJson["userId"] = userId.toString();
-    newJson["favoriteId"] = favoriteId.toString();
-    var encoded = jsonEncode(newJson);
-
     /// Получение Access токена
     String accessToken = await NetworkController().getAccessToken();
 
@@ -216,14 +206,14 @@ class UsersProvider {
     headers["Authorization"] = 'Bearer $accessToken';
 
     /// Вызов POST запроса
-    var response = await http.delete(uri, headers: headers, body: encoded);
+    var response = await http.delete(uri, headers: headers,);
 
     if (response.statusCode == 401) {
       /// Обновление access токена
       await NetworkController().updateAccessToken();
       return deleteFromFavoritesProvider(favoriteId);
     } else if (response.statusCode != 200) {
-      throw Exception('Error creation favorite');
+      throw Exception('Error creation favorite bad response. response code: ${response.statusCode}');
     }
   }
 }

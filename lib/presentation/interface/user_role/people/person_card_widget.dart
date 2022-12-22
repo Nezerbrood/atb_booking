@@ -10,23 +10,25 @@ import 'package:atb_booking/presentation/interface/user_role/feedback/user_compl
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../feedback/feedback_screen.dart';
 import 'person_profile_screen.dart';
 
 class PersonCard extends StatelessWidget {
   final User user;
 
   const PersonCard(this.user, {super.key});
+
   @override
   Widget build(BuildContext context) {
     return Center(
         child: GestureDetector(
       onTap: () async {
-        PeopleProfileBookingBloc()
-            .add(PeopleProfileBookingLoadEvent(id: user.id));
         await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => PersonProfileScreen(user),
+            builder: (context) => BlocProvider.value(
+              value: PeopleProfileBookingBloc()
+                ..add(PeopleProfileBookingLoadEvent(id: user.id)),
+              child: PersonProfileScreen(user),
+            ),
           ),
         );
       },

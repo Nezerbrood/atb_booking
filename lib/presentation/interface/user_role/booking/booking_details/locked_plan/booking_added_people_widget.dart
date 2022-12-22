@@ -2,9 +2,11 @@ import 'package:atb_booking/data/models/user.dart';
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
+import 'package:atb_booking/logic/user_role/feedback_bloc/complaint_bloc/complaint_bloc.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/user_role/feedback/feedback_screen.dart';
+import 'package:atb_booking/presentation/interface/user_role/feedback/user_complaint.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -160,11 +162,13 @@ void _showSimpleDialog(BuildContext contextDialog, User user) {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (_) => BlocProvider<FeedbackBloc>(
-                              create: (context) => FeedbackBloc(),
-                              child: const FeedBackScreen(),
-                            )),
+                    MaterialPageRoute(builder: (contextBuilder) {
+                      return BlocProvider<ComplaintBloc>(
+                        create: (contextBuilder) =>
+                        ComplaintBloc()..add(ComplaintStartingEvent(user)),
+                        child: const FeedbackUserComplaint(),
+                      );
+                    }),
                   );
                   (context);
                 },

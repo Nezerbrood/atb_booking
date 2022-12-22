@@ -57,9 +57,6 @@ class _HomeState extends State<Home> {
         BlocProvider.value(
           value:  ProfileBloc(),
         ),
-        BlocProvider.value(
-          value: PeopleProfileBookingBloc(),
-        ),
       ],
       child: Scaffold(
               body: Padding(

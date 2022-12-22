@@ -1,5 +1,6 @@
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
+import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
 import 'package:atb_booking/logic/user_role/profile_bloc/profile_bloc.dart';
 import 'package:atb_booking/presentation/interface/auth/auth_screen.dart';
@@ -35,6 +36,7 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
+                context.read<BookingListBloc>().add(BookingListInitialEvent());
                 NetworkController().exitFromApp();//todo вынести в блок как эвент и ждать
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (_) => const Auth()));

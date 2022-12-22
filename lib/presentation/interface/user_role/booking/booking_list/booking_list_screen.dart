@@ -1,4 +1,3 @@
-
 import 'package:atb_booking/data/authController.dart';
 import 'package:atb_booking/data/models/booking.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
@@ -6,6 +5,9 @@ import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
 import 'package:atb_booking/logic/user_role/booking/booking_list_bloc/booking_list_bloc.dart';
+import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/new_booking_bloc.dart';
+import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/new_booking_sheet_bloc/new_booking_sheet_bloc.dart';
+import 'package:atb_booking/logic/user_role/booking/new_booking/new_booking_bloc/plan_bloc/plan_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -73,35 +75,36 @@ class BookingScreen extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 ));
           } else if (state is BookingListLoadedState) {
-            if(state.bookingList.isNotEmpty){
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(10.0, 00.0, 10.0, 0),
-              child: Stack(children: <Widget>[
-                Scrollbar(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: state.bookingList.length,
-                    itemBuilder: (context, index) {
-                      final item = state.bookingList[index];
-                      return GestureDetector(
-                        onTap: () {
-                          BookingListBloc().add(BookingCardTapEvent(item.id));
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  BlocProvider<BookingDetailsBloc>(
-                                    create: (context) => BookingDetailsBloc(
-                                        state.bookingList[index].id, true),
-                                    child: const BookingDetailsScreen(),
-                                  )));
-                        },
-                        child: getBookingCard(
-                            state.bookingList[index], state.mapOfTypes),
-                      );
-                    },
+            if (state.bookingList.isNotEmpty) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 00.0, 10.0, 0),
+                child: Stack(children: <Widget>[
+                  Scrollbar(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: state.bookingList.length,
+                      itemBuilder: (context, index) {
+                        final item = state.bookingList[index];
+                        return GestureDetector(
+                          onTap: () {
+                            BookingListBloc().add(BookingCardTapEvent(item.id));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    BlocProvider<BookingDetailsBloc>(
+                                      create: (context) => BookingDetailsBloc(
+                                          state.bookingList[index].id, true),
+                                      child: const BookingDetailsScreen(),
+                                    )));
+                          },
+                          child: getBookingCard(
+                              state.bookingList[index], state.mapOfTypes),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ]),
-            );}else{
+                ]),
+              );
+            } else {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Center(
@@ -125,7 +128,15 @@ class BookingScreen extends StatelessWidget {
         onPressed: () {
           // NewBookingBloc().add(NewBookingReloadCitiesEvent());
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const NewBookingScreen()));
+              builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: NewBookingBloc()),
+                      BlocProvider.value(value: NewBookingSheetBloc()),
+                      BlocProvider.value(value: PlanBloc()),
+                      //BlocProvider.value(value: NewBookingPlanBloc())
+                    ],
+                    child: const NewBookingScreen(),
+                  )));
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),

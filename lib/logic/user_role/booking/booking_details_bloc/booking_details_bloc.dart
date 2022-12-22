@@ -47,7 +47,7 @@ class BookingDetailsBloc
     on<BookingDetailsToFavoriteEvent>((event, emit) async {
         event.user.isFavorite = true;
         try{
-          UsersProvider().addFavoritesProvider(event.user.id);
+          await UsersProvider().addFavoritesProvider(event.user.id);
         }catch(_){
           event.user.isFavorite = false;
         }

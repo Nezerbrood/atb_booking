@@ -17,11 +17,14 @@ class PeopleScreen extends StatelessWidget {
           title: const Text("Люди"),
           centerTitle: true,
         ),
-        body: Column(
-          children: [
-            SearchPeopleTextField(),
-            SearchResultList(),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            children: [
+              SearchPeopleTextField(),
+              SearchResultList(),
+            ],
+          ),
         ),
       ),
     );
@@ -44,7 +47,7 @@ class SearchPeopleTextField extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

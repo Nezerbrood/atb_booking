@@ -3,6 +3,7 @@ import 'package:atb_booking/data/models/user.dart';
 import 'package:atb_booking/data/models/workspace_type.dart';
 import 'package:atb_booking/data/services/image_provider.dart';
 import 'package:atb_booking/data/services/network/network_controller.dart';
+import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
 import 'package:atb_booking/logic/user_role/people_profile_bloc/people_profile_booking_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/user_role/booking/booking_details/booking_details_screen.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PersonProfileScreen extends StatelessWidget {
   final User user;
+
   const PersonProfileScreen(this.user, {super.key});
 
   @override
@@ -39,26 +41,20 @@ class PersonProfileScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ClipOval(
-                    child:
-                    Container(
+                    child: Container(
                       height: 70,
                       width: 70,
                       child: CachedNetworkImage(
                           fit: BoxFit.cover,
-                          imageUrl: AppImageProvider
-                              .getImageUrlFromImageId(user.avatarImageId,),
-                          httpHeaders: NetworkController()
-                              .getAuthHeader(),
-                          progressIndicatorBuilder: (context,
-                              url, downloadProgress) =>
-                              Center(
-                                  child:
-                                  CircularProgressIndicator(
-                                      value:
-                                      downloadProgress
-                                          .progress)),
-                          errorWidget: (context, url, error) =>
-                              Container()),
+                          imageUrl: AppImageProvider.getImageUrlFromImageId(
+                            user.avatarImageId,
+                          ),
+                          httpHeaders: NetworkController().getAuthHeader(),
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Center(
+                                  child: CircularProgressIndicator(
+                                      value: downloadProgress.progress)),
+                          errorWidget: (context, url, error) => Container()),
                     ),
                   ),
                 ),
@@ -74,7 +70,8 @@ class PersonProfileScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               user.fullName,
                               style: appThemeData.textTheme.bodyLarge!.copyWith(
@@ -86,10 +83,12 @@ class PersonProfileScreen extends StatelessWidget {
                         ),
                         Container(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               user.jobTitle,
-                              style: appThemeData.textTheme.bodyMedium!.copyWith(
+                              style:
+                                  appThemeData.textTheme.bodyMedium!.copyWith(
                                 fontWeight: FontWeight.w300,
                                 height: 0,
                               ),
@@ -98,10 +97,12 @@ class PersonProfileScreen extends StatelessWidget {
                         ),
                         Container(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               user.email,
-                              style: appThemeData.textTheme.bodyMedium!.copyWith(
+                              style:
+                                  appThemeData.textTheme.bodyMedium!.copyWith(
                                 fontWeight: FontWeight.w300,
                                 height: 0,
                               ),
@@ -148,7 +149,12 @@ class PersonProfileScreen extends StatelessWidget {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      BookingDetailsScreen()));
+                                                      BlocProvider(
+                                                        create: (context) =>
+                                                            BookingDetailsBloc(item.id,false),
+                                                        child:
+                                                            const BookingDetailsScreen(),
+                                                      )));
                                         },
                                         child: getBookingCard(
                                             state.bookingList[index],
@@ -163,7 +169,7 @@ class PersonProfileScreen extends StatelessWidget {
                         : (state is PeopleProfileBooking_EmptyState)
                             ? Padding(
                                 padding:
-                                    EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0),
+                                    const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0),
                                 child: Center(
                                   child: Text(
                                     "Броней пока нет",
@@ -194,13 +200,13 @@ BookingCard getBookingCard(
       "assets/workplacelogo.png",
       (bookingData.workspace.photosIds.isEmpty)
           ? null
-          :
-      CachedNetworkImage(
-        fit: BoxFit.cover,
-        imageUrl: AppImageProvider.getImageUrlFromImageId(bookingData.workspace.photosIds[0]),
-        httpHeaders: NetworkController().getAuthHeader(),
-        placeholder: (context, url) => const Center(),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      ),false
-  );
+          : CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: AppImageProvider.getImageUrlFromImageId(
+                  bookingData.workspace.photosIds[0]),
+              httpHeaders: NetworkController().getAuthHeader(),
+              placeholder: (context, url) => const Center(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
+      false);
 }
