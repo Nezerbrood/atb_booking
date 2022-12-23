@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:atb_booking/logic/secure_storage_api.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/role.dart';
@@ -90,7 +88,6 @@ class UsersProvider {
     Map<String, String> headers = {"Authorization": 'Bearer $accessToken'};
 
     /// Сам запрос
-    int curUserId = await SecurityStorage().getIdStorage();
     var uri =
         Uri.http(baseUrl, '/api/users/search', queryParameters);
     var response = await http.get(uri, headers: headers);
@@ -161,11 +158,10 @@ class UsersProvider {
     }
   }
 
-  Future<void> addFavoritesProvider(int favoriteId) async   {
-    int id = await SecurityStorage().getIdStorage();
+  Future<void> addFavorite(int favoriteId) async   {
     var uri = Uri.http(
       baseUrl,
-      '/api/favorites/$id',
+      '/api/favorites/$favoriteId',
     );
 
     /// Создание тела запроса
@@ -183,17 +179,16 @@ class UsersProvider {
     if (response.statusCode == 401) {
       /// Обновление access токена
       await NetworkController().updateAccessToken();
-      return addFavoritesProvider(favoriteId);
+      return addFavorite(favoriteId);
     } else if (response.statusCode != 201) {
       throw Exception('Error creation favorite');
     }
   }
 
-  Future<void> deleteFromFavoritesProvider(int favoriteId) async {
-    int userId = await SecurityStorage().getIdStorage();
+  Future<void> deleteFromFavorites(int favoriteId) async {
     var uri = Uri.http(
       baseUrl,
-      '/api/favorites/$userId',
+      '/api/favorites/$favoriteId',
     );
 
     /// Создание тела запроса
@@ -211,7 +206,7 @@ class UsersProvider {
     if (response.statusCode == 401) {
       /// Обновление access токена
       await NetworkController().updateAccessToken();
-      return deleteFromFavoritesProvider(favoriteId);
+      return deleteFromFavorites(favoriteId);
     } else if (response.statusCode != 200) {
       throw Exception('Error creation favorite bad response. response code: ${response.statusCode}');
     }

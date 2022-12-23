@@ -104,7 +104,6 @@ class _PeopleSearchResultList extends StatelessWidget {
               }
             }
           }
-
           if (state is AdminPeopleInitialState) {
             return Expanded(
               child: Padding(
@@ -122,7 +121,6 @@ class _PeopleSearchResultList extends StatelessWidget {
               ),
             );
           }
-
           if (state.users.isNotEmpty) {
             return ListView.builder(
                 //controller: _scrollController,

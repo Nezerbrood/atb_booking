@@ -156,8 +156,8 @@ class _UserInfo extends StatelessWidget {
       width: double.infinity,
       child: Column(children: [
         _RowForInfo(
-            "Должность",
-            "email",
+            "E-MAIL",
+            "job",
             Theme.of(context).textTheme.headlineSmall!.copyWith(
                 color: Colors.black54,
                 fontSize: 22,
@@ -168,7 +168,7 @@ class _UserInfo extends StatelessWidget {
                 .copyWith(color: Colors.black, fontSize: 23),
             job),
         _RowForInfo(
-            "E-MAIL",
+            "Должность",
             "email",
             Theme.of(context).textTheme.headlineSmall!.copyWith(
                 color: Colors.black54,
@@ -208,7 +208,6 @@ Row _RowForInfo(String title, String dataType, TextStyle titleStyle,
             title,
             style: titleStyle,
           ),
-          if (dataType == "job") ...[
             Container(
                 decoration: const ShapeDecoration(
                   color: Color.fromARGB(255, 243, 243, 243),
@@ -217,27 +216,6 @@ Row _RowForInfo(String title, String dataType, TextStyle titleStyle,
                   ),
                 ),
                 child: Text(element, style: dataStyle))
-          ],
-          if (dataType == "email") ...[
-            Container(
-                decoration: const ShapeDecoration(
-                  color: Color.fromARGB(255, 243, 243, 243),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                ),
-                child: Text(element, style: dataStyle))
-          ],
-          if (dataType == 'number') ...[
-            Container(
-                decoration: const ShapeDecoration(
-                  color: Color.fromARGB(255, 243, 243, 243),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                ),
-                child: Text(element, style: dataStyle))
-          ]
         ],
       )
     ],

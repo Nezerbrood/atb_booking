@@ -1,14 +1,11 @@
 import 'package:atb_booking/data/services/booking_api_provider.dart';
-import 'package:atb_booking/logic/user_role/booking/booking_details_bloc/booking_details_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../data/models/booking.dart';
 import '../../../../data/models/workspace_type.dart';
-import '../../../../data/services/booking_repository.dart';
 import '../../../../data/services/workspace_type_repository.dart';
 import '../../../../logic/secure_storage_api.dart';
 

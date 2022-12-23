@@ -19,14 +19,12 @@ class PeopleBloc extends Bloc<PeopleEvent, PeopleState> {
       add(PeopleLoadEvent(event.form, true));
     });
     on<PeopleLoadEvent>((event, emit) async {
-      emit(PeopleLoadingState(isFavoriteOn, loadedUsers));
-
+      emit(PeopleLoadingState(isFavoriteOn, loadedUsers,page));
       currentForm = event.form;
       if (event.formHasBeenChanged) page = 0;
       if (page == 0) {
         loadedUsers = [];
       }
-
       var users = await UsersProvider()
           .fetchUsersByName(page, 10, event.form, isFavoriteOn);
       loadedUsers.addAll(users);
@@ -40,7 +38,7 @@ class PeopleBloc extends Bloc<PeopleEvent, PeopleState> {
     on<PeopleAddingToFavoriteEvent>((event, emit) async {
       event.user.isFavorite = true;
       try {
-        UsersProvider().addFavoritesProvider(event.user.id);
+        UsersProvider().addFavorite(event.user.id);
       } catch (_) {
         event.user.isFavorite = false;
       }
@@ -50,7 +48,7 @@ class PeopleBloc extends Bloc<PeopleEvent, PeopleState> {
       event.user.isFavorite = false;
       loadedUsers.remove(event.user);
       try {
-        UsersProvider().deleteFromFavoritesProvider(event.user.id);
+        UsersProvider().deleteFromFavorites(event.user.id);
       } catch (_) {
         event.user.isFavorite = true;
       }

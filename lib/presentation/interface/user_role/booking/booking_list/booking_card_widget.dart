@@ -5,6 +5,7 @@ import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 class _WorkspaceRow extends StatelessWidget {
   const _WorkspaceRow(this.booking);
@@ -24,10 +25,12 @@ class _WorkspaceRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
             booking.workspace.type.type,
-            style: appThemeData.textTheme.bodyLarge!.copyWith(
-              fontWeight: FontWeight.w600,
-              height: 0,
-            ).copyWith(fontSize:19 ),
+            style: appThemeData.textTheme.bodyLarge!
+                .copyWith(
+                  fontWeight: FontWeight.w600,
+                  height: 0,
+                )
+                .copyWith(fontSize: 19),
           ),
         ),
       ),
@@ -150,12 +153,210 @@ class _Image extends StatelessWidget {
           imageUrl: AppImageProvider.getImageUrlFromImageId(
               booking.workspace.photosIds.first),
           httpHeaders: NetworkController().getAuthHeader(),
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              Center(
-                  child: CircularProgressIndicator(
-                      value: downloadProgress.progress)),
+          progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+              child:
+                  CircularProgressIndicator(value: downloadProgress.progress)),
           errorWidget: (context, url, error) => const Icon(Icons.error));
     }
+  }
+}
+
+class ShimmerBookingCard extends StatelessWidget {
+  const ShimmerBookingCard({super.key});
+
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(6.0),
+      child: Stack(children: [
+        Shimmer.fromColors(
+          baseColor: Color.fromARGB(66, 220, 220, 220),
+          highlightColor: Color.fromARGB(211, 217, 217, 217),
+          child: Card(
+              elevation: 0,
+              clipBehavior: Clip.antiAlias,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              child: SizedBox(
+                height: 150,
+                child: Row(children: [
+                  Expanded(
+                    flex: 65,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              //_TimeRow(booking),
+                            ],
+                          ),
+                          //_WorkspaceRow(booking),
+                          //_AddressRow(booking),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(flex: 35, child: Container()),
+                ]),
+              )),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Shimmer.fromColors(
+              highlightColor: Color.fromARGB(111, 182, 182, 182),
+              baseColor: Color.fromARGB(163, 196, 196, 196),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Card(
+                    elevation: 0,
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: SizedBox(
+                      height: 27,
+                      width: 120,
+                      child: Row(children: [
+                        Expanded(
+                          flex: 65,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    //_TimeRow(booking),
+                                  ],
+                                ),
+                                //_WorkspaceRow(booking),
+                                //_AddressRow(booking),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(flex: 35, child: Container()),
+                      ]),
+                    )),
+              ),
+            ),
+            Shimmer.fromColors(
+              highlightColor: Color.fromARGB(111, 182, 182, 182),
+              baseColor: Color.fromARGB(163, 196, 196, 196),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Card(
+                    elevation: 0,
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: SizedBox(
+                      height: 24,
+                      width: 200,
+                      child: Row(children: [
+                        Expanded(
+                          flex: 65,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    //_TimeRow(booking),
+                                  ],
+                                ),
+                                //_WorkspaceRow(booking),
+                                //_AddressRow(booking),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(flex: 35, child: Container()),
+                      ]),
+                    )),
+              ),
+            ),
+            Shimmer.fromColors(
+              highlightColor: Color.fromARGB(111, 182, 182, 182),
+              baseColor: Color.fromARGB(163, 196, 196, 196),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Card(
+                    elevation: 0,
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: SizedBox(
+                      height: 18,
+                      width: 200,
+                      child: Row(children: [
+                        Expanded(
+                          flex: 65,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    //_TimeRow(booking),
+                                  ],
+                                ),
+                                //_WorkspaceRow(booking),
+                                //_AddressRow(booking),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(flex: 35, child: Container()),
+                      ]),
+                    )),
+              ),
+            ),
+            Shimmer.fromColors(
+              highlightColor: Color.fromARGB(111, 182, 182, 182),
+              baseColor: Color.fromARGB(163, 196, 196, 196),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Card(
+                    elevation: 0,
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                    child: SizedBox(
+                      height: 15,
+                      width: 160,
+                      child: Row(children: [
+                        Expanded(
+                          flex: 65,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    //_TimeRow(booking),
+                                  ],
+                                ),
+                                //_WorkspaceRow(booking),
+                                //_AddressRow(booking),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(flex: 35, child: Container()),
+                      ]),
+                    )),
+              ),
+            ),
+          ]),
+        ),
+      ]),
+    );
   }
 }
 
@@ -181,10 +382,7 @@ class BookingCard extends StatelessWidget {
               side: const BorderSide(
                   width: 0.3, color: Color.fromARGB(255, 200, 194, 207)),
               borderRadius: BorderRadius.circular(20.0)),
-
-          child: Stack(
-            alignment: Alignment.centerLeft,
-              children: [
+          child: Stack(alignment: Alignment.centerLeft, children: [
             Row(
               children: [
                 Expanded(
@@ -221,5 +419,4 @@ class BookingCard extends StatelessWidget {
           ])),
     );
   }
-
 }

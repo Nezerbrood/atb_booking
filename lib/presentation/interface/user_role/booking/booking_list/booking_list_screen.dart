@@ -69,10 +69,18 @@ class BookingScreen extends StatelessWidget {
       body: BlocBuilder<BookingListBloc, BookingListState>(
         builder: (context, state) {
           if (state is BookingListLoadingState) {
-            return const Padding(
-                padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0),
-                child: Center(
-                  child: CircularProgressIndicator(),
+            return Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0),
+                child: Container(
+                  child: Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                          return const ShimmerBookingCard();
+                      },
+                    ),
+                  ),
                 ));
           } else if (state is BookingListLoadedState) {
             if (state.bookingList.isNotEmpty) {

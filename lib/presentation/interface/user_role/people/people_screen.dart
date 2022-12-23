@@ -69,14 +69,18 @@ class SearchPeopleTextField extends StatelessWidget {
                           onPressed: () {
                             context
                                 .read<PeopleBloc>()
-                                .add(PeopleIsFavoriteChangeEvent(_controller.text));
+                                .add(
+                                PeopleIsFavoriteChangeEvent(_controller.text));
                           },
                           icon: Wrap(
                             alignment: WrapAlignment.center,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Text("Только\nизбранные",
-                                  style: Theme.of(context).textTheme.titleSmall,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .titleSmall,
                                   textAlign: TextAlign.right),
                               const SizedBox(width: 10),
                               state.isFavoriteOn
@@ -106,6 +110,7 @@ class SearchPeopleTextField extends StatelessWidget {
 
 class SearchResultList extends StatelessWidget {
   SearchResultList({super.key});
+
   static ScrollController _scrollController = ScrollController();
 
   @override
@@ -127,24 +132,24 @@ class SearchResultList extends StatelessWidget {
           }
         }
 
-        if (state is PeopleEmptyState) {
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Ничего не найдено"
-                    ,
-                    style: appThemeData.textTheme.headlineMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
+        // if (state is PeopleEmptyState) {
+        //   return Expanded(
+        //     child: Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        //       child: Center(
+        //         child: Padding(
+        //           padding: const EdgeInsets.all(8.0),
+        //           child: Text(
+        //             "Ничего не найдено"
+        //             ,
+        //             style: appThemeData.textTheme.headlineMedium,
+        //             textAlign: TextAlign.center,
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   );
+        // }
         if (state is PeopleInitialState) {
           return Expanded(
             child: Padding(
@@ -185,33 +190,46 @@ class SearchResultList extends StatelessWidget {
                 );
               },
             ),
-          );}
-          else if(state is PeopleLoadingState){
+          );
+        }
+        else if (state is PeopleLoadingState) {
+          if (state.page == 0) {
             return Expanded(
-
-                child: ListView.builder(
-                  controller: _scrollController,
-                  shrinkWrap: false,
-                  itemCount: state.users.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        PersonCard(state.users[index]),
-                        (state is PeopleLoadingState &&
-                            index == state.users.length - 1)
-                            ? Container(
-                            height: 150,
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ))
-                            : const SizedBox.shrink(),
-                      ],
-                    );
-                  },
-                ),
+              child: ListView.builder(
+                controller: _scrollController,
+                shrinkWrap: false,
+                itemCount: 6,
+                itemBuilder: (context, index) {
+                  return
+                    const ShimmerPersonCard();
+                },
+              ),
             );
-        }else{
+          }
+          return Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              shrinkWrap: false,
+              itemCount: state.users.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    PersonCard(state.users[index]),
+                    (state is PeopleLoadingState &&
+                        index == state.users.length - 1)
+                        ? Container(
+                        height: 150,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ))
+                        : const SizedBox.shrink(),
+                  ],
+                );
+              },
+            ),
+          );
+        } else {
           return ErrorWidget((Exception("bad state: $state")));
         }
       },
