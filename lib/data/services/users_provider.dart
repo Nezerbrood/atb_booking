@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:atb_booking/logic/secure_storage_api.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/role.dart';
@@ -76,7 +77,7 @@ class UsersProvider {
       int page, int size, String userName, bool isFavorites) async {
     /// Получение Access токена
     String accessToken = await NetworkController().getAccessToken();
-
+    int currentUserId = await SecurityStorage().getIdStorage();
     /// Создание параметров
     Map<String, dynamic> queryParameters = {}
       ..["page"] = page.toString()
@@ -89,7 +90,7 @@ class UsersProvider {
 
     /// Сам запрос
     var uri =
-        Uri.http(baseUrl, '/api/users/search', queryParameters);
+        Uri.http(baseUrl, '/api/users/search/$currentUserId', queryParameters);
     var response = await http.get(uri, headers: headers);
 
     /// Проверка
@@ -158,16 +159,16 @@ class UsersProvider {
     }
   }
 
-  Future<void> addFavorite(int favoriteId) async   {
+  Future<void> addFavorite(int favoriteId) async  {
+    var currentUserId = await SecurityStorage().getIdStorage();
     var uri = Uri.http(
       baseUrl,
-      '/api/favorites/$favoriteId',
+      '/api/favorites/$favoriteId/users/$currentUserId',
     );
 
     /// Создание тела запроса
     /// Получение Access токена
     String accessToken = await NetworkController().getAccessToken();
-
     /// Создание headers запроса
     Map<String, String> headers = {};
     headers["Content-type"] = 'application/json';
@@ -186,9 +187,10 @@ class UsersProvider {
   }
 
   Future<void> deleteFromFavorites(int favoriteId) async {
+    var currentUserId = await SecurityStorage().getIdStorage();
     var uri = Uri.http(
       baseUrl,
-      '/api/favorites/$favoriteId',
+      '/api/favorites/$favoriteId/users/$currentUserId',
     );
 
     /// Создание тела запроса

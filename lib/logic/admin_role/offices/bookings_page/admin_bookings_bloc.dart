@@ -1,9 +1,5 @@
-import 'dart:async';
 
 import 'package:atb_booking/data/models/booking.dart';
-import 'package:atb_booking/data/services/booking_api_provider.dart';
-import 'package:atb_booking/data/services/booking_repository.dart';
-import 'package:atb_booking/logic/admin_role/people/people_page/admin_people_bloc.dart';
 import 'package:atb_booking/logic/secure_storage_api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +30,6 @@ class AdminBookingsBloc extends Bloc<AdminBookingsEvent, AdminBookingsState> {
       emit(AdminBookingsLoadingState(_selectedDateTimeRange,_loadedBookings));
       try {
         //page++;
-        await Future.delayed(const Duration(seconds: 5));
         //todo load next page
         print("emit after load next page");
         emit(AdminBookingsLoadedState(_selectedDateTimeRange, _loadedBookings));

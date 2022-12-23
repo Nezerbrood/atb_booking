@@ -48,61 +48,59 @@ class SearchPeopleTextField extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 20,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Введите имя",
-                  filled: true,
-                  fillColor: const Color.fromARGB(255, 238, 238, 238),
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  suffixIcon: BlocBuilder<PeopleBloc, PeopleState>(
-                    builder: (context, state) {
-                      return IconButton(
-                          onPressed: () {
-                            context
-                                .read<PeopleBloc>()
-                                .add(
-                                PeopleIsFavoriteChangeEvent(_controller.text));
-                          },
-                          icon: Wrap(
-                            alignment: WrapAlignment.center,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              Text("Только\nизбранные",
-                                  style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .titleSmall,
-                                  textAlign: TextAlign.right),
-                              const SizedBox(width: 10),
-                              state.isFavoriteOn
-                                  ? const Icon(Icons.star,)
-                                  : const Icon(
-                                Icons.star_border,
-                              ),
-                            ],
-                          ));
-                    },
-                  ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            flex: 20,
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Введите имя",
+                filled: true,
+                fillColor: const Color.fromARGB(255, 238, 238, 238),
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
-                textInputAction: TextInputAction.search,
-                controller: _controller,
-                onChanged: (pattern) {
-                  // при добавлении или стирании в поле
-                  _onSearchChanged(pattern);
-                },
+                suffixIcon: BlocBuilder<PeopleBloc, PeopleState>(
+                  builder: (context, state) {
+                    return IconButton(
+                        onPressed: () {
+                          context
+                              .read<PeopleBloc>()
+                              .add(
+                              PeopleIsFavoriteChangeEvent(_controller.text));
+                        },
+                        icon: Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text("Только\nизбранные",
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .titleSmall,
+                                textAlign: TextAlign.right),
+                            const SizedBox(width: 10),
+                            state.isFavoriteOn
+                                ? const Icon(Icons.star,)
+                                : const Icon(
+                              Icons.star_border,
+                            ),
+                          ],
+                        ));
+                  },
+                ),
               ),
+              textInputAction: TextInputAction.search,
+              controller: _controller,
+              onChanged: (pattern) {
+                // при добавлении или стирании в поле
+                _onSearchChanged(pattern);
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -201,7 +199,7 @@ class SearchResultList extends StatelessWidget {
                 itemCount: 6,
                 itemBuilder: (context, index) {
                   return
-                    const ShimmerPersonCard();
+                   const ShimmerPersonCard();
                 },
               ),
             );

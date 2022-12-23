@@ -12,7 +12,6 @@ import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../booking_details/booking_details_screen.dart';
 import '../new_booking/new_booking_screen.dart';
 import 'booking_card_widget.dart';
@@ -70,15 +69,13 @@ class BookingScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is BookingListLoadingState) {
             return Padding(
-                padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0),
+                padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0),
                 child: Expanded(
                   child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
                         return const ShimmerBookingCard();
-                    },
-                  ),
+                      })
                 ));
           } else if (state is BookingListLoadedState) {
             if (state.bookingList.isNotEmpty) {
