@@ -17,7 +17,6 @@ class LockedPlanBloc extends Bloc<LockedPlanEvent, LockedPlanState> {
   factory LockedPlanBloc() {
     return _singleton;
   }
-
   static const double WIDTH = 350;
   static const double HEIGHT = 350;
   Level? levelPlan;
