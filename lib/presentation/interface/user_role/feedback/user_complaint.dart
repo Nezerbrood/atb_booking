@@ -218,7 +218,7 @@ class _Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ComplaintBloc, ComplaintState>(
       builder: (context, state) {
-        print("State into compaint: $state");
+        print("State into complaint: $state");
         if (state is ComplaintLoadedState) {
           if (state.showButton) {
             return Center(

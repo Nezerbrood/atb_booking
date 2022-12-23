@@ -19,9 +19,10 @@ class AdminFeedbackScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => const Auth()));
-                NetworkController().exitFromApp();//todo вынести в блок как эвент и ждать
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const Auth()));
+                NetworkController()
+                    .exitFromApp(); //todo вынести в блок как эвент и ждать
               },
               icon: const Icon(Icons.logout, size: 28))
         ],
@@ -33,8 +34,10 @@ class AdminFeedbackScreen extends StatelessWidget {
             padding: const EdgeInsets.only(left: 3),
             child: Text(
               'Тип обратной связи',
-              style: appThemeData.textTheme.headlineSmall
-                  ?.copyWith(color: Colors.black, fontSize: 21, fontWeight: FontWeight.w300),
+              style: appThemeData.textTheme.headlineSmall?.copyWith(
+                  color: Colors.black,
+                  fontSize: 21,
+                  fontWeight: FontWeight.w300),
             ),
           ),
           _DropdownButtonType(),
@@ -191,7 +194,10 @@ class _ResultList extends StatelessWidget {
     });
 
     return Expanded(
-      child: BlocBuilder<AdminFeedbackBloc, AdminFeedbackState>(
+      child: BlocConsumer<AdminFeedbackBloc, AdminFeedbackState>(
+        listener: (context, state) {
+          // TODO: implement listener
+        },
         builder: (context, state) {
           if (state is AdminFeedbackErrorState) {
             return Center(

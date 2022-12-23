@@ -9,20 +9,21 @@ class User {
   bool isFavorite;
   String role;
 
-  User(this.id, this.login, this.fullName, this.avatarImageId, this.phone,this.email, this.jobTitle,
-      this.isFavorite,this.role);
+  User(this.id, this.login, this.fullName, this.jobTitle, this.avatarImageId,
+      this.phone, this.email, this.role, this.isFavorite);
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-        json["id"] as int,
-        json["login"] as String,
-        json["fullName"] as String,
-        json["imageId"] as int,
-        json["phone"] as String,
-        json["jobTitle"] as String,
-        json["email"] as String,
-        json["favorite"] as bool,
-        json["role"] as String);
+      json["id"] as int,
+      json["login"] as String,
+      json["fullName"] as String,
+      json["jobTitle"] as String,
+      json["imageId"] as int,
+      json["phone"] as String,
+      json["email"] as String,
+      json["role"] as String,
+      json["favorite"] as bool,
+    );
   }
   Map<String, dynamic> toJson() {
     return <String, dynamic>{

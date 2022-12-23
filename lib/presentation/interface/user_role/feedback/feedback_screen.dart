@@ -4,6 +4,7 @@ import 'package:atb_booking/data/models/office.dart';
 import 'package:atb_booking/data/services/city_repository.dart';
 import 'package:atb_booking/data/services/office_provider.dart';
 import 'package:atb_booking/logic/user_role/feedback_bloc/feedback_bloc.dart';
+import 'package:atb_booking/presentation/constants/styles.dart';
 import 'package:atb_booking/presentation/interface/user_role/booking/plan/plan_widget_for_feedback.dart';
 import 'package:atb_booking/presentation/widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
@@ -339,7 +340,6 @@ class _LevelField extends StatelessWidget {
                   ),
                   suffixIcon: Icon(Icons.arrow_drop_down),
                 ),
-                
                 controller: FeedBackScreen.levelInputController,
               ),
               suggestionsCallback: (pattern) {
@@ -486,12 +486,12 @@ class _Button extends StatelessWidget {
                     title: Text(
                       "Не удалось отправить сообщение",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green.shade900),
+                      style: TextStyle(
+                          color: appThemeData.colorScheme.error),
                     ),
                   );
                 }
                 throw Exception('Bad State: $state');
-                //todo FIX STATE
               },
             ),
           );

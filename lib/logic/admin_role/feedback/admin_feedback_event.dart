@@ -16,5 +16,4 @@ class AdminFeedbackLoadNextPageEvent extends AdminFeedbackEvent {}
 class AdminFeedbackDeleteItemEvent extends AdminFeedbackEvent {
   final FeedbackItem feedbackItem;
   AdminFeedbackDeleteItemEvent(this.feedbackItem);
-
 }

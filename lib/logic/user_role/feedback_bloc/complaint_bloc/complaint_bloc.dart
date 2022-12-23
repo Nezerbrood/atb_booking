@@ -32,13 +32,14 @@ class ComplaintBloc extends Bloc<ComplaintEvent, ComplaintState> {
       emit(ComplaintLoadedState(showButton: false, userPerson: currentUser!));
       int feedbackTypeId = 2;
       int? officeId = null;
+      int? officeLevelId = null;
       int? workplaceId = null;
       int? guiltyId = event.userId;
 
       try {
         emit(ComplaintLoadingState());
         await FeedbackProvider().createFeedbackMessage(
-            message, feedbackTypeId, officeId, workplaceId, guiltyId);
+            message, feedbackTypeId, officeId, officeLevelId, workplaceId, guiltyId);
         emit(ComplaintSuccessState());
       } catch (_) {
         emit(ComplaintErrorState());

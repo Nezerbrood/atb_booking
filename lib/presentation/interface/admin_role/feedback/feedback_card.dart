@@ -2,15 +2,17 @@ import 'package:atb_booking/data/models/feedback.dart';
 import 'package:atb_booking/data/models/user.dart';
 import 'package:atb_booking/data/services/users_repository.dart';
 import 'package:atb_booking/logic/admin_role/feedback/admin_feedback_bloc.dart';
+import 'package:atb_booking/logic/admin_role/feedback/feedback_open_card_bloc/feedback_open_card_bloc.dart';
 import 'package:atb_booking/presentation/constants/styles.dart';
+import 'package:atb_booking/presentation/interface/admin_role/feedback/feedback_open_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class FeedbackCard extends StatelessWidget {
-  final FeedbackItem feedbackItem;
+  final FeedbackItem feedback;
 
-  const FeedbackCard(this.feedbackItem, {super.key});
+  const FeedbackCard(this.feedback, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +20,16 @@ class FeedbackCard extends StatelessWidget {
       value: BlocProvider.of<AdminFeedbackBloc>(context),
       child: Center(
           child: GestureDetector(
-        // onTap: () async {
-        //   await Navigator.of(context).push(
-        //     MaterialPageRoute(
-        //       builder: (context) => BlocProvider(
-        //         create: (context) => AdminPersonBookingListBloc(user),
-        //         child: AdminPersonBookingListPage(),
-        //       ),
-        //     ),
-        //   );
-        // },
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                create: (context) => FeedbackOpenCardBloc(feedback),
+                child: AdminFeedbackOpenCard(),
+              ),
+            ),
+          );
+        },
         child: Card(
             semanticContainer: true,
             elevation: 1,
@@ -42,18 +44,18 @@ class FeedbackCard extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                       child: ListTile(
-                    title: Text(_DateConvert(feedbackItem.date),
-                        style: appThemeData.textTheme.bodyMedium!.copyWith(fontWeight: 
-                        FontWeight.w400)),
+                    title: Text(_DateConvert(feedback.date),
+                        style: appThemeData.textTheme.bodyMedium!
+                            .copyWith(fontWeight: FontWeight.w400)),
                     subtitle: Text(
-                      "User id: ${feedbackItem.userId.toString()}",
+                      feedback.userFullName,
                       style: appThemeData.textTheme.titleSmall,
                     ),
                     trailing: GestureDetector(
                       onTap: () {
                         context
                             .read<AdminFeedbackBloc>()
-                            .add(AdminFeedbackDeleteItemEvent(feedbackItem));
+                            .add(AdminFeedbackDeleteItemEvent(feedback));
                       },
                       child: Icon(Icons.cancel),
                     ),
