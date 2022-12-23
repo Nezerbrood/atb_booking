@@ -71,15 +71,13 @@ class BookingScreen extends StatelessWidget {
           if (state is BookingListLoadingState) {
             return Padding(
                 padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0),
-                child: Container(
-                  child: Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                          return const ShimmerBookingCard();
-                      },
-                    ),
+                child: Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: false,
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                        return const ShimmerBookingCard();
+                    },
                   ),
                 ));
           } else if (state is BookingListLoadedState) {
