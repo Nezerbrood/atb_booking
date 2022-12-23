@@ -22,11 +22,15 @@ class AdminFeedbackOpenCard extends StatelessWidget {
         title: const Text("Feedback пользователя"),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          _PersonSenderCard(),
-          const _Body(),
-        ],
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: [
+              _PersonSenderCard(),
+              const _Body(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -91,31 +95,29 @@ class _Body extends StatelessWidget {
         if (state is FeedbackOpenCardLoadedState) {
           /// Простое сообщение
           if (state.feedback.feedbackTypeId == 1) {
-            return Expanded(
-                child: Column(
+            return Column(
               children: [
-                _Message(
-                  message: state.feedback.comment,
-                ),
-                _ButtonDelete(state.feedback),
+            _Message(
+              message: state.feedback.comment,
+            ),
+            _ButtonDelete(state.feedback),
               ],
-            ));
+            );
           }
 
           /// Жалоба на пользователя
           else if (state.feedback.feedbackTypeId == 2) {
-            return Expanded(
-                child: Column(
+            return Column(
               children: [
-                _PersonComplaintCard(),
+            _PersonComplaintCard(),
 
 
-                _Message(
-                  message: state.feedback.comment,
-                ),
-                _ButtonDelete(state.feedback),
+            _Message(
+              message: state.feedback.comment,
+            ),
+            _ButtonDelete(state.feedback),
               ],
-            ));
+            );
           }
 
           /// Жалоба на рабочее место
@@ -217,7 +219,7 @@ class _PersonComplaintCard extends StatelessWidget {
         ///
         /// Тот на кого пожаловались
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8),
           child: Column(
             children: [
               SizedBox(
