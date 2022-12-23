@@ -73,7 +73,7 @@ class BookingScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0),
                 child: Expanded(
                   child: ListView.builder(
-                    shrinkWrap: false,
+                    shrinkWrap: true,
                     itemCount: 4,
                     itemBuilder: (context, index) {
                         return const ShimmerBookingCard();
