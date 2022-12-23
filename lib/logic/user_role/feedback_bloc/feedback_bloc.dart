@@ -287,7 +287,12 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
               selectedElementIndex,
               message));
           await FeedbackProvider().createFeedbackMessage(
-              message, feedbackTypeId, officeId, workplaceId, guiltyId);
+              message,
+              feedbackTypeId,
+              officeId,
+              selectedLevel!.id,
+              workplaceId,
+              guiltyId);
           emit(FeedbackSuccessState(
               typeFieldVisible!,
               cityFieldVisible!,
@@ -330,7 +335,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
         level = await LevelProvider().getPlanByLevelId(selectedLevel!.id);
         listOfPlanElements = level!.workspaces;
         levelImageId = level!.planId;
-        
+
         typeFieldVisible = true;
         cityFieldVisible = true;
         officeFieldVisible = true;
@@ -421,6 +426,10 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
       int? officeId = null;
       int? workplaceId = null;
       int? guiltyId = null;
+      int? selectedLevelId = null;
+      if (selectedLevel != null) {
+        selectedLevelId = selectedLevel!.id;
+      }
 
       if (selectedType == "Жалоба") {
         feedbackTypeId = 3;
@@ -444,8 +453,10 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
             listOfPlanElements,
             selectedElementIndex,
             message));
-        await FeedbackProvider().createFeedbackMessage(
-            message, feedbackTypeId, officeId, workplaceId, guiltyId);
+
+        await FeedbackProvider().createFeedbackMessage(message, feedbackTypeId,
+            officeId, selectedLevelId, workplaceId, guiltyId);
+
         emit(FeedbackSuccessState(
             typeFieldVisible!,
             cityFieldVisible!,

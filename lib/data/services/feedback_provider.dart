@@ -6,24 +6,28 @@ import 'package:atb_booking/logic/secure_storage_api.dart';
 import 'package:http/http.dart' as http;
 
 class FeedbackProvider {
-  Future<void> createFeedbackMessage(String message, int feedbackTypeId,
-      int? officeId, int? workplaceId, int? guiltyId) async {
+  Future<void> createFeedbackMessage(
+      String message,
+      int feedbackTypeId,
+      int? officeId,
+      int? officeLevelId,
+      int? workplaceId,
+      int? guiltyId) async {
     var uri = Uri.http(
       NetworkController().getUrl(),
       '/api/feedbacks',
     );
 
-    int userId = await SecurityStorage().getIdStorage();
-    DateTime date = DateTime.now();
+    DateTime date = DateTime.now().toUtc();
 
     /// Создание тела запроса
     var newJson = <String, dynamic>{};
     newJson["comment"] = message;
     newJson["feedbackTypeId"] = feedbackTypeId.toString();
     newJson["officeId"] = officeId.toString();
+    newJson["officeLevelId"] = officeLevelId.toString();
     newJson["workplaceId"] = workplaceId.toString();
     newJson["guiltyId"] = guiltyId.toString();
-    newJson["userId"] = userId.toString();
     newJson["date"] = date.toUtc().toIso8601String();
     var encoded = jsonEncode(newJson);
     print("newJson: $newJson");
@@ -38,8 +42,8 @@ class FeedbackProvider {
 
     if (response.statusCode == 401) {
       await NetworkController().updateAccessToken();
-      createFeedbackMessage(
-          message, feedbackTypeId, officeId, workplaceId, guiltyId);
+      createFeedbackMessage(message, feedbackTypeId, officeId, officeLevelId,
+          workplaceId, guiltyId);
     } else if (response.statusCode != 201) {
       throw Exception("Error Feedback Creating In Provider");
     }
